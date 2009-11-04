@@ -2,11 +2,13 @@
 /*
 * @name get_page_content.php
 */
-//include_once('./curl.get.php');
+include_once('./curl.get.php');
 include_once('./function.php');
 
 
-//判断是否是天涯的内容帖子,是则返回:(1,频道英文缩写,频道中文名称)
+//判断是否是天涯的内容帖子,
+//是主版则返回:(1,频道英文缩写,频道中文名称)
+//是副版则返回:(2,频道英文缩写,频道中文名称,帖子序号)
 function is_tianya_cn_content($page_source){
  		//主版
     $channel = get_mid_content($page_source, 'var strItem="', '";');
@@ -17,7 +19,8 @@ function is_tianya_cn_content($page_source){
 	    //echo $channel;   
 	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
 	        if( isset($channel) ){
-	            return array(1, $channel, $forum_name);   
+	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name);   
+	            return array(1, $channel, $forum_name); 
 	        }
 	    }
 	  }
@@ -29,10 +32,12 @@ function is_tianya_cn_content($page_source){
 	    //print_r( $content_flag ); 
 	    $forum_name = '';
 	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
+	    $id_article = get_mid_content($page_source, 'var idArticle="', '";');
 	    //echo $channel;   
 	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
 	        if( isset($channel) ){
-	            return array(2, $channel, $forum_name);   
+	            //return array('first_second'=>2, 'channel'=>$channel, 'form_name'=>$forum_name);  
+	            return array(2, $channel, $forum_name, $id_article);
 	        }
 	    }
 	  }
@@ -181,10 +186,30 @@ function get_content_array($page_source, $first_second){
 }
 //print_r( get_content_array($page) );
 
-
+//$page = $collect->get('http://www.tianya.cn/publicforum/content/free/1/1532694.shtml');
+//$page = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
 //构造网页
-function create_url($articleid_r){
-   
+/*
+//副版表单
+apn	101260,110324,124881
+intLogo	0
+pID	2
+rs_permission	1
+*/
+function create_url($pid_list_r, $is_tianya_r){
+	$channel = $is_tianya_r[1];
+	if($is_tianya_r[0] == 1){
+		foreach($pid_list_r as $articleid){
+			$url[] = 'http://www.tianya.cn/publicforum/content/'.$channel.'/1/'.$articleid.'.shtml';
+		}
+    return $url;
+  }else if($is_tianya_r[0] == 2){
+		foreach($pid_list_r as $articleid){
+			$url = 'http://www.tianya.cn/techforum/content/'.$is_tianya_r[1].'/'.$is_tianya_r[3].'.shtml';
+		}
+    return $url;
+  }
+  return false;   
 }
 
 ?>
