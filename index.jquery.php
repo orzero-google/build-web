@@ -34,13 +34,13 @@ var str = base64_encode( $('#text_content').val() );
 			//$("#output_div").empty().append(data);
 			var out_json = $.evalJSON(data);
 			//$("#output_div").empty().append(out_json);
-
+			//$("#output_div").append('<tr>');
 			$.each(out_json, function(i,n){
 				//alert( "整理第: " + i + "页\n页号  : " + n );				
 				//$("#output_div").empty().append( "Item #" + i + ": " + n ).toggle(3000); 
-				$("#output_div").append('<p>'+i+' : '+n+'</p>'); 
+				$("#output_div").append('<td><a href="'+n+'">第'+i+'页</a></td>'); 
 			});
-
+			//$("#output_div").append('</tr>');
 	   },
 	   complete: function(XMLHttpRequest, textStatus){
 			$('<div class="quick-alert">成功取得首页</div>')
