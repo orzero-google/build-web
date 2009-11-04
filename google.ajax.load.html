@@ -10,9 +10,15 @@
 $(function(){ 
 $("#bt").click(function(){ 
 
-$.getJSON("http://www.baidu.com", function(json){
-  alert("JSON Data: " + json);
-});
+    $.getJSON("json.html",
+        function(data){
+        	alert(data)
+          $.each(data.items, function(i,item){
+            $("<img/>").attr("src", item.media.m).appendTo("#images");
+            if ( i == 3 ) return false;
+          });
+        });
+
 
 
 
@@ -71,8 +77,10 @@ rs_permission: <input type="text" name="rs_permission" value="1" /><br/>
 
 构建一个接受返回信息的层:
 <div id="msg"></div>
+<div id="images"></div>
 
 
-<div class="ajax">这里将显示结果。 </div>
+
+
 </body>
 </html>
