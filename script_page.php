@@ -11,12 +11,12 @@ include_once('./get.tianya.page.function.php');
 
 $page_strlen = strlen($_GET['content']);
 $page_low_string = strtolower($_GET['content']);
-//var_dump(page_exists($low_string));
+var_dump(page_exists($low_string));
 
 $collect = new s_collect();
 //$page = $collect->get('http://www.tianya.cn/publicforum/content/free/1/1532694.shtml');
 //$page = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
-$page = iconv('GBK', 'UTF-8',$collect->get($page_low_string));
+$page = iconv('gb2312', 'UTF-8',$collect->get($page_low_string));
 echo $page;
 echo '<pre>';
 
