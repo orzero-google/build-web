@@ -5,14 +5,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script src="jquery-1.3.2.js" type="text/javascript"></script>
 <script src="base64encode.js" type="text/javascript"></script>
-
+<script src="jquery.json-2.2.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function(){ 
 $("#button1").click(function(){ 
+//取得输入框里面的网址
 var str = base64_encode( $('#text_content').val() );
 
-alert(base64_decode('bG9jYWhvc3Q='));
-//alert( str );
 	 $.ajax({
 	   type: "post",
 	   url: "script_page.php",
@@ -27,13 +26,31 @@ alert(base64_decode('bG9jYWhvc3Q='));
 				});
 	   },
 	   success: function(data, textStatus){
-	   	//var page_get = base64_decode(bs);
 	   	//alert(data);
-	   	//alert(page_get);
-			$("#output_div").empty().append(data);
+	   	//var base64_page = base64_decode(data);
+	   	//alert(base64_page);
+			//$("#output_div").empty().append(base64_page);
+			//$("#output_div").empty().append($.evalJSON(data)[0]);
+			//$("#output_div").empty().append(data);
+			var out_json = $.evalJSON(data);
+			//$("#output_div").empty().append(out_json);
+
+			$.each(out_json, function(i,n){
+				//alert( "整理第: " + i + "页\n页号  : " + n );				
+				//$("#output_div").empty().append( "Item #" + i + ": " + n ).toggle(3000); 
+				$("#output_div").append('<p>'+i+' : '+n+'</p>'); 
+			});
+
 	   },
 	   complete: function(XMLHttpRequest, textStatus){
-			//HideLoading();
+			$('<div class="quick-alert">成功取得首页</div>')
+				.insertAfter( $("#button1") )
+				.fadeIn('slow')
+				.animate({opacity: 1.0}, 3000)
+				.fadeOut('slow', function() {
+				  $(this).remove();
+				});
+				
 	   },
 	   error: function(){
 			//请求出错处理
@@ -53,7 +70,7 @@ alert(base64_decode('bG9jYWhvc3Q='));
 <div class="ajax-div">
 	<div class="input-div">
 	请输入你帖子地址:
-	<input type="text" id="text_content" size="40">
+	<input type="text" id="text_content" value="http://www.tianya.cn/techforum/content/213/3072.shtml" size="40">
 	<input id="button1" type="button" value="提交表单">
 	</div>
 	<div class="output-div-container">	
