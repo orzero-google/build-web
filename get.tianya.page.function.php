@@ -2,14 +2,9 @@
 /*
 * @name get_page_content.php
 */
-include_once('./curl.get.php');
+//include_once('./curl.get.php');
 include_once('./function.php');
 
-$collect = new s_collect();
-//$page = $collect->get('http://www.tianya.cn/publicforum/content/free/1/1532694.shtml');
-$page = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
-//echo $page;
-echo '<pre>';
 
 //判断是否是天涯的内容帖子,是则返回:(1,频道英文缩写,频道中文名称)
 function is_tianya_cn_content($page_source){
@@ -44,8 +39,7 @@ function is_tianya_cn_content($page_source){
 	  
         return false;   
 }
-//
-print_r( is_tianya_cn_content($page) );
+//print_r( is_tianya_cn_content($page) );
 
 
 
@@ -67,8 +61,7 @@ function get_pid_list($page_source, $first_second){
   }
   return false;
 }
-//
-print_r( get_pid_list($page,2) );
+//print_r( get_pid_list($page,2) );
 
 
 //取得内容
