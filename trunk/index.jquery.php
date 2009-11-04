@@ -10,11 +10,13 @@
 $(function(){ 
 $("#button1").click(function(){ 
 var str = base64_encode( $('#text_content').val() );
+
+alert(base64_decode('bG9jYWhvc3Q='));
 //alert( str );
 	 $.ajax({
 	   type: "post",
 	   url: "script_page.php",
-	   data: $('#text_content').val(),
+	   data: 'content='+str,
 	   beforeSend: function(XMLHttpRequest){
 			$('<div class="quick-alert">数据加载中，请稍后</div>')
 				.insertAfter( $("#button1") )
@@ -25,10 +27,10 @@ var str = base64_encode( $('#text_content').val() );
 				});
 	   },
 	   success: function(data, textStatus){
-			$(".ajax.ajaxResult").html("");
-			$("item",data).each(function(i, domEle){
-				$(".ajax.ajaxResult").append("<li>"+$(domEle).children("title").text()+"</li>");
-			});
+	   	//var page_get = base64_decode(bs);
+	   	//alert(data);
+	   	//alert(page_get);
+			$("#output_div").empty().append(data);
 	   },
 	   complete: function(XMLHttpRequest, textStatus){
 			//HideLoading();
