@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Untitled Document</title>
 		<SCRIPT LANGUAGE="javascript">
 		function saveUserInfo(){
@@ -15,7 +15,8 @@
 		//接收表单的URL地址
 		var url = "http://www.tianya.cn/techforum/content/14/775116.shtml"; 
 		//需要POST的值，把每个变量都通过&来联接 
-		var postStr = "apn="+ apn +"&intLogo="+ intLogo +"&pID="+ pID +"&rs_permission"+ rs_permission;
+		var postStr = "apn="+ apn +"&intLogo="+ intLogo +"&pID="+ pID +"&rs_permission="+ rs_permission;
+		/*
 		//实例化Ajax
 		var ajax = null;
 		if(window.XMLHttpRequest){
@@ -27,28 +28,86 @@
 		else{
 		return;
 		}
+		*/
+		
+	function getAJAXObject()
+	 {
+	 var xmlHttp;
+	 
+	 try
+	    {
+	   // Firefox, Opera 8.0+, Safari
+	    xmlHttp=new XMLHttpRequest();
+	    }
+	 catch (e)
+	    {
+	
+	  // Internet Explorer
+	   try
+	      {
+	      xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+	      }
+	   catch (e)
+	      {
+	
+	      try
+	         {
+	         xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+	         }
+	      catch (e)
+	         {
+	         alert("您的浏览器不支持AJAX！");
+	         return false;
+	         }
+	      }
+	    }
+	  
+	  return xmlHttp;
+	 }
+	 var ajax = getAJAXObject(); 		
+	 //alert(ajax);
 		//通过Post方式打开连接
 		ajax.open("POST", url, true); 
 		//定义传输的文件HTTP头信息 
-		ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+		//ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
 		//发送POST数据
 		ajax.send(postStr);
 		//返回数据的处理函数
 		ajax.onreadystatechange = function(){
 		if (ajax.readyState == 4 && ajax.status == 200){
-		msg.innerHTML = ajax.responseText; 
+		msg.innerHTML = gb2utf8(ajax.responseText); 
 		}
 		}
 		}
+		
+function gb2utf8(data){ 
+    var glbEncode = []; 
+    gb2utf8_data = data; 
+    execScript("gb2utf8_data = MidB(gb2utf8_data, 1)", "VBScript"); 
+    var t=escape(gb2utf8_data).replace(/%u/g,"").replace(/(.{2})(.{2})/g,"%$2%$1").replace(/%([A-Z].)%(.{2})/g,"@$1$2"); 
+    t=t.split("@"); 
+    var i=0,j=t.length,k; 
+    while(++i<j) { 
+        k=t[i].substring(0,4); 
+        if(!glbEncode[k]) { 
+            gb2utf8_char = eval("0x"+k); 
+            execScript("gb2utf8_char = Chr(gb2utf8_char)", "VBScript"); 
+            glbEncode[k]=escape(gb2utf8_char).substring(1,6); 
+        } 
+        t[i]=glbEncode[k]+t[i].substring(4); 
+    } 
+    gb2utf8_data = gb2utf8_char = null; 
+    return unescape(t.join("%")); 
+}		
 		</SCRIPT>
 	</head>
 	<body>
 
 <form name="user_info">
-apn：		<input type="text" name="apn" /><br/>
-intLogo：	<input type="text" name="intLogo" /><br/>
-pID：		<input type="text" name="pID" /><br/>
-rs_permission: <input type="text" name="rs_permission" /><br/>
+apn：		<input type="text" name="apn" value="101260,110324,124881" /><br/>
+intLogo：	<input type="text" name="intLogo" value="0" /><br/>
+pID：		<input type="text" name="pID" value="2" /><br/>
+rs_permission: <input type="text" name="rs_permission" value="1" /><br/>
 <input type="button" value="提交表单" onClick="saveUserInfo()">
 </form>
 //构建一个接受返回信息的层:
