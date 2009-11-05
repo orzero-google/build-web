@@ -1,4 +1,4 @@
-<?PHP
+ï»¿<?PHP
 /*
 * @name get_page_content.php
 */
@@ -6,11 +6,11 @@ include_once('./curl.get.php');
 include_once('./function.php');
 
 
-//ÅĞ¶ÏÊÇ·ñÊÇÌìÑÄµÄÄÚÈİÌû×Ó,
-//ÊÇÖ÷°æÔò·µ»Ø:(1,ÆµµÀÓ¢ÎÄËõĞ´,ÆµµÀÖĞÎÄÃû³Æ)
-//ÊÇ¸±°æÔò·µ»Ø:(2,ÆµµÀÓ¢ÎÄËõĞ´,ÆµµÀÖĞÎÄÃû³Æ,Ìû×ÓĞòºÅ)
+//åˆ¤æ–­æ˜¯å¦æ˜¯å¤©æ¶¯çš„å†…å®¹å¸–å­,
+//æ˜¯ä¸»ç‰ˆåˆ™è¿”å›:(1,é¢‘é“è‹±æ–‡ç¼©å†™,é¢‘é“ä¸­æ–‡åç§°)
+//æ˜¯å‰¯ç‰ˆåˆ™è¿”å›:(2,é¢‘é“è‹±æ–‡ç¼©å†™,é¢‘é“ä¸­æ–‡åç§°,å¸–å­åºå·)
 function is_tianya_cn_content($page_source){
- 		//Ö÷°æ
+ 		//ä¸»ç‰ˆ
     $channel = get_mid_content($page_source, 'var strItem="', '";');
     if($channel != null){
 	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
@@ -24,7 +24,7 @@ function is_tianya_cn_content($page_source){
 	        }
 	    }
 	  }
-		//¸±°æ
+		//å‰¯ç‰ˆ
     $channel = get_mid_content($page_source, 'var idItem="', '";');
     if($channel != null){
     	$content_flag = '';
@@ -48,11 +48,11 @@ function is_tianya_cn_content($page_source){
 
 
 
-//È¡µÃµ¼º½²¿·Ö
+//å–å¾—å¯¼èˆªéƒ¨åˆ†
 function get_pid_list($page_source, $first_second){
 	if($first_second == 1){
     $nav = get_mid_content($page_source, '<!-- google_ad_section_start -->', '<table border="0" align="center" cellspacing="0" width="100%">');   
-    if($nav == null){        //Ö»ÓĞÊ×Ò³
+    if($nav == null){        //åªæœ‰é¦–é¡µ
         return false;   
     }
     $pid_list_str = get_mid_content($nav, '<input type=\'hidden\' name=\'idArticleslist\' value=\'', ',\'>');
@@ -69,30 +69,30 @@ function get_pid_list($page_source, $first_second){
 //print_r( get_pid_list($page,2) );
 
 
-//È¡µÃÄÚÈİ
+//å–å¾—å†…å®¹
 function get_content_array($page_source, $first_second){
 	if($first_second == 1){
-    //ÏÈ´Ö·Ö,È¡µÃ¶ÎÂä
+    //å…ˆç²—åˆ†,å–å¾—æ®µè½
     $content_table = explode("\n\r".'<TABLE cellspacing=0 border=0 bgcolor=', $page_source);
     //print_r($content_table);
     $count_table = count($content_table);
-    //µ±Ç°Ò³Ãæ»Ø¸´ĞòºÅ
+    //å½“å‰é¡µé¢å›å¤åºå·
     $cn = 0;   
     foreach($content_table as $content){
                    
-        if( $cn == 0 ){    //Â¥Ìù               
+        if( $cn == 0 ){    //æ¥¼è´´               
             $p_content[$cn]['writer'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');           
-            //Èç¹ûÊÇµÚÒ»Ò³,ĞèÒª¶ş´Î¹ıÂË   
+            //å¦‚æœæ˜¯ç¬¬ä¸€é¡µ,éœ€è¦äºŒæ¬¡è¿‡æ»¤   
             $info = '';       
-            $info = get_mid_content($content, '</a>&nbsp;Ìá½»ÈÕÆÚ£º', '</font>');
+            $info = get_mid_content($content, '</a>&nbsp;æäº¤æ—¥æœŸï¼š', '</font>');
             $info_cut = '';
-            $info_cut = explode(' ·ÃÎÊ£º', $info);
+            $info_cut = explode(' è®¿é—®ï¼š', $info);
             if( isset($info_cut[1]) ){
                 $p_content[$cn]['time'] = $info_cut[0];
             }else{
                 $p_content[$cn]['time'] = $info;
             }
-            //Èç¹ûÊÇµÚÒ»Ò³,ĞèÒª¶ş´Î¹ıÂË
+            //å¦‚æœæ˜¯ç¬¬ä¸€é¡µ,éœ€è¦äºŒæ¬¡è¿‡æ»¤
             $txt = '';
             $txt = get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word;">', '<div id="tianyaBrandSpan1"></div>');
             $txt_cut = '';
@@ -102,9 +102,9 @@ function get_content_array($page_source, $first_second){
             }else{
                 $p_content[$cn]['txt'] = trim($txt);
             }           
-        }else if( $cn == ($count_table - 1) ){    //Î²Ìù
+        }else if( $cn == ($count_table - 1) ){    //å°¾è´´
             $p_content[$cn]['writer'] = get_mid_content($content, 'vwriter=', '&idwriter=');   
-            $p_content[$cn]['time'] = get_mid_content($content, '</a>¡¡»Ø¸´ÈÕÆÚ£º', '</font>');   
+            $p_content[$cn]['time'] = get_mid_content($content, '</a>ã€€å›å¤æ—¥æœŸï¼š', '</font>');   
             $txt = '';                   
             $txt = get_mid_content( $content, '<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', '<!-- google_ad_section_end -->');       
             $txt_cut = '';
@@ -112,12 +112,12 @@ function get_content_array($page_source, $first_second){
             $p_content[$cn]['txt'] = trim($txt_cut[0]);
         }else{
             $p_content[$cn]['writer'] = get_mid_content($content, 'vwriter=', '&idwriter=');   
-            $p_content[$cn]['time'] = get_mid_content($content, '</a>¡¡»Ø¸´ÈÕÆÚ£º', '</font>');           
+            $p_content[$cn]['time'] = get_mid_content($content, '</a>ã€€å›å¤æ—¥æœŸï¼š', '</font>');           
             $txt = '';
             $txt = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', $content);       
             $p_content[$cn]['txt'] = trim($txt[1]);
         }
-        //¹ıÂËÊÖ»ú·¢ÌûÌáÊ¾
+        //è¿‡æ»¤æ‰‹æœºå‘å¸–æç¤º
         $mobile_post = '';
         $mobile_post = explode('<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<a href=', $p_content[$cn]['txt']);
         if( isset($mobile_post[1]) ){
@@ -128,26 +128,26 @@ function get_content_array($page_source, $first_second){
     }       
     return $p_content;
 	}else if($first_second == 2){
-    //ÏÈ´Ö·Ö,È¡µÃ¶ÎÂä
+    //å…ˆç²—åˆ†,å–å¾—æ®µè½
     $content_table = explode('<br><TABLE align=center border=0 cellSpacing=0 width=\'100%\'><TR>', $page_source);
     //print_r($content_table);
     $count_table = count($content_table);
-    //µ±Ç°Ò³Ãæ»Ø¸´ĞòºÅ
+    //å½“å‰é¡µé¢å›å¤åºå·
     $cn = 0;   
     foreach($content_table as $content){                   
-        if( $cn >= 1 ){    //Â¥Ìù               
+        if( $cn >= 1 ){    //æ¥¼è´´               
             $p_content[$cn]['writer'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');           
-            //Èç¹ûÊÇµÚÒ»Ò³,ĞèÒª¶ş´Î¹ıÂË   
+            //å¦‚æœæ˜¯ç¬¬ä¸€é¡µ,éœ€è¦äºŒæ¬¡è¿‡æ»¤   
             $info = '';       
-            $info = get_mid_content($content, '</a>&nbsp;Ìá½»ÈÕÆÚ£º', '</font>');
+            $info = get_mid_content($content, '</a>&nbsp;æäº¤æ—¥æœŸï¼š', '</font>');
             $info_cut = '';
-            $info_cut = explode(' ·ÃÎÊ£º', $info);
+            $info_cut = explode(' è®¿é—®ï¼š', $info);
             if( isset($info_cut[1]) ){
                 $p_content[$cn]['time'] = $info_cut[0];
             }else{
                 $p_content[$cn]['time'] = $info;
             }
-            //Èç¹ûÊÇµÚÒ»Ò³,ĞèÒª¶ş´Î¹ıÂË
+            //å¦‚æœæ˜¯ç¬¬ä¸€é¡µ,éœ€è¦äºŒæ¬¡è¿‡æ»¤
             $txt = '';
             $txt = get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word;">', '<div id="tianyaBrandSpan1"></div>');
             $txt_cut = '';
@@ -157,9 +157,9 @@ function get_content_array($page_source, $first_second){
             }else{
                 $p_content[$cn]['txt'] = trim($txt);
             }           
-        }else if( $cn == ($count_table - 1) ){    //Î²Ìù
+        }else if( $cn == ($count_table - 1) ){    //å°¾è´´
             $p_content[$cn]['writer'] = get_mid_content($content, 'vwriter=', '&idwriter=');   
-            $p_content[$cn]['time'] = get_mid_content($content, '</a>¡¡»Ø¸´ÈÕÆÚ£º', '</font>');   
+            $p_content[$cn]['time'] = get_mid_content($content, '</a>ã€€å›å¤æ—¥æœŸï¼š', '</font>');   
             $txt = '';                   
             $txt = get_mid_content( $content, '<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', '<!-- google_ad_section_end -->');       
             $txt_cut = '';
@@ -167,12 +167,12 @@ function get_content_array($page_source, $first_second){
             $p_content[$cn]['txt'] = trim($txt_cut[0]);
         }else{
             $p_content[$cn]['writer'] = get_mid_content($content, 'vwriter=', '&idwriter=');   
-            $p_content[$cn]['time'] = get_mid_content($content, '</a>¡¡»Ø¸´ÈÕÆÚ£º', '</font>');           
+            $p_content[$cn]['time'] = get_mid_content($content, '</a>ã€€å›å¤æ—¥æœŸï¼š', '</font>');           
             $txt = '';
             $txt = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', $content);       
             $p_content[$cn]['txt'] = trim($txt[1]);
         }
-        //¹ıÂËÊÖ»ú·¢ÌûÌáÊ¾
+        //è¿‡æ»¤æ‰‹æœºå‘å¸–æç¤º
         $mobile_post = '';
         $mobile_post = explode('<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<a href=', $p_content[$cn]['txt']);
         if( isset($mobile_post[1]) ){
@@ -188,9 +188,9 @@ function get_content_array($page_source, $first_second){
 
 //$page = $collect->get('http://www.tianya.cn/publicforum/content/free/1/1532694.shtml');
 //$page = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
-//¹¹ÔìÍøÒ³
+//æ„é€ ç½‘é¡µ
 /*
-//¸±°æ±íµ¥
+//å‰¯ç‰ˆè¡¨å•
 apn	101260,110324,124881
 intLogo	0
 pID	2

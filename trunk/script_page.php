@@ -1,7 +1,7 @@
 ﻿<?php
 /*
 * @name script_page.php
-* @description 取得当前页面信息,为采集做准备
+* @description 取得当前页面信息,判断是否为目标网址,为采集做准备,主要工作:构造网址列表
 * @author xami
 * @date	20091104
 */
