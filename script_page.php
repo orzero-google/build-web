@@ -14,7 +14,7 @@ include_once('./get.tianya.page.function.php');
 //var_dump(page_exists($low_string));
 //print_r($_POST);
 
-$page_addr = base64_decode(trim($_POST['content']));
+$page_addr = base64_decode(trim($_GET['content']));
 //echo $_POST['content'];
 //echo $page_addr;
 
@@ -35,20 +35,31 @@ $page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
 $out = is_tianya_cn_content($page_utf8);
 //print_r($out);
 
-//是天涯的帖子
+//是天涯的帖子,发送返回信息
 if(is_array($out)){
 	$out1 = get_pid_list($page_utf8, $out[0]);
 	if(is_array($out1)){
 		$out2 = create_url($out1, $out);
+	}else{
+		echo '["is_not_tianya_content"]'; 
+		exit;
 	}
 }
 
 
 //echo base64_encode($out);
-echo json_encode($out2);
+if(isset($out2)){
+	echo json_encode(array($out, $out1, $out2));
+}else{
+	echo '["is_not_tianya_content"]'; 
+}
+//print_r(array($out, $out1, $out2));
+//print_r( json_decode(json_encode(array($out, $out1, $out2))) );
 //print_r( is_tianya_cn_content($page) );
 //print_r( get_pid_list($page,2) );
 
 //echo '</pre>';
+
+
 /**/
 ?>

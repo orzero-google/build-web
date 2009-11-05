@@ -5,49 +5,6 @@
 include_once('./curl.get.php');
 include_once('./function.php');
 
-
-//判断是否是天涯的内容帖子,
-//是主版则返回:(1,频道英文缩写,频道中文名称)
-//是副版则返回:(2,频道英文缩写,频道中文名称,帖子序号)
-function is_tianya_cn_content($page_source){
- 		//主版
-    $channel = get_mid_content($page_source, 'var strItem="', '";');
-    if($channel != null){
-	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
-	    //print_r( $content_flag );      
-	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
-	    //echo $channel;   
-	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
-	        if( isset($channel) ){
-	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name);   
-	            return array(1, $channel, $forum_name); 
-	        }
-	    }
-	  }
-		//副版
-    $channel = get_mid_content($page_source, 'var idItem="', '";');
-    if($channel != null){
-    	$content_flag = '';
-	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
-	    //print_r( $content_flag ); 
-	    $forum_name = '';
-	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
-	    $id_article = get_mid_content($page_source, 'var idArticle="', '";');
-	    //echo $channel;   
-	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
-	        if( isset($channel) ){
-	            //return array('first_second'=>2, 'channel'=>$channel, 'form_name'=>$forum_name);  
-	            return array(2, $channel, $forum_name, $id_article);
-	        }
-	    }
-	  }
-	  
-        return false;   
-}
-//print_r( is_tianya_cn_content($page) );
-
-
-
 //取得导航部分
 function get_pid_list($page_source, $first_second){
 	if($first_second == 1){
@@ -67,6 +24,50 @@ function get_pid_list($page_source, $first_second){
   return false;
 }
 //print_r( get_pid_list($page,2) );
+
+//判断是否是天涯的内容帖子,同时返回：
+//是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id)
+//是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id)
+function is_tianya_cn_content($page_source){
+ 		//主版
+    $channel = get_mid_content($page_source, 'var strItem="', '";');
+    if($channel != null){
+	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
+	    //print_r( $content_flag );      
+	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
+	    $article_name = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    //echo $article_name;
+	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');
+	    //echo $channel;   
+	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
+	        if( isset($channel) ){
+	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name);   
+	            return array(1, $channel, $forum_name, $article_name, $article_id); 
+	        }
+	    }
+	  }
+		//副版
+    $channel = get_mid_content($page_source, 'var idItem="', '";');
+    if($channel != null){
+    	$content_flag = '';
+	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
+	    //print_r( $content_flag ); 
+	    $forum_name = '';
+	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
+	    $article_name = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');
+	    //echo $channel;   
+	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
+	        if( isset($channel) ){
+	            //return array('first_second'=>2, 'channel'=>$channel, 'form_name'=>$forum_name);  
+	            return array(2, $channel, $forum_name, $article_name, $article_id);
+	        }
+	    }
+	  }
+	  
+        return false;   
+}
+//print_r( is_tianya_cn_content($page) );
 
 
 //取得内容
@@ -196,6 +197,7 @@ intLogo	0
 pID	2
 rs_permission	1
 */
+
 function create_url($pid_list_r, $is_tianya_r){
 	$channel = $is_tianya_r[1];
 	if($is_tianya_r[0] == 1){
@@ -205,7 +207,7 @@ function create_url($pid_list_r, $is_tianya_r){
     return $url;
   }else if($is_tianya_r[0] == 2){
 		foreach($pid_list_r as $articleid){
-			$url = 'http://www.tianya.cn/techforum/content/'.$is_tianya_r[1].'/'.$is_tianya_r[3].'.shtml';
+			$url = 'http://www.tianya.cn/techforum/content/'.$is_tianya_r[1].'/'.$is_tianya_r[4].'.shtml';
 		}
     return $url;
   }
