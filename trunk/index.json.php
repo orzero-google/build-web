@@ -40,10 +40,15 @@ $(function(){
 	//取得输入框里面的网址
 	var str = base64_encode( $('#text_content').val() );
 
-	var get_url = 'script_page.php';
+	var get_url = 'run.get.page.php';
 	var data = '?content='+str;
 
+	$.getJSON(get_url+data,
+			function(data){
+			
+				$("#output_div").append(show_the_json_out(data)); 
 
+			});
 	
 	})
 });

@@ -2,11 +2,10 @@
 /*
 * @name run.get.page.php
 * @description 配合js提交的数据完成采集工作
-* @out 以帖子为单元的数组
 * @author xami
 * @date	20091105
 */
-include_once('./Snoopy.class.php');
+include_once('./curl.get.php');
 include_once('./function.php');
 include_once('./get.tianya.page.function.php');
 
@@ -16,7 +15,7 @@ function is_url($str){
 }
 
 //目标网址
-if(isset($_POST['page'])){
+if(isset($_GET['page'])){
 	$page_url = base64_decode(trim($_POST['page']));
 	if(!is_url($page_url)){
 		exit;
@@ -25,47 +24,51 @@ if(isset($_POST['page'])){
 	exit;	
 }
 
-//如果主版：参数,字符:1;
-//如果副版：参数,数组:(apn,intLogo,pID,rs_permission)
-if(isset($_POST['channel'])){
+//主版\副版
+if(isset($_GET['channel'])){
 	$channel = base64_decode(trim($_POST['channel']));
 }else{
-	exit;
+	exit;	
 }
 
-$snoopy = new Snoopy;
-// set browser and referer:
-$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
-$snoopy->referer = "http://www.tianya.cn/";
-// set an raw-header:
-$snoopy->rawheaders["Pragma"] = "no-cache";
-
-if($channel != 1){		//base64_encode(1); 不是主版
-	$form_data = $channel;			//解析提交的数据
-		
-	$submit_vars["apn"] = "amiga";
-	$submit_vars["intLogo"] = "Search!";
-	$submit_vars["pID"] = "Altavista";
-	$submit_vars["rs_permission"] = "rs_permission";
-	
-	if($snoopy->submit($submit_url,$submit_vars)){
-		$page_gbk = $snoopy->results;
-		$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
-	}
-	
-	
-	$content_r = get_content_array($page_utf8, 2);
-	
+//论坛缩写,便于构造网址
+if(isset($_GET['forum'])){
+	$form_name = base64_decode(trim($_POST['forum']));
 }else{
-	if($snoopy->fetch($page_url)){
-		$page_gbk = $snoopy->results;
-		$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
-	}
-	$content_r = get_content_array($page_utf8, 1);
+	exit;	
 }
 
-//返回
-echo json_encode($content_r);
+$collect = new s_collect();
+//$page_gbk = $collect->get('http://www.tianya.cn/publicforum/content/free/1/1532694.shtml');
+//$page_gbk = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
+$page_gbk = $collect->get($page_addr);
+//echo $page_gbk;
+$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
+//$page_utf8 = iconv('ISO-8859-1', 'UTF-8', trim($page_gbk));
+
+//echo $page_utf8;
+//$page = $collect->get($page_addr);
+//$page_base64 = base64_encode(trim($page_gbk));
+//echo $page_base64;
+//echo '<pre>';
+
+$out = is_tianya_cn_content($page_utf8);
+//print_r($out);
+
+//是天涯的帖子
+if(is_array($out)){
+	$out1 = get_pid_list($page_utf8, $out[0]);
+	if(is_array($out1)){
+		$out2 = create_url($out1, $out);
+	}
+}
 
 
+//echo base64_encode($out);
+echo json_encode($out2);
+//print_r( is_tianya_cn_content($page) );
+//print_r( get_pid_list($page,2) );
+
+//echo '</pre>';
+/**/
 ?>
