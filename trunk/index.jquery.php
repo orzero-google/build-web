@@ -11,7 +11,7 @@ $(function(){
 $("#button1").click(function(){ 
 //取得输入框里面的网址
 var str = base64_encode( $('#text_content').val() );
-
+//alert(str);
 	 $.ajax({
 	   type: "post",
 	   url: "script_page.php",
@@ -24,6 +24,7 @@ var str = base64_encode( $('#text_content').val() );
 				.fadeOut('slow', function() {
 				  $(this).remove();
 				});
+
 	   },
 	   success: function(data, textStatus){
 	   	//alert(data);
@@ -32,7 +33,9 @@ var str = base64_encode( $('#text_content').val() );
 			//$("#output_div").empty().append(base64_page);
 			//$("#output_div").empty().append($.evalJSON(data)[0]);
 			//$("#output_div").empty().append(data);
+			//alert(data);
 			var out_json = $.evalJSON(data);
+			alert(out_json);
 			//$("#output_div").empty().append(out_json);
 			//$("#output_div").append('<tr>');
 			$.each(out_json, function(i,n){
@@ -41,8 +44,11 @@ var str = base64_encode( $('#text_content').val() );
 				$("#output_div").append('<td><a href="'+n+'">第'+i+'页</a></td>'); 
 			});
 			//$("#output_div").append('</tr>');
+
 	   },
 	   complete: function(XMLHttpRequest, textStatus){
+			 //alert(str);
+		   /*
 			$('<div class="quick-alert">成功取得首页</div>')
 				.insertAfter( $("#button1") )
 				.fadeIn('slow')
@@ -50,10 +56,11 @@ var str = base64_encode( $('#text_content').val() );
 				.fadeOut('slow', function() {
 				  $(this).remove();
 				});
-				
+			*/	
 	   },
 	   error: function(){
 			//请求出错处理
+			alert('error');
 	   }
 	 });	
 
