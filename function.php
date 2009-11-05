@@ -1,11 +1,11 @@
-<?php
+ï»¿<?php
 
-//È¡µÃÖÐ¼ä×Ö·û´®
+//å–å¾—ä¸­é—´å­—ç¬¦ä¸²
 function get_mid_content($str, $startmark, $endmark){
 	//c1 c2[mark:end]c3
 	$temp1 = explode($startmark, $str, 2);
 	
-	//ÊÇ·ñÕÒµ½Ç°¶Ë×Ö·û
+	//æ˜¯å¦æ‰¾åˆ°å‰ç«¯å­—ç¬¦
 	if( !isset($temp1[1]) ){
 		return false;
 	}	
@@ -20,7 +20,7 @@ function get_mid_content($str, $startmark, $endmark){
 }
 
 
-//È¡µÃÖÐ¼ä×Ö·û´®ÁÐ±í
+//å–å¾—ä¸­é—´å­—ç¬¦ä¸²åˆ—è¡¨
 function get_mid_content_array($str, $startmark, $endmark){
 	//c1 c2[mark:end]c3
 	$temp1 = explode($startmark, $str);
@@ -36,7 +36,7 @@ function get_mid_content_array($str, $startmark, $endmark){
 		//print_r($temp2);
 	}
 	
-	//array(ÊÇ·ñÕÒµ½½áÊø·û,ÐèÒªµÄ×Ö¶Î);
+	//array(æ˜¯å¦æ‰¾åˆ°ç»“æŸç¬¦,éœ€è¦çš„å­—æ®µ);
 	for($i=1; $i<$c; $i++){
 		if( isset($temp2[$i][1]) ){
 			$out[] = array(1,$temp2[$i][0]);
@@ -53,7 +53,7 @@ function get_mid_content_array($str, $startmark, $endmark){
 
 }
 
-//ÅÐ¶ÏÍøÖ·ÊÇ·ñ´æÔÚ
+//åˆ¤æ–­ç½‘å€æ˜¯å¦å­˜åœ¨
 function page_exists($url)
 {
    $parts = parse_url($url);
@@ -131,7 +131,7 @@ function page_exists($url)
    /* see if code indicates success */
    return (($code >= 200) && ($code < 400));
 }
-// Test & Ê¹ÓÃ·½·¨:
+// Test & ä½¿ç”¨æ–¹æ³•:
 // var_dump(page_exists('http://tw.yahoo.com'));
 
 ?>
