@@ -96,6 +96,7 @@ function get_content_array($page_source, $first_second){
             //如果是第一页,需要二次过滤
             $txt = '';
             $txt = get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word;">', '<div id="tianyaBrandSpan1"></div>');
+            //echo $txt;
             $txt_cut = '';
             $txt_cut = explode('<TABLE cellspacing=0 border=0 ', $txt);
             if( isset($txt_cut[1]) ){
@@ -135,7 +136,16 @@ function get_content_array($page_source, $first_second){
     $count_table = count($content_table);
     //当前页面回复序号
     $cn = 0;   
-    foreach($content_table as $content){                   
+    foreach($content_table as $content){   
+    	if($cn == 0){
+    		$p_content[$cn]['pn'] = get_mid_content($page_source, '<input type="hidden" name="pID" value="', '">');;
+    	}else{
+	    	$p_content[$cn]['author_id'] = get_mid_content($content, '&vid=', '&idwriter=0&key=0');
+	    	$p_content[$cn]['author'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');
+	    	$p_content[$cn]['time'] = get_mid_content($content, '&nbsp;&nbsp;回复日期：', '</font>');
+	    	$p_content[$cn]['content'] = trim(get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word">', '<br></DIV>'));
+    	}       
+/* v1 :bed !    	     
         if( $cn >= 1 ){    //楼贴               
             $p_content[$cn]['writer'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');           
             //如果是第一页,需要二次过滤   
@@ -149,8 +159,8 @@ function get_content_array($page_source, $first_second){
                 $p_content[$cn]['time'] = $info;
             }
             //如果是第一页,需要二次过滤
-            $txt = '';
-            $txt = get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word;">', '<div id="tianyaBrandSpan1"></div>');
+            $txt = '';						  //<DIV class=content style="WORD-WRAP:break-word">            
+            $txt = get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word">', '<div id="tianyaBrandSpan1"></div>');
             $txt_cut = '';
             $txt_cut = explode('<TABLE cellspacing=0 border=0 ', $txt);
             if( isset($txt_cut[1]) ){
@@ -161,7 +171,7 @@ function get_content_array($page_source, $first_second){
         }else if( $cn == ($count_table - 1) ){    //尾贴
             $p_content[$cn]['writer'] = get_mid_content($content, 'vwriter=', '&idwriter=');   
             $p_content[$cn]['time'] = get_mid_content($content, '</a>　回复日期：', '</font>');   
-            $txt = '';                   
+            $txt = '';       				// <TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>            
             $txt = get_mid_content( $content, '<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', '<!-- google_ad_section_end -->');       
             $txt_cut = '';
             $txt_cut = explode('</DIV></div>', $txt);
@@ -171,7 +181,7 @@ function get_content_array($page_source, $first_second){
             $p_content[$cn]['time'] = get_mid_content($content, '</a>　回复日期：', '</font>');           
             $txt = '';
             $txt = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', $content);       
-            $p_content[$cn]['txt'] = trim($txt[1]);
+            $p_content[$cn]['txt'] = trim($txt[1]);            
         }
         //过滤手机发帖提示
         $mobile_post = '';
@@ -179,8 +189,10 @@ function get_content_array($page_source, $first_second){
         if( isset($mobile_post[1]) ){
             $p_content[$cn]['txt'] = $mobile_post[0];
         }
-       
+v1 end */         
         $cn++;
+ 
+    	     
     }       
     return $p_content;		
 	}

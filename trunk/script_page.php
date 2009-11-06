@@ -23,7 +23,12 @@ $collect = new s_collect();
 //$page_gbk = $collect->get('http://www.tianya.cn/techforum/content/213/3072.shtml');
 $page_gbk = $collect->get($page_addr);
 //echo $page_gbk;
-$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
+
+//去干扰码
+$str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
+$page_gbk = str_replace($str_to_replace, '', $page_gbk);
+
+$page_utf8 = iconv('GBK', 'UTF-8', trim($page_gbk));
 //$page_utf8 = iconv('ISO-8859-1', 'UTF-8', trim($page_gbk));
 
 //echo $page_utf8;

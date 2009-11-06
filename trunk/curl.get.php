@@ -1,4 +1,4 @@
-<?PHP
+ï»¿<?PHP
 class s_collect{
 	protected $_url;
 	protected $_content;
@@ -64,7 +64,7 @@ class s_collect{
 }
 
 /*
-//²âÊÔ
+//æµ‹è¯•
 function debuginfo() {
 	global $starttime;
 	$mtime = explode(' ', microtime());
