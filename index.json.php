@@ -34,19 +34,62 @@ var data = '?content='+str;
 	});
 })
 });
-
+/*
+$submit_vars['apn'] = '101260,110324,124881';
+$submit_vars['intLogo'] = 0;
+$submit_vars['pID'] = 3;
+$submit_vars['rs_permission'] = 1;
+*/
 $(function(){ 
-	$("#button1").click(function(){ 
+	$("#button2").click(function(){ 
 	//取得输入框里面的网址
-	var str = base64_encode( $('#text_content').val() );
+	//var pu = base64_encode('http://www.tianya.cn/publicforum/content/feeling/1/1025915.shtml');
+	var pu = base64_encode('http://www.tianya.cn/techforum/content/213/3072.shtml');
+	
+	/*
+	form = array('apn'=>'101260,110324,124881', 'intLogo'=>'0', 'pID'=>'3', 'rs_permission'=>'1');
+	var channel = array('form'=>form);
+	
+	var channel = new Array();
+	channel["apn"] = '101260,110324,124881';
+	channel["intLogo"] = '0';
+	channel["pID"] = '3';
+	channel["rs_permission"] = '1';
+	/*
+	channel['form'] = new Array();
 
+	channel['form']['apn'] = '101260,110324,124881';
+	channel['form']['intLogo'] = '0';
+	channel['form']['pID'] = '3';
+	channel['form']['rs_permission'] = '1';
+
+var channel = {
+"form":{
+"apn" : '101260,110324,124881',
+"intLogo" : '0',
+"pID" : '3',
+"rs_permission" : '1'}
+}*/
+var channel = new Array();
+channel = {
+"apn" : '101260,110324,124881',
+"intLogo" : '0',
+"pID" : '1',
+"rs_permission" : '1'
+};
+//channel = 1;
+
+//alert(channel["apn"]);
+var channel_encode = base64_encode(($.toJSON(channel)));
+//var channel_encode = base64_encode(channel);
 	var get_url = 'run.get.page.php';
-	var data = '?content='+str;
+	var data = '?pu='+pu+'&channel='+channel_encode;
 
-	$.getJSON(get_url+data,
-			function(data){
-			
-				$("#output_div").append(show_the_json_out(data)); 
+	$.get(get_url+data,
+			function(data2){
+			//alert(data);
+			//alert($.evalJSON(data));
+				$("#output_div").append(data2); 
 
 			});
 	
@@ -103,7 +146,7 @@ function show_the_json_out(json_data){
 	<div class="input-div">
 	请输入你帖子地址:
 	<input type="text" id="text_content" value="http://www.tianya.cn/techforum/content/213/3072.shtml" size="80">
-	<input id="button1" type="button" value="分析网址">
+	<input id="button1" type="button" value="分析网址"><input id="button2" type="button" value="开始整理">
 	</div>
 	<div class="output-div-container">	
 		<div id="output_div"></div>
