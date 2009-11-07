@@ -87,4 +87,3 @@ if($page_content = $cc->get('http://www.google.com/') ){
 
 debuginfo();
 */
-?> 
