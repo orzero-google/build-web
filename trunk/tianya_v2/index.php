@@ -22,7 +22,7 @@ $(function(){
 		dataType: "json",
 		data: sdata,
 		beforeSend: function(XMLHttpRequest){
-			$('<div class="quick-alert">数据加载中,请稍后</div>')
+			$('<div class="quick-alert">网页分析中,请稍后</div>')
 			.insertAfter( $("#button2") )
 			.fadeIn('slow')
 			.animate({opacity: 1.0}, 3000)
@@ -136,19 +136,32 @@ function get_page(){
 	//pu_s = this.val();
 	
 	var to_get_pid = $("#to_get_pid").val();	
-	//alert(to_get_pid);
-	select_a = "#output_div > a[pid=\""+to_get_pid+"\"]";
-	//alert(select_a);
-	alert ($(select_a).attr("pid"));
 	
-	if($("#channel").val() == 1){				
-		var pu = base64_encode($("#output_div > a[pid=\"to_get_pid\"]").attr("href"));		
+	//alert(to_get_pid);
+	//select_a = "#output_div > a[pid=\""+to_get_pid+"\"]";
+	//select_a = "a[pid=\""+to_get_pid+"\"]";
+	//alert(select_a);
+	//alert ($("a[pid=\""+to_get_pid+"\"]").attr("pid"));
+	//alert ($("#output_div > a[pid=\""+to_get_pid+"\"]").attr("href"));
+	
+	if($("#channel").val() == 1){
+		if(to_get_pid > $("#output_div > a:last").attr("pid")){
+			//alert('整理完成');
+			return true;
+		}
+		var pu = base64_encode($("#output_div > a[pid=\""+to_get_pid+"\"]").attr("href"));		
 		var channel = 1;
 	}else if($("#channel").val() == 2){
-		var pu = base64_encode($("#output_div > a").val());
+		if(to_get_pid > $("#pID").val()){
+			//alert('整理完成');
+			return true;
+		}		
+		alert($("#output_div > a").attr("href"));
+		var pu = base64_encode($("#output_div > a").attr("href"));
 		var apn = $("#apn").val();
 		var intLogo = $("#intLogo").val();
-		var pID = $("#pID").val();
+		//var pID = $("#pID").val();
+		var pID = to_get_pid;
 		var rs_permission = $("#rs_permission").val();		
 		var channel = {
 			"apn" : apn,
@@ -158,18 +171,20 @@ function get_page(){
 		};
 		
 	}else{
+		alert("请先分析网页");
 		return false;	
 	}
+	//alert("开始整理第"+to_get_pid+"页");
 
 	var page = parseInt(to_get_pid);
 	var channel_encode = base64_encode(($.toJSON(channel)));
 	//var channel_encode = base64_encode(channel);
 	var rget_url = 'run.get.page.php';
-	var rdata = 'pu='+pu+'&channel='+channel_encode;
+	var rdata = 'pn='+base64_encode(to_get_pid)+'pu='+pu+'&channel='+channel_encode;
 
-	$("#output_div").slideUp(5000, function(){
+	//$("#output_div").slideUp(5000, function(){
 		//alert("test");
-	});		
+	//});		
 
 		//alert (rget_url+'?'+rdata);
 		
@@ -271,6 +286,7 @@ function show_the_analyze(json_data){
 	</div>
 	<div class="output-div-container">	
 		<div id="output_div"></div>
+		<div id="output_div2"></div>
 	</div>
 </div>
 

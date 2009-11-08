@@ -44,7 +44,11 @@ if(isset($_GET['forum'])){
 }
 */
 
-
+if(isset($_GET['pn'])){
+	$channel = base64_decode(trim($_GET['pn']));
+}else{
+	exit;
+}
 
 	if($channel == 1){
 	$collect = new s_collect();
@@ -124,13 +128,15 @@ echo '<p>'.base64_encode(substr($cut, 0, 6)).'</p>';
 $str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
 $page_gbk = str_replace($str_to_replace, '', $page_gbk);
 
+//$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
 $page_utf8 = iconv('GBK', 'UTF-8', trim($page_gbk));
-
 //echo $page_utf8;
-if($channel == 1)
+if($channel == 1){
 	$out = get_content_array($page_utf8, 1);
-else
+	$out[0]['pn'] = $pn;
+}else{
 	$out = get_content_array($page_utf8, 2);
+}
 //print_r($out);
 
 

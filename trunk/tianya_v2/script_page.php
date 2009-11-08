@@ -34,8 +34,8 @@ $page_gbk = $collect->get($page_addr);
 //去干扰码
 $str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
 $page_gbk = str_replace($str_to_replace, '', $page_gbk);
-
-$page_utf8 = iconv('GBK', 'UTF-8', trim($page_gbk));
+//echo $page_gbk;
+$page_utf8 = iconv('GBK', 'UTF-8//IGNORE', trim($page_gbk));
 //$page_utf8 = iconv('ISO-8859-1', 'UTF-8', trim($page_gbk));
 
 //echo $page_utf8;
@@ -52,8 +52,12 @@ $out = is_tianya_cn_content($page_utf8);
 //是天涯的帖子,发送返回信息
 if(is_array($out)){
 	$out1 = get_pid_list($page_utf8, $out[0]);
+	
+
+	
 	if(is_array($out1)){
 		$out2 = create_url($out1, $out);
+		//print_r($out2);
 	}else{
 		echo '["is_not_tianya_content"]'; 
 		exit;
@@ -65,7 +69,11 @@ if(is_array($out)){
 
 //echo base64_encode($out);
 if(isset($out2)){
-	echo json_encode(array($out, $out1, $out2));
+	if(count($out2) == 1){
+		echo 	json_encode(array($out, $out1, $out2));
+	}else{
+		echo json_encode(array($out, $out1, $out2));
+	}
 }else{
 	echo '["is_not_tianya_content"]'; 
 }
