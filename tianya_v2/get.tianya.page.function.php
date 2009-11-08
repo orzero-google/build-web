@@ -4,6 +4,7 @@
 */
 include_once('./curl.get.php');
 include_once('./function.php');
+include_once('./Snoopy.class.php');
 
 //取得导航部分
 function get_pid_list($page_source, $first_second){
@@ -15,6 +16,10 @@ function get_pid_list($page_source, $first_second){
     $pid_list_str = get_mid_content($nav, '<input type=\'hidden\' name=\'idArticleslist\' value=\'', ',\'>');
     $pid_list_array = explode(',', $pid_list_str);
     //print_r( $pid_list_array );
+    
+	if($pid_list_array[0] == null){
+		$pid_list_array[0] = get_mid_content($page_source, 'var idArticle="', '";');
+	}	    
     return $pid_list_array;
   }else if($first_second == 2){
   	$pid_list_str = get_mid_content($page_source, '<input type="hidden" name="apn" value="', '">');
@@ -35,13 +40,19 @@ function is_tianya_cn_content($page_source){
 	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
 	    //print_r( $content_flag );      
 	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
-	    $article_name = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    //$article_name = Snoopy::_striptext(get_mid_content($page_source, 'var chrTitle = "', '";'));
+	    $article_name_cut = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    //echo $article_name_cut;
+	    $article_name = preg_replace("'<[^<>]*>'i", '', $article_name_cut);
+	    //echo $article_name;
 	    //echo $article_name;
 	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');
 	    //echo $channel;   
 	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
 	        if( isset($channel) ){
-	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name);   
+	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name); 
+	            //echo '<pre>';
+	            //print_r( array(1, $channel, $forum_name, $article_name, $article_id) );
 	            return array(1, $channel, $forum_name, $article_name, $article_id); 
 	        }
 	    }
@@ -74,11 +85,41 @@ function is_tianya_cn_content($page_source){
 function get_content_array($page_source, $first_second){
 	if($first_second == 1){
     //先粗分,取得段落
-    $content_table = explode("\n\r".'<TABLE cellspacing=0 border=0 bgcolor=', $page_source);
+    $content_table = explode('<TABLE cellspacing=0 border=0 bgcolor=#f5f9fa width=100% >', $page_source);
     //print_r($content_table);
     $count_table = count($content_table);
     //当前页面回复序号
-    $cn = 0;   
+    $cn = 0;
+    foreach($content_table as $content){
+    	if($cn == 0){
+    		$p_content[$cn]['pn'] = '';
+    		$content_tmp = explode('<TD align=center><FONT color=green size=-1>', $content);
+    		$content = $content_tmp[1];
+    	}    	
+    	$cn++;
+    	if($cn == 1){
+	    	$p_content[$cn]['author_id'] = '';
+	    	$p_content[$cn]['author'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');	    		    	
+	    	$p_content[$cn]['time'] = $time_cut = get_mid_content($content, '日期：', '</font>');
+	    	if($time_cut1 = explode('访问：', $p_content[$cn]['time'])){
+	    		$p_content[$cn]['time'] = $time_cut1[0];
+	    	}
+	    	$p_content[$cn]['content'] = $content_cut = explode('<div id="tianyaBrandSpan1">', $content);
+	    	if($content_cut = explode('<BR><BR>', $p_content[$cn]['content'])){
+		    	$p_content[$cn]['content'] = $content_cut[0];
+		    }
+	    	if($content_cut = explode('<br><br>', $p_content[$cn]['content'])){
+		    	$p_content[$cn]['content'] = $content_cut[0];
+		    }		    
+    	}      	
+    	
+    	$p_content[$cn]['author_id'] = get_mid_content($content, '&vid=', '&vwriter=');
+    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter=0&key=0"');
+    	$p_content[$cn]['time'] = get_mid_content($content, '回复日期：', '</font>');    	
+    	$content_cut = explode('</center></TD><TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom>&nbsp;</TD></TR></table>', $content);
+    	$p_content[$cn]['content'] = $content_cut[1];
+    }
+/*    
     foreach($content_table as $content){
                    
         if( $cn == 0 ){    //楼贴               
@@ -127,7 +168,8 @@ function get_content_array($page_source, $first_second){
         }
        
         $cn++;
-    }       
+    } 
+*/      
     return $p_content;
 	}else if($first_second == 2){
     //先粗分,取得段落
@@ -142,7 +184,7 @@ function get_content_array($page_source, $first_second){
     	}else{
 	    	$p_content[$cn]['author_id'] = get_mid_content($content, '&vid=', '&idwriter=0&key=0');
 	    	$p_content[$cn]['author'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');
-	    	$p_content[$cn]['time'] = get_mid_content($content, '&nbsp;&nbsp;回复日期：', '</font>');
+	    	$p_content[$cn]['time'] = get_mid_content($content, '回复日期：', '</font>');
 	    	$p_content[$cn]['content'] = trim(get_mid_content($content, '<DIV class=content style="WORD-WRAP:break-word">', '<br></DIV>'));
     	}       
 /* v1 :bed !    	     
