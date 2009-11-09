@@ -10,3 +10,87 @@ get.page.php
 	下载页面:
 	剥离内容:按回复:[作者id,作者,时间,内容]
 	
+
+表：
+-- phpMyAdmin SQL Dump
+-- version 3.2.0.1
+-- http://www.phpmyadmin.net
+--
+-- 主机: localhost
+-- 生成日期: 2009 年 11 月 09 日 08:59
+-- 服务器版本: 5.1.37
+-- PHP 版本: 5.3.0
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- 数据库: `tianya_20091109`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `ty_forum`
+--
+
+CREATE TABLE IF NOT EXISTS `ty_forum` (
+  `id` int(8) unsigned NOT NULL,
+  `fid` int(8) unsigned NOT NULL,
+  `fname_en` varchar(128) COLLATE utf8_bin NOT NULL,
+  `fname_zh` varchar(128) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `fid` (`fid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `ty_forum`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `ty_posts`
+--
+
+CREATE TABLE IF NOT EXISTS `ty_posts` (
+  `id` int(12) unsigned NOT NULL,
+  `tid` int(12) unsigned NOT NULL,
+  `t_source` varchar(256) COLLATE utf8_bin NOT NULL,
+  `t_local` varchar(256) COLLATE utf8_bin NOT NULL,
+  `t_name` varchar(256) COLLATE utf8_bin NOT NULL,
+  `t_pn` int(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tid` (`tid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `ty_posts`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `ty_reply`
+--
+
+CREATE TABLE IF NOT EXISTS `ty_reply` (
+  `id` int(12) unsigned NOT NULL,
+  `rid` int(12) unsigned NOT NULL,
+  `tid` int(10) unsigned NOT NULL,
+  `tpn` int(8) unsigned NOT NULL,
+  `fid` int(8) unsigned NOT NULL,
+  `aname` varchar(128) COLLATE utf8_bin NOT NULL,
+  `aid` int(10) unsigned NOT NULL,
+  `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `content_dir_name` varchar(256) COLLATE utf8_bin NOT NULL,
+  `show` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rid` (`rid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- 转存表中的数据 `ty_reply`
+--
+
