@@ -155,11 +155,11 @@ function get_page(){
 		//alert($("#output_div > a[pid=\""+to_get_pid+"\"]").attr("href"));
 		var channel = 1;
 	}else if($("#channel").val() == 2){
-		if(to_get_pid > $("#pID").val()){
+		if(to_get_pid - $("#pID").val() == 1){
 			//alert('整理完成');
 			return true;
 		}		
-		alert($("#output_div > a").attr("href"));
+		//alert($("#output_div > a").attr("href"));
 		var pu = base64_encode($("#output_div > a").attr("href"));
 		var apn = $("#apn").val();
 		var intLogo = $("#intLogo").val();

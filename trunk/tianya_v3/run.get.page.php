@@ -22,8 +22,13 @@ if(isset($_GET['pu'])){
 }
 
 //页面信息
+/*
+ * 例如：
+ * {"apn":"83231,83331,86748,91451,102071,104311","intLogo":"0","pID":"3","rs_permission":"1"}
+ */
 if(isset($_GET['channel'])){
 	$channel = base64_decode(trim($_GET['channel']));
+	//print_r($channel);
 }else{
 	exit;
 }
@@ -86,17 +91,40 @@ if($channel == 1){
 //print_r($out);
 }
 
-//echo base64_encode($out);
 
-//echo count($out);
+/*
+foreach ($out as $rid){
+	echo '<p>';
+	echo iconv('GBK', 'UTF-8//IGNORE', trim($rid['content']));
+	echo '</p>';
+}*/
 
-print_r($out);
-//print_r($out[0]['txt']);
-//echo substr($out[1],0,2);
-//print_r( is_tianya_cn_content($page) );
-//print_r( get_pid_list($page,2) );
+//print_r($out);
 
-//echo '</pre>';
-//echo '</body></html>'
+//插入数据库
+//database server
+DEFINE('DB_SERVER', "localhost");
+
+//database login name
+DEFINE('DB_USER', "root");
+//database login password
+DEFINE('DB_PASS', "");
+
+//database name
+DEFINE('DB_DATABASE', "tianya_20091109");
+
+//smart to define your table names also
+DEFINE('TB_F', "ty_forum");
+DEFINE('TB_P', "ty_posts");
+DEFINE('TB_R', "ty_reply");
+
+require("Database.class.php");
+$db = new Database("server_name", "mysql_user", "mysql_pass", "mysql_database"); 
+$db->connect();
+$db->query("SET NAME utf8;"); 
+
+
+
+$db->close();
 
 ?>
