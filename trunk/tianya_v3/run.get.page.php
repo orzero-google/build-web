@@ -90,7 +90,7 @@ if($channel == 1){
 	$out = get_content_array($page_gbk, 2);
 //print_r($out);
 }
-
+//print_r($out);
 
 /*
 foreach ($out as $rid){
