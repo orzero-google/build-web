@@ -76,6 +76,7 @@ if(isset($out2)){
 	}
 }else{
 	echo '["is_not_tianya_content"]'; 
+	exit;
 }
 
 //print_r(array($out, $out1, $out2));
@@ -85,5 +86,29 @@ if(isset($out2)){
 
 //echo '</pre>';
 
+//插入数据库
+//database server
+DEFINE('DB_SERVER', "localhost");
 
+//database login name
+DEFINE('DB_USER', "root");
+//database login password
+DEFINE('DB_PASS', "");
+
+//database name
+DEFINE('DB_DATABASE', "tianya_20091109");
+
+//smart to define your table names also
+DEFINE('TB_F', "ty_forum");
+DEFINE('TB_P', "ty_posts");
+DEFINE('TB_R', "ty_reply");
+
+include_once("Database.class.php");
+$db = new Database(DB_SERVER, DB_USER, DB_PASS, DB_DATABASE); 
+$db->connect();
+$db->query("SET NAMES utf8;"); 
+
+
+
+$db->close();
 /**/
