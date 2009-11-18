@@ -262,7 +262,7 @@ function show_the_analyze(json_data){
 		msg += '<input type="hidden" id="channel" value="1" />'+"\n";
 		msg += '<input type="hidden" id="to_get_pid" value="1" />'+"\n";			//需要取得的页号
 		$.each(json_data[2], function(i,page_url){		//生成链接列表
-			msg += '\t<td><a href="'+page_url+'" pID="'+(i+1)+'">第'+(i+1)+'页</a>&nbsp;</td>'+"\n";
+			msg += '\t<td><a href="'+page_url+'" pID="'+(i+1)+'"  target="_blank">第'+(i+1)+'页</a>&nbsp;</td>'+"\n";
 		});
 	}else if(channel_id == 2){
 		msg += '<input type="hidden" id="channel" value="2" />'+"\n";					
@@ -271,7 +271,7 @@ function show_the_analyze(json_data){
 		msg += '<input type="hidden" id="intLogo" value="0" />'+"\n";
 		msg += '<input type="hidden" id="pID" value="'+page_num+'" />'+"\n";
 		msg += '<input type="hidden" id="rs_permission" value="1" />'+"\n";
-		msg += '\t<td><a href="'+json_data[2]+'" apn="'+json_data[1]+'" intLogo="0" pID="'+page_num+'" rs_permission="1">目标页(属于副版,实际只有一个地址)</a>&nbsp;</td>'+"\n";
+		msg += '\t<td><a href="'+json_data[2]+'" apn="'+json_data[1]+'" intLogo="0" pID="'+page_num+'" rs_permission="1"  target="_blank">目标页(属于副版,实际只有一个地址)</a>&nbsp;</td>'+"\n";
 	}
 	msg += '</tr>'+"\n";
 	return msg;	
