@@ -118,10 +118,10 @@ DEFINE('TB_F', "ty_forum");
 DEFINE('TB_P', "ty_posts");
 DEFINE('TB_R', "ty_reply");
 
-require("Database.class.php");
-$db = new Database("server_name", "mysql_user", "mysql_pass", "mysql_database"); 
+include_once("Database.class.php");
+$db = new Database(DB_SERVER, DB_USER, DB_PASS, DB_DATABASE); 
 $db->connect();
-$db->query("SET NAME utf8;"); 
+$db->query("SET NAMES utf8;"); 
 
 
 
