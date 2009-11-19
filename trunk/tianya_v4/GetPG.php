@@ -133,9 +133,11 @@ class get_from_url{
 	function saveCache(){
 		$filename=$this->cacheFile;
 		if (file_exists($filename)) {
-			$fp=fopen($filename,"a");
+			unlink($filename);
+			$fp=gzopen($filename,"r");
+			$content_old = gzread($fp,'');
 		}else{
-			$fp=fopen($filename,"w");
+			$fp=gzopen($filename,"w9");
 		}
 		
 		$text=$sql;
