@@ -63,7 +63,6 @@ class get_from_url{
 		$this->url = $url;
 		$this->cacheFile = $cacheFile;
 		$this->time = time();
-		
 	}
 		
 	//属性
@@ -119,11 +118,29 @@ class get_from_url{
 	{
 		$this->cacheFile = $cacheFile;
 	}	
-
+	public function setContent($content)
+	{	
+		$this->content = $content;
+	}
+	
+	
 	// 获取缓存内容
 	function getCache()
 	{
 		
+	}	
+	
+	function saveCache(){
+		$filename=$this->cacheFile;
+		if (file_exists($filename)) {
+			$fp=fopen($filename,"a");
+		}else{
+			$fp=fopen($filename,"w");
+		}
+		
+		$text=$sql;
+		fwrite($fp,$text);
+		fclose($fp);
 	}	
 	
 	// 获取链接内容
