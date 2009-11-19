@@ -128,7 +128,7 @@ class get_from_url{
 	}	
 	
 	// 获取链接内容
-	function getURL($url,$type=''/*1:do直接下载,2:get方法,3:post方法*/,$query=array())
+	function getURL($url,$post=array())
 	{
 		if( $type != 'do' && $type != 'get' && $type != 'post' ) return false;		
 		
