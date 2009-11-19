@@ -4,7 +4,6 @@
 | @description	:	通过curl函数实现远程页面的获取,并存储
 | @parameter	:	$url,$cacheFile
 | @export 		:	[页面内容,缓存地址]或[错误号]([content,route|errid])
-+-------------------------------------------------------------------------------+
 | @date 		:	2009/11/19
 | @author 		:	wutou<:>orzero.com
 | @version 		:	0.1
@@ -128,9 +127,8 @@ class get_from_url{
 	}	
 	
 	// 获取链接内容
-	function getURL($url,$post=array())
+	function getURL($url,$submit_vars='')
 	{
-		if( $type != 'do' && $type != 'get' && $type != 'post' ) return false;		
 		
 		$snoopy = new Snoopy();			//下载类构造
 		// set browser and referer:
@@ -139,19 +137,29 @@ class get_from_url{
 		// set an raw-header:
 		$snoopy->rawheaders["Pragma"] = "no-cache";
 		// set some internal variables:
-		$snoopy->maxredirs = 2;
-		$snoopy->offsiteok = false;
-		$snoopy->expandlinks = false;
+		//$snoopy->maxredirs = 2;
+		//$snoopy->offsiteok = false;
+		//$snoopy->expandlinks = false;
+		if(is_array($submit_vars)){
+			$get_state = $snoopy->submit($url,$submit_vars);
+		}else{
+			$get_state = $snoopy->fetch($url);
+		}
 		
-		
-		
+		if($get_state){
+			$this->content = $snoopy->results;
+		}else{
+			return false;
+		}
 	}
 	
 	//析构函数
+	/*
 	public function __destruct()
 	{
 		
-	}	
+	}
+	*/	
 }
 	
 	//创建一个对象的实例
