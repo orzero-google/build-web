@@ -55,12 +55,15 @@ class MyException implements ThrowableA,ThrowableB {
 //__call, __get() and __set():方法呼叫和属性访问
 include_once 'Snoopy.class.php';
 
-class get_from_url{	
+class get_from_url_cache{	
 	
 	//构造函数
 	public function __construct($url, $cacheFile)
 	{
 		$this->url = $url;
+		$cacheFile = str_replace('\\','/', $cacheFile);
+		$cacheFile = preg_replace('/\/*/is','/', $cacheFile);
+		$cacheFile = str_replace('//','/', $cacheFile);
 		$this->cacheFile = $cacheFile;
 		$this->time = time();
 	}
@@ -127,28 +130,52 @@ class get_from_url{
 	// 获取缓存内容
 	function getCache()
 	{
-		
+		$filename=$this->cacheFile;
+		if($content_gz_cache = gzfile($filename)){
+			return implode('', $content_gz_cache);
+		}else{
+			return false;
+		}
 	}	
 	
 	function saveCache(){
 		$filename=$this->cacheFile;
-		if (file_exists($filename)) {
-			unlink($filename);
+		if (file_exists($filename)) {			
 			$fp=gzopen($filename,"r");
-			$content_old = gzread($fp,'');
+			$content_old = gzread($fp,strlen($this->content));
+			gzclose($fp);
+			if($content_old == $this->content){		
+				echo 1;		
+				return false;
+			}else{
+				echo 'The content changed';
+				unlink($filename);
+				$fp=gzopen($filename,"w9");
+			}
 		}else{
+			$cut_file = explode('/', $filename);
+			$cut_file_n = count($cut_file);
+			if($cut_file_n > 1){
+				$cut_dir_file = explode($cut_file[($cut_file_n-1)], $filename);
+				mkdir($cut_dir_file[0]);
+			}
 			$fp=gzopen($filename,"w9");
 		}
 		
-		$text=$sql;
-		fwrite($fp,$text);
-		fclose($fp);
+		if($content_gzed_len = gzwrite($fp, $this->content)){
+			gzclose($fp);
+			return $content_gzed_len;
+		}else{
+			echo 2;
+			return false;
+		}
+		
 	}	
 	
 	// 获取链接内容
-	function getURL($url,$submit_vars='')
+	function getURL($submit_vars='')
 	{
-		
+		$url = $this->url;
 		$snoopy = new Snoopy();			//下载类构造
 		// set browser and referer:
 		$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
@@ -182,13 +209,13 @@ class get_from_url{
 }
 	
 	//创建一个对象的实例
-	$user = new User("Leon", "sdf123");
+	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/", "./b/baidu.html");
 	
-	//获取最后访问的时间
-	print($user->getLastLogin() ."<br>\n");
+	echo $get_content_obj->getURL();
 	
-	//打印用户名
-	print("$user->name<br>\n"); 
+	var_dump($get_content_obj->saveCache()) ;
+	
+	echo $get_content_obj->getCache();
 	
 
 
