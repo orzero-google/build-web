@@ -58,21 +58,29 @@ include_once 'Snoopy.class.php';
 class get_from_url_cache{	
 	
 	//构造函数
-	public function __construct($url, $cacheFile)
-	{
-		$this->url = $url;
-		$cacheFile = str_replace('\\','/', $cacheFile);
-		$cacheFile = preg_replace('/\/*/is','/', $cacheFile);
-		$cacheFile = str_replace('//','/', $cacheFile);
-		$this->cacheFile = $cacheFile;
+	public function __construct($Url, $File)
+	{	
+		if($this->is_url($Url)){
+			$this->Url = $Url;
+		}else{
+			return false;
+		}
+		$File = str_replace('\\','/', $File);
+		$File = preg_replace('/\/+/is','/', $File);
+		$File = str_replace('//','/', $File);		
+		$this->File = $File;
 		$this->time = time();
+		$this->content = '';
 	}
 		
 	//属性
-	public	$url;
-	private	$cacheFile;			//地址/文件名.php
+	public	$Url;
+	private	$File;			//地址/文件名.php
+	
 	private	$time;
 	private	$content;
+	
+	private $_show_log = true;
 	//Protected	能在当前类和继承类中访问
 	//private	只能在当前类中被调用
 
@@ -115,40 +123,43 @@ class get_from_url_cache{
 	//更新参数
 	public function setUrl($url)
 	{
-		$this->url = $url;
-	}		
-	public function setCache($cacheFile)
-	{
-		$this->cacheFile = $cacheFile;
+		$this->Url = $url;
 	}	
-	public function setContent($content)
-	{	
-		$this->content = $content;
-	}
+		
+	public function setFile($file)
+	{
+		$this->File = $file;
+	}	
 	
+	public function getContent(){
+		return $this->content;
+	}	
 	
 	// 获取缓存内容
 	function getCache()
 	{
-		$filename=$this->cacheFile;
-		if($content_gz_cache = gzfile($filename)){
-			return implode('', $content_gz_cache);
+		$filename=$this->File;
+		
+		if($content_gz_cache = gzfile($filename)){			 
+			$this->content = implode('', $content_gz_cache);
+			return true;
 		}else{
 			return false;
 		}
 	}	
 	
 	function saveCache(){
-		$filename=$this->cacheFile;
+		$filename=$this->File;
+		
 		if (file_exists($filename)) {			
 			$fp=gzopen($filename,"r");
 			$content_old = gzread($fp,strlen($this->content));
 			gzclose($fp);
 			if($content_old == $this->content){		
-				echo 1;		
+				if($this->_show_log) echo 'The content Unchanged'.'<br />';		
 				return false;
 			}else{
-				echo 'The content changed';
+				if($this->_show_log) echo 'The content changed'.'<br />';
 				unlink($filename);
 				$fp=gzopen($filename,"w9");
 			}
@@ -157,25 +168,57 @@ class get_from_url_cache{
 			$cut_file_n = count($cut_file);
 			if($cut_file_n > 1){
 				$cut_dir_file = explode($cut_file[($cut_file_n-1)], $filename);
-				mkdir($cut_dir_file[0]);
+				if($this->_show_log) echo 'mkdir: '.$cut_dir_file[0].'<br />';	
+				@mkdir($cut_dir_file[0], 0755, true);
 			}
 			$fp=gzopen($filename,"w9");
 		}
 		
 		if($content_gzed_len = gzwrite($fp, $this->content)){
-			gzclose($fp);
-			return $content_gzed_len;
+			gzclose($fp);	
+			if($this->_show_log) echo 'Save Cache size: ' .filesize($filename).'<br />';		
+			return true;
 		}else{
-			echo 2;
+			if($this->_show_log) echo 'Save Content error'.'<br />';
 			return false;
 		}
 		
-	}	
+	}
+
+	function delCache(){
+		$filename=$this->File;
+
+		if(!unlink($filename)){
+			return false;
+		}
+		
+		$file_cut = explode('/', $filename);
+		//print_r($file_cut);
+		$file_cut_count = count($file_cut);
+		if($file_cut_count == 1){
+			return true;
+		}else{
+			if($this->_show_log) echo 'rmdir: <br />';
+			for($i = ($file_cut_count-1); $i != 0; $i--){			
+				$cut_dir = explode($file_cut[$i], $filename , -1);	
+				//print_r($cut_dir) ;	
+				echo 	$file_cut[$i];
+				if($this->_show_log) echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$i.' : '.$cut_dir[0].'<br />';
+				$st_del = @rmdir($cut_dir[0]);
+				if($st_del === false){
+					//return false;
+				}
+				unset($cut_dir);
+			}			
+		}
+		return true;
+	}
 	
 	// 获取链接内容
 	function getURL($submit_vars='')
 	{
-		$url = $this->url;
+		$url = $this->Url;
+		
 		$snoopy = new Snoopy();			//下载类构造
 		// set browser and referer:
 		$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
@@ -194,9 +237,15 @@ class get_from_url_cache{
 		
 		if($get_state){
 			$this->content = $snoopy->results;
+			if($this->_show_log) echo 'Get Page size: ' .strlen($this->content).'<br />';	
+			return true;
 		}else{
 			return false;
 		}
+	}
+	
+	public function Get(){
+		
 	}
 	
 	//析构函数
@@ -209,13 +258,15 @@ class get_from_url_cache{
 }
 	
 	//创建一个对象的实例
-	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/", "./b/baidu.html");
+	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xxc/xx/a/du.html");
 	
-	echo $get_content_obj->getURL();
+	$get_content_obj->getURL();
 	
-	var_dump($get_content_obj->saveCache()) ;
+	$get_content_obj->saveCache();
 	
-	echo $get_content_obj->getCache();
+	//echo $get_content_obj->getCache();
+	
+	$get_content_obj->delCache();
 	
 
 
