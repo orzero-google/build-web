@@ -30,7 +30,7 @@ js全部通过jquery实现,界面通过jquery+ui实现
 一:分析网址\取得导航\生成列表(后台:[mkList.php];	前台格式,同时可以反馈当前页面状态:md5($first_url)/index.php;	)
 二:取得当前页面\重新构造页面(后台:[mkRead.php];		前台格式,seo:可以直接通过网址取得不同的状态:md5($first_url)/read.php;	)
 
-
+实现:
 代理,两种方式,一种直接取得,一种需要参数(对用户不可见,1研究如何转移到客户端,2客户端更新服务端数据)：取得内容: md5($first_url)/GetPG.php;		取得导航: GetPG.php
 	
 	
@@ -42,3 +42,11 @@ js全部通过jquery实现,界面通过jquery+ui实现
 信息收集,js实现,对一些数据整合(访问,具体位置,etc.)
 
 执行文件本身可升级
+
+
+数据库：
+id:
+链接：		base64(url)
+路径：		dir/file
+内容状态:	动,静
+时间：		
