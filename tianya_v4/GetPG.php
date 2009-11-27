@@ -153,6 +153,7 @@ class get_from_url_cache{
 			$this->Url = $Url;
 			return true;
 		}else{
+			if($this->_show_log) echo 'false:$this->is_url('.$Url.')<br /><br />';	
 			return false;
 		}
 	}	
@@ -168,6 +169,7 @@ class get_from_url_cache{
 			$this->File = $File;
 			return true;
 		}else{
+			if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
 			return false;
 		}
 	}	
@@ -181,6 +183,7 @@ class get_from_url_cache{
 				$this->submit_vars = $Submit_vars;
 				return true;
 			}else{
+				if($this->_show_log) echo 'false:is_array('.$Submit_vars.')<br /><br />';	
 				return false;
 			}
 		}
@@ -198,11 +201,14 @@ class get_from_url_cache{
 		if(file_exists($filename)){
 			if($content_gz_cache = gzfile($filename)){			 
 				$this->content = implode('', $content_gz_cache);
+				$this->time = filemtime($filename);
 				return true;
 			}else{
+				if($this->_show_log) echo 'false:$content_gz_cache = gzfile('.$filename.')<br /><br />';	
 				return false;
 			}
 		}else{
+			if($this->_show_log) echo 'false:file_exists('.$filename.')<br /><br />';		
 			return false;
 		}
 	}	
@@ -216,7 +222,7 @@ class get_from_url_cache{
 			gzclose($fp);
 			if($content_old == $this->content){		
 				if($this->_show_log) echo 'The content Unchanged'.'<br />';		
-				return false;
+				return true;
 			}else{
 				if($this->_show_log) echo 'The content changed'.'<br />';
 				unlink($filename);
@@ -317,13 +323,22 @@ class get_from_url_cache{
 		}
 	}
 	
-	public function Get(){
-		if($this->getCache()){
-			return $this->content;
-		}else if($this->getURL){
-			return $this->content;
-		}else{
-			return false;
+	public function Get($cache=true){
+		if($cache){
+			if($this->getCache()){
+				return true;
+			}else{
+				if($this->_show_log) echo 'false:Get(\'$cache=true\')<br /><br />';
+				return false;
+			}
+		}else{		
+			if($this->getURL()){				
+				$this->saveCache();
+				return true;
+			}else{
+				if($this->_show_log) echo 'false:Get(\'$cache=false\')<br /><br />';
+				return false;
+			}
 		}
 	}
 	
@@ -337,15 +352,18 @@ class get_from_url_cache{
 }
 	
 	//创建一个对象的实例
-	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html?");
+	$get_content_obj = new get_from_url_cache("http://www.google.com", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html");
 	
 	//$get_content_obj->getURL();
 	
 	//$get_content_obj->saveCache();
 	
-	echo $get_content_obj->getCache();
+	//$get_content_obj->getCache();
 	
-	var_dump( $get_content_obj->delCache());
+	if($get_content_obj->Get(false)){
+		
+	}
+	//$get_content_obj->delCache();
 	
 
 
