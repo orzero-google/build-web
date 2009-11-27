@@ -58,24 +58,51 @@ include_once 'Snoopy.class.php';
 class get_from_url_cache{	
 	
 	//构造函数
-	public function __construct($Url, $File)
+	public function __construct($Url, $File, $submit_vars='')
 	{	
 		if($this->is_url($Url)){
 			$this->Url = $Url;
 		}else{
+			if($this->_show_log) echo 'false: $this->is_url('.$Url.')<br />';	
 			return false;
 		}
+		
+		if($submit_vars != ''){
+			if(is_array($submit_vars)){
+				$this->submit_vars = $submit_vars;
+			}else{
+				if($this->_show_log) echo 'false: is_array('.$submit_vars.')<br />';	
+				return false;
+			}
+		}else{
+			$this->submit_vars = '';
+		}
+		
 		$File = str_replace('\\','/', $File);
 		$File = preg_replace('/\/+/is','/', $File);
 		$File = str_replace('//','/', $File);		
-		$this->File = $File;
-		$this->time = time();
-		$this->content = '';
+		if(!preg_match ("/[^\w\-\.\/\\\]+/i", $File)){
+			$this->File = $File;
+		}else{
+			if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\]+/i", '.$File.')<br />';
+			return false;
+		}
+		
+		$this->time = time();		
+		$this->content = '';	
+		
+		if($this->_show_log){
+			echo '$Url:'.$Url.'<br />';
+			echo '$File:'.$File.'<br />';
+			echo '$submit_vars:';echo var_dump($submit_vars).'<br />';
+		} 
+		return true;
 	}
 		
 	//属性
 	public	$Url;
 	private	$File;			//地址/文件名.php
+	public 	$submit_vars = '';
 	
 	private	$time;
 	private	$content;
@@ -116,21 +143,48 @@ class get_from_url_cache{
 	    }
 	    return true;
 	}	
-
-
-
 	
 	//更新参数
 	public function setUrl($url)
 	{
-		$this->Url = $url;
+		$Url = $url;
+		if($this->is_url($Url)){
+			$this->Url = $Url;
+			return true;
+		}else{
+			return false;
+		}
 	}	
 		
 	public function setFile($file)
 	{
-		$this->File = $file;
+		$File = $file;
+		
+		$File = str_replace('\\','/', $File);
+		$File = preg_replace('/\/+/is','/', $File);
+		$File = str_replace('//','/', $File);		
+		if(preg_match ("/[^\w\-\.\/\\\]+/i", $File)){
+			$this->File = $File;
+			return true;
+		}else{
+			return false;
+		}
 	}	
 	
+	public function setSubmit($submit_vars)
+	{
+		$Submit_vars = $submit_vars;
+		
+		if($Submit_vars != ''){
+			if(is_array($Submit_vars)){
+				$this->submit_vars = $Submit_vars;
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}	
+		
 	public function getContent(){
 		return $this->content;
 	}	
@@ -167,9 +221,10 @@ class get_from_url_cache{
 			$cut_file = explode('/', $filename);
 			$cut_file_n = count($cut_file);
 			if($cut_file_n > 1){
-				$cut_dir_file = explode($cut_file[($cut_file_n-1)], $filename);
-				if($this->_show_log) echo 'mkdir: '.$cut_dir_file[0].'<br />';	
-				@mkdir($cut_dir_file[0], 0755, true);
+				$cut_dir_file = explode($cut_file[($cut_file_n-1)], $filename);				
+				if(@mkdir($cut_dir_file[0], 0755, true)){
+					if($this->_show_log) echo 'mkdir: '.$cut_dir_file[0].'<br />';	
+				}
 			}
 			$fp=gzopen($filename,"w9");
 		}
@@ -187,10 +242,11 @@ class get_from_url_cache{
 
 	function delCache(){
 		$filename=$this->File;
-
-		if(!unlink($filename)){
+		
+		if(!unlink($filename)){			
 			return false;
 		}
+		if($this->_show_log) echo 'unlink('.$filename.');<br />';
 		
 		$file_cut = explode('/', $filename);
 		//print_r($file_cut);
@@ -199,24 +255,30 @@ class get_from_url_cache{
 			return true;
 		}else{
 			if($this->_show_log) echo 'rmdir: <br />';
-			for($i = ($file_cut_count-1); $i != 0; $i--){			
-				$cut_dir = explode($file_cut[$i], $filename , -1);	
+			$filename_rev = strrev($filename);				
+			for($i = ($file_cut_count-1); $i != 0; $i--){	
+				$cut_dir_tmp = explode(strrev($file_cut[($i)]), $filename_rev, 2);
+				$cut_dir = strrev($cut_dir_tmp[1]);
 				//print_r($cut_dir) ;	
-				echo 	$file_cut[$i];
-				if($this->_show_log) echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$i.' : '.$cut_dir[0].'<br />';
-				$st_del = @rmdir($cut_dir[0]);
-				if($st_del === false){
-					//return false;
+				//if($this->_show_log) echo '$file_cut['.$i.']:'.$file_cut[$i];
+				if($this->_show_log) echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$i.' : rmdir('.$cut_dir.');<br />';
+
+				if(!rmdir($cut_dir)){
+					return false;
 				}
 				unset($cut_dir);
+				
+				$filename_rev = $cut_dir_tmp[1];
+				unset($cut_dir_tmp);
 			}			
 		}
 		return true;
 	}
 	
 	// 获取链接内容
-	function getURL($submit_vars='')
-	{
+	function getURL()
+	{	
+		$submit_vars = $this->submit_vars;
 		$url = $this->Url;
 		
 		$snoopy = new Snoopy();			//下载类构造
@@ -245,7 +307,13 @@ class get_from_url_cache{
 	}
 	
 	public function Get(){
-		
+		if($this->getCache()){
+			return $this->content;
+		}else if($this->getURL){
+			return $this->content;
+		}else{
+			return false;
+		}
 	}
 	
 	//析构函数
@@ -258,7 +326,7 @@ class get_from_url_cache{
 }
 	
 	//创建一个对象的实例
-	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xxc/xx/a/du.html");
+	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html");
 	
 	$get_content_obj->getURL();
 	
@@ -266,7 +334,7 @@ class get_from_url_cache{
 	
 	//echo $get_content_obj->getCache();
 	
-	$get_content_obj->delCache();
+	//var_dump( $get_content_obj->delCache());
 	
 
 
