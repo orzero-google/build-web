@@ -81,10 +81,10 @@ class get_from_url_cache{
 		$File = str_replace('\\','/', $File);
 		$File = preg_replace('/\/+/is','/', $File);
 		$File = str_replace('//','/', $File);		
-		if(!preg_match ("/[^\w\-\.\/\\\]+/i", $File)){
+		if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
 			$this->File = $File;
 		}else{
-			if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\]+/i", '.$File.')<br />';
+			if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
 			return false;
 		}
 		
@@ -92,9 +92,10 @@ class get_from_url_cache{
 		$this->content = '';	
 		
 		if($this->_show_log){
-			echo '$Url:'.$Url.'<br />';
-			echo '$File:'.$File.'<br />';
-			echo '$submit_vars:';echo var_dump($submit_vars).'<br />';
+			echo 'true:new get_from_url_cache();<br />';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;'.'$Url:'.$Url.'<br />';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;'.'$File:'.$File.'<br />';
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;'.'$submit_vars:';echo var_dump($submit_vars).'<br /><br />';
 		} 
 		return true;
 	}
@@ -163,7 +164,7 @@ class get_from_url_cache{
 		$File = str_replace('\\','/', $File);
 		$File = preg_replace('/\/+/is','/', $File);
 		$File = str_replace('//','/', $File);		
-		if(preg_match ("/[^\w\-\.\/\\\]+/i", $File)){
+		if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
 			$this->File = $File;
 			return true;
 		}else{
@@ -194,9 +195,13 @@ class get_from_url_cache{
 	{
 		$filename=$this->File;
 		
-		if($content_gz_cache = gzfile($filename)){			 
-			$this->content = implode('', $content_gz_cache);
-			return true;
+		if(file_exists($filename)){
+			if($content_gz_cache = gzfile($filename)){			 
+				$this->content = implode('', $content_gz_cache);
+				return true;
+			}else{
+				return false;
+			}
 		}else{
 			return false;
 		}
@@ -231,10 +236,10 @@ class get_from_url_cache{
 		
 		if($content_gzed_len = gzwrite($fp, $this->content)){
 			gzclose($fp);	
-			if($this->_show_log) echo 'Save Cache size: ' .filesize($filename).'<br />';		
+			if($this->_show_log) echo 'Save Cache size: ' .filesize($filename).'<br /><br />';		
 			return true;
 		}else{
-			if($this->_show_log) echo 'Save Content error'.'<br />';
+			if($this->_show_log) echo 'Save Content error'.'<br /><br />';
 			return false;
 		}
 		
@@ -243,7 +248,8 @@ class get_from_url_cache{
 	function delCache(){
 		$filename=$this->File;
 		
-		if(!unlink($filename)){			
+		if(!@unlink($filename)){
+			if($this->_show_log) echo 'false:unlink('.$filename.');<br />';
 			return false;
 		}
 		if($this->_show_log) echo 'unlink('.$filename.');<br />';
@@ -252,6 +258,7 @@ class get_from_url_cache{
 		//print_r($file_cut);
 		$file_cut_count = count($file_cut);
 		if($file_cut_count == 1){
+			if($this->_show_log) echo 'true:delCache();<br /><br />';
 			return true;
 		}else{
 			if($this->_show_log) echo 'rmdir: <br />';
@@ -264,6 +271,7 @@ class get_from_url_cache{
 				if($this->_show_log) echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$i.' : rmdir('.$cut_dir.');<br />';
 
 				if(!rmdir($cut_dir)){
+					if($this->_show_log) echo 'false:delCache();<br /><br />';
 					return false;
 				}
 				unset($cut_dir);
@@ -272,6 +280,8 @@ class get_from_url_cache{
 				unset($cut_dir_tmp);
 			}			
 		}
+		
+		if($this->_show_log) echo 'true:delCache();<br /><br />';
 		return true;
 	}
 	
@@ -299,7 +309,8 @@ class get_from_url_cache{
 		
 		if($get_state){
 			$this->content = $snoopy->results;
-			if($this->_show_log) echo 'Get Page size: ' .strlen($this->content).'<br />';	
+			$this->time = time();
+			if($this->_show_log) echo 'Get Page size: ' .strlen($this->content).'<br /><br />';	
 			return true;
 		}else{
 			return false;
@@ -326,15 +337,15 @@ class get_from_url_cache{
 }
 	
 	//创建一个对象的实例
-	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html");
+	$get_content_obj = new get_from_url_cache("http://www.tianya.cn/publicforum/content/feeling/1/1210531.shtml", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html?");
 	
-	$get_content_obj->getURL();
+	//$get_content_obj->getURL();
 	
-	$get_content_obj->saveCache();
+	//$get_content_obj->saveCache();
 	
-	//echo $get_content_obj->getCache();
+	echo $get_content_obj->getCache();
 	
-	//var_dump( $get_content_obj->delCache());
+	var_dump( $get_content_obj->delCache());
 	
 
 
