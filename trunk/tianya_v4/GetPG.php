@@ -333,8 +333,12 @@ class get_from_url_cache{
 			}
 		}else{		
 			if($this->getURL()){				
-				$this->saveCache();
-				return true;
+				if($this->saveCache()){
+					return true;
+				}else{
+					if($this->_show_log) echo 'false:$this->saveCache()<br /><br />';
+					return false;
+				}
 			}else{
 				if($this->_show_log) echo 'false:Get(\'$cache=false\')<br /><br />';
 				return false;
