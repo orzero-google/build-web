@@ -267,6 +267,7 @@ class PG extends POG_Base
 	function Save()
 	{
 		$connection = Database::Connect();
+		print_r($connection);exit;
 		$this->pog_query = "select `pgid` from `pg` where `pgid`='".$this->pgId."' LIMIT 1";
 		$rows = Database::Query($this->pog_query, $connection);
 		if ($rows > 0)

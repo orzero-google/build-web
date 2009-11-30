@@ -34,7 +34,7 @@ $configuration['proxy_password'] = false;
 
 
 //plugin settings
-$configuration['plugins_path'] = './plugins';  //absolute path to plugins folder, e.g c:/mycode/test/plugins or /home/phpobj/public_html/plugins
+$configuration['plugins_path'] = dirname(__FILE__).'/plugins';  //absolute path to plugins folder, e.g c:/mycode/test/plugins or /home/phpobj/public_html/plugins
 
 
 ?>
