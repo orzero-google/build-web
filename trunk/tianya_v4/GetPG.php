@@ -78,18 +78,23 @@ class get_from_url_cache{
 			$this->submit_vars = '';
 		}
 		
-		$File = str_replace('\\','/', $File);
-		$File = preg_replace('/\/+/is','/', $File);
-		$File = str_replace('//','/', $File);		
-		if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
-			$this->File = $File;
+		if($File != ''){
+			$File = str_replace('\\','/', $File);
+			$File = preg_replace('/\/+/is','/', $File);
+			$File = str_replace('//','/', $File);		
+			if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
+				$this->File = $File;
+			}else{
+				if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
+				return false;
+			}
 		}else{
-			if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
-			return false;
+			$this->File = '';
 		}
 		
 		$this->time = time();		
 		$this->content = '';	
+		$this->size = 0;
 		
 		if($this->_show_log){
 			echo 'true:new get_from_url_cache();<br />';
@@ -107,8 +112,9 @@ class get_from_url_cache{
 	
 	private	$time;
 	private	$content;
+	private $size;
 	
-	private $_show_log = true;
+	private $_show_log = true;	//是否显示日志
 	//Protected	能在当前类和继承类中访问
 	//private	只能在当前类中被调用
 
@@ -192,6 +198,10 @@ class get_from_url_cache{
 	public function getContent(){
 		return $this->content;
 	}	
+
+	public function getSize(){
+		return $this->size;
+	}
 	
 	// 获取缓存内容
 	function getCache()
@@ -242,7 +252,8 @@ class get_from_url_cache{
 		
 		if($content_gzed_len = gzwrite($fp, $this->content)){
 			gzclose($fp);	
-			if($this->_show_log) echo 'Save Cache size: ' .filesize($filename).'<br /><br />';		
+			$this->size = filesize($filename);
+			if($this->_show_log) echo 'Save Cache size: ' .$this->size.'<br /><br />';		
 			return true;
 		}else{
 			if($this->_show_log) echo 'Save Content error'.'<br /><br />';
@@ -316,7 +327,8 @@ class get_from_url_cache{
 		if($get_state){
 			$this->content = $snoopy->results;
 			$this->time = time();
-			if($this->_show_log) echo 'Get Page size: ' .strlen($this->content).'<br /><br />';	
+			$this->size = strlen($this->content);
+			if($this->_show_log) echo 'Get Page size: ' .$this->size.'<br /><br />';	
 			return true;
 		}else{
 			return false;
