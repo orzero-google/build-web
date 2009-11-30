@@ -13,7 +13,7 @@
 	`tid` INT NOT NULL,
 	`time` TIME NOT NULL,
 	`page_size` INT NOT NULL,
-	`cache_size` VARCHAR(255) NOT NULL,
+	`cache_size` INT NOT NULL,
 	`state` TINYINT NOT NULL, PRIMARY KEY  (`pgid`)) ENGINE=MyISAM;
 */
 
@@ -23,7 +23,7 @@
 * @version POG 3.0e / PHP5.1 MYSQL
 * @see http://www.phpobjectgenerator.com/plog/tutorials/45/pdo-mysql
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5.1&wrapper=pdo&pdoDriver=mysql&objectName=PG&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27url%27%2C%0A++2+%3D%3E+%27dir%27%2C%0A++3+%3D%3E+%27type%27%2C%0A++4+%3D%3E+%27form_vars%27%2C%0A++5+%3D%3E+%27fid%27%2C%0A++6+%3D%3E+%27tid%27%2C%0A++7+%3D%3E+%27time%27%2C%0A++8+%3D%3E+%27page_size%27%2C%0A++9+%3D%3E+%27cache_size%27%2C%0A++10+%3D%3E+%27state%27%2C%0A%29&typeList=array%2B%2528%250A%2B%2B0%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B1%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B2%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B3%2B%253D%253E%2B%2527TINYINT%2527%252C%250A%2B%2B4%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B5%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B6%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B7%2B%253D%253E%2B%2527TIME%2527%252C%250A%2B%2B8%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B9%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B10%2B%253D%253E%2B%2527TINYINT%2527%252C%250A%2529
+* @link http://www.phpobjectgenerator.com/?language=php5.1&wrapper=pdo&pdoDriver=mysql&objectName=PG&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27url%27%2C%0A++2+%3D%3E+%27dir%27%2C%0A++3+%3D%3E+%27type%27%2C%0A++4+%3D%3E+%27form_vars%27%2C%0A++5+%3D%3E+%27fid%27%2C%0A++6+%3D%3E+%27tid%27%2C%0A++7+%3D%3E+%27time%27%2C%0A++8+%3D%3E+%27page_size%27%2C%0A++9+%3D%3E+%27cache_size%27%2C%0A++10+%3D%3E+%27state%27%2C%0A%29&typeList=array%2B%2528%250A%2B%2B0%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B1%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B2%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B3%2B%253D%253E%2B%2527TINYINT%2527%252C%250A%2B%2B4%2B%253D%253E%2B%2527VARCHAR%2528255%2529%2527%252C%250A%2B%2B5%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B6%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B7%2B%253D%253E%2B%2527TIME%2527%252C%250A%2B%2B8%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B9%2B%253D%253E%2B%2527INT%2527%252C%250A%2B%2B10%2B%253D%253E%2B%2527TINYINT%2527%252C%250A%2529
 */
 include_once('class.pog_base.php');
 class PG extends POG_Base
@@ -76,7 +76,7 @@ class PG extends POG_Base
 	public $page_size;
 	
 	/**
-	 * @var VARCHAR(255)
+	 * @var INT
 	 */
 	public $cache_size;
 	
@@ -96,7 +96,7 @@ class PG extends POG_Base
 		"tid" => array('db_attributes' => array("NUMERIC", "INT")),
 		"time" => array('db_attributes' => array("NUMERIC", "TIME")),
 		"page_size" => array('db_attributes' => array("NUMERIC", "INT")),
-		"cache_size" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
+		"cache_size" => array('db_attributes' => array("NUMERIC", "INT")),
 		"state" => array('db_attributes' => array("NUMERIC", "TINYINT")),
 		);
 	public $pog_query;

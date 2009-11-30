@@ -380,6 +380,10 @@ class get_from_url_cache{
 		
 	}
 	//$get_content_obj->delCache();
-	
 
+include_once './configuration.php';
+include_once './objects/class.database.php';
+include_once './objects/class.pg.php';
+$pg = new PG();
+$pg->Save();
 
