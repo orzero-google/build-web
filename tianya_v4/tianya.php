@@ -61,35 +61,37 @@ if(count($same_list) > 0){
 	$could_insert = false;
 }
 
+//构造表
+if($pg_table['form_vars'] == ''){
+	$pg_table['type'] = 1;
+	// tianya/2009-12-02/md5($fu)/base64_encode($pu).php
+	$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
+}else{
+	$pg_table['type'] = 2;
+	// tianya/2009-12-02/md5($fu)/base64_encode($pu)-$pg_table['form_vars'].php
+	$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$pg_table['form_vars'].'.php';
+}	
+
+$fid_obj = $pg_obj->GetList(array(array('name', '=', $pg_table['name'])), 'fid', false, 1);
+if(count($fid_obj) > 0){
+	$pg_table['fid'] = $fid_obj[0]->fid;
+}else{
+	$fid_last_obj = $pg_obj->GetList(array(), 'fid', false, 1);
+	if(count($fid_last_obj) > 0){
+		$pg_table['fid'] = $fid_last_obj[0]->fid + 1;
+	}else{
+		$pg_table['fid'] = 1;
+	}
+}
+
+$tid_obj = $pg_obj->GetList(array(array('name', '=', $pg_table['name'])), 'tid', false, 1);
+if(count($tid_obj) > 0){
+	$pg_table['tid'] = $tid_obj[0]->tid + 1;
+}else{
+	$pg_table['tid'] = 1;
+}
+
 if($could_insert){			//没有入库过当前页面
-	if($pg_table['form_vars'] == ''){
-		$pg_table['type'] = 1;
-		// tianya/2009-12-02/md5($fu)/base64_encode($pu).php
-		$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
-	}else{
-		$pg_table['type'] = 2;
-		// tianya/2009-12-02/md5($fu)/base64_encode($pu)-$pg_table['form_vars'].php
-		$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$pg_table['form_vars'].'.php';
-	}	
-	
-	$fid_obj = $pg_obj->GetList(array(array('name', '=', $pg_table['name'])), 'fid', false, 1);
-	if(count($fid_obj) > 0){
-		$pg_table['fid'] = $fid_obj[0]->fid;
-	}else{
-		$fid_last_obj = $pg_obj->GetList(array(), 'fid', false, 1);
-		if(count($fid_last_obj) > 0){
-			$pg_table['fid'] = $fid_last_obj[0]->fid + 1;
-		}else{
-			$pg_table['fid'] = 1;
-		}
-	}
-	
-	$tid_obj = $pg_obj->GetList(array(array('name', '=', $pg_table['name'])), 'tid', false, 1);
-	if(count($tid_obj) > 0){
-		$pg_table['tid'] = $tid_obj[0]->tid + 1;
-	}else{
-		$pg_table['tid'] = 1;
-	}
 	
 	//$pg_table['time'] = date('Y-m-d H:i:s');
 	//$pg_table['page_size'] = 0;
@@ -118,18 +120,20 @@ if($could_insert){			//没有入库过当前页面
 		$getpg_st = $get_url_cache_obj->Get(false);	
 		
 		if($getpg_st[0]){
-			include_once('class.pog_base.php');
-			$this->pog_query = "update `pg` set 
+			//include_once('objects/class.pog_base.php');
+			$pog_query = "update `pg` set 
 			`time`='".date('Y-m-d H:i:s', $getpg_st[3])."', 
-			`page_size`='".$this->Escape($getpg_st[1])."', 
-			`cache_size`='".$this->Escape($getpg_st[2])."', 
-			`state`='".$this->Escape($pg_table['state'])."' where `pgid`='".$same_list[0]->pgId."'";
-			$sqlId = Database::InsertOrUpdate($this->pog_query, $connection);		
+			`page_size`='".$pg_obj->Escape($getpg_st[1])."', 
+			`cache_size`='".$pg_obj->Escape($getpg_st[2])."', 
+			`state`='".$pg_obj->Escape($pg_table['state'])."' where `pgid`='".$same_list[0]->pgId."'";
+			
+			echo $connection = Database::Connect();
+			$sqlId = Database::InsertOrUpdate($pog_query, $connection);		
 		}
 	}
 }
 
-
+echo $same_list[0]->pgId;
 echo $sqlId;
 //创建一个对象的实例
 //$get_content_obj = new get_from_url_cache("http://www.google.com", "xx/xx/xxx\as/x/dfsdf/xx.xx/du.html");
