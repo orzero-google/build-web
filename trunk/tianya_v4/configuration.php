@@ -7,7 +7,7 @@ $configuration['homepage'] = "http://www.phpobjectgenerator.com";
 $configuration['revisionNumber'] = "";
 $configuration['versionNumber'] = "3.0e";
 
-//$configuration['pdoDriver']	= 'mysql';
+$configuration['pdoDriver']	= 'mysql';
 $configuration['setup_password'] = '';
 
 
