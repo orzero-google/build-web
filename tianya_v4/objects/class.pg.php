@@ -11,7 +11,7 @@
 	`form_vars` VARCHAR(255) NOT NULL,
 	`fid` INT NOT NULL,
 	`tid` INT NOT NULL,
-	`time` DATE NOT NULL,
+	`time` TIMESTAMP NOT NULL,
 	`page_size` INT NOT NULL,
 	`cache_size` INT NOT NULL,
 	`state` TINYINT NOT NULL, PRIMARY KEY  (`pgid`)) ENGINE=MyISAM;
@@ -22,7 +22,7 @@
 * @author Php Object Generator
 * @version POG 3.0e / PHP5
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=PG&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27url%27%2C%0A++2+%3D%3E+%27dir%27%2C%0A++3+%3D%3E+%27type%27%2C%0A++4+%3D%3E+%27form_vars%27%2C%0A++5+%3D%3E+%27fid%27%2C%0A++6+%3D%3E+%27tid%27%2C%0A++7+%3D%3E+%27time%27%2C%0A++8+%3D%3E+%27page_size%27%2C%0A++9+%3D%3E+%27cache_size%27%2C%0A++10+%3D%3E+%27state%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27TINYINT%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27INT%27%2C%0A++7+%3D%3E+%27DATE%27%2C%0A++8+%3D%3E+%27INT%27%2C%0A++9+%3D%3E+%27INT%27%2C%0A++10+%3D%3E+%27TINYINT%27%2C%0A%29
+* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=PG&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27url%27%2C%0A++2+%3D%3E+%27dir%27%2C%0A++3+%3D%3E+%27type%27%2C%0A++4+%3D%3E+%27form_vars%27%2C%0A++5+%3D%3E+%27fid%27%2C%0A++6+%3D%3E+%27tid%27%2C%0A++7+%3D%3E+%27time%27%2C%0A++8+%3D%3E+%27page_size%27%2C%0A++9+%3D%3E+%27cache_size%27%2C%0A++10+%3D%3E+%27state%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27TINYINT%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27INT%27%2C%0A++7+%3D%3E+%27TIMESTAMP%27%2C%0A++8+%3D%3E+%27INT%27%2C%0A++9+%3D%3E+%27INT%27%2C%0A++10+%3D%3E+%27TINYINT%27%2C%0A%29
 */
 include_once('class.pog_base.php');
 class PG extends POG_Base
@@ -65,7 +65,7 @@ class PG extends POG_Base
 	public $tid;
 	
 	/**
-	 * @var DATE
+	 * @var TIMESTAMP
 	 */
 	public $time;
 	
@@ -93,7 +93,7 @@ class PG extends POG_Base
 		"form_vars" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"fid" => array('db_attributes' => array("NUMERIC", "INT")),
 		"tid" => array('db_attributes' => array("NUMERIC", "INT")),
-		"time" => array('db_attributes' => array("NUMERIC", "DATE")),
+		"time" => array('db_attributes' => array("NUMERIC", "TIMESTAMP")),
 		"page_size" => array('db_attributes' => array("NUMERIC", "INT")),
 		"cache_size" => array('db_attributes' => array("NUMERIC", "INT")),
 		"state" => array('db_attributes' => array("NUMERIC", "TINYINT")),
