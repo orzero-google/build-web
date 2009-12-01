@@ -55,7 +55,7 @@ class MyException implements ThrowableA,ThrowableB {
 //__call, __get() and __set():方法呼叫和属性访问
 include_once 'Snoopy.class.php';
 
-class get_from_url_cache{      
+class get_url_cache{      
        
         //构造函数
         public function __construct($Url, $File, $submit_vars='')
@@ -212,6 +212,7 @@ class get_from_url_cache{
                 if(file_exists($filename)){
                         if($content_gz_cache = gzfile($filename)){                      
                                 $this->content = implode('', $content_gz_cache);
+                                $this->size = filesize($filename);
                                 $this->time = filemtime($filename);
                                 return true;
                         }else{
@@ -232,7 +233,9 @@ class get_from_url_cache{
                         $content_old = gzread($fp,strlen($this->content));
                         gzclose($fp);
                         if($content_old == $this->content){            
-                                if($this->_show_log) echo 'The content Unchanged'.'<br />';            
+                                if($this->_show_log) echo 'The content Unchanged'.'<br />';    
+                                $this->size = filesize($filename);
+                                $this->time = filemtime($filename);                                        
                                 return true;
                         }else{
                                 if($this->_show_log) echo 'The content changed'.'<br />';
@@ -252,9 +255,10 @@ class get_from_url_cache{
                 }
                
                 if($content_gzed_len = gzwrite($fp, $this->content)){
-                        gzclose($fp);  
+                        gzclose($fp);                          
+                        if($this->_show_log) echo 'Save Cache size: ' .$this->size.'<br /><br />';    
                         $this->size = filesize($filename);
-                        if($this->_show_log) echo 'Save Cache size: ' .$this->size.'<br /><br />';              
+                        $this->time = filemtime($filename);          
                         return true;
                 }else{
                         if($this->_show_log) echo 'Save Content error'.'<br /><br />';
@@ -337,28 +341,68 @@ class get_from_url_cache{
         }
        
         public function Get($cache=true){
+        	$st = false;
+        	$cache_size = 0;
+        	$pg_size = 0;
+        	$cache_time = 0;        	
+        	
                 if($cache){
                         if($this->getCache()){
-                                return true;
+                                //return true;
+                                $cache_size = $this->size;
+                                $cache_time = $this->time;
+                                $st = true;
                         }else{
                                 if($this->_show_log) echo 'false:Get(\'$cache=true\')<br /><br />';
-                                return false;
+                                //return false;
+                                $st = false;
                         }
+                        return array($st, $cache_size, $cache_time);
                 }else{          
-                        if($this->getURL()){                            
-                                if($this->saveCache()){
-                                        return true;
+                        if($this->getURL()){
+							$pg_size = $this->size;
+                                if($this->saveCache()){                                		
+                                        //return true;
+                                        $cache_size = $this->size;
+                                        $st = true;
                                 }else{
                                         if($this->_show_log) echo 'false:$this->saveCache()<br /><br />';
-                                        return false;
+                                        //return false;
+                                        $st = false;
                                 }
                         }else{
-                                if($this->_show_log) echo 'false:Get(\'$cache=false\')<br /><br />';
-                                return false;
+                                if($this->_show_log) echo 'false:$this->getURL()<br /><br />';
+                                //return false;
+                                $st = false;
                         }
+                        return array($st, $pg_size, $cache_size, $cache_time);
                 }
         }
-       
+
+        
+        public function Get_Db(){
+			if($this->getCache()){
+				//return true;
+				$st = true;
+			}else{
+				if($this->_show_log) echo 'false:$this->getCache()<br /><br />';
+				if($this->getURL()){                            
+					if($this->saveCache()){
+						//return true;
+						$st = true;
+					}else{
+						if($this->_show_log) echo 'false:$this->saveCache()<br /><br />';
+						//return false;
+						$st = false;
+					}
+				}else{
+					if($this->_show_log) echo 'false:$this->getURL()<br /><br />';
+					//return false;
+					$st = false;
+				}
+			}
+			return $st;
+        }
         //析构函数
         /*
         public function __destruct()
