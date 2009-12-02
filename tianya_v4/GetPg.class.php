@@ -82,10 +82,10 @@ class get_url_cache{
                         $File = str_replace('\\','/', $File);
                         $File = preg_replace('/\/+/is','/', $File);
                         $File = str_replace('//','/', $File);          
-                        if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
+                        if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?\=]+/i", $File)){
                                 $this->File = $File;
                         }else{
-                                if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
+                                if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?\=]+/i", '.$File.')<br />';
                                 return false;
                         }
                 }else{
@@ -171,11 +171,11 @@ class get_url_cache{
                 $File = str_replace('\\','/', $File);
                 $File = preg_replace('/\/+/is','/', $File);
                 $File = str_replace('//','/', $File);          
-                if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", $File)){
+                if(!preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?\=]+/i", $File)){
                         $this->File = $File;
                         return true;
                 }else{
-                        if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?]+/i", '.$File.')<br />';
+                        if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?\=]+/i", '.$File.')<br />';
                         return false;
                 }
         }      
@@ -255,10 +255,10 @@ class get_url_cache{
                 }
                
                 if($content_gzed_len = gzwrite($fp, $this->content)){
-                        gzclose($fp);                          
-                        if($this->_show_log) echo 'Save Cache size: ' .$this->size.'<br /><br />';    
+                        gzclose($fp);
                         $this->size = filesize($filename);
                         $this->time = filemtime($filename);          
+                        if($this->_show_log) echo 'Save Cache size: ' .$this->size.'<br /><br />';    
                         return true;
                 }else{
                         if($this->_show_log) echo 'Save Content error'.'<br /><br />';
