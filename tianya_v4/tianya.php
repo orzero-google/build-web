@@ -7,7 +7,6 @@ include_once './objects/class.database.php';
 include_once './objects/class.pg.php';
 
 
-
 $fu = '';
 $pu = '';
 $fv = '';		//base64_encoded
@@ -68,6 +67,8 @@ function get_tianya($fu, $pu, $fv, $st){
 	$pg_table['form_vars'] = $fv;		//数组
 	
 	$fv_serialize = serialize($fv);
+	//print_r(unserialize('a:4:{s:3:"apn";s:95:"7085542,7088802,7091987,7097250,7102285,7111655,7121439,7136146,7154363,7167525,7198866,7225166";s:7:"intLogo";s:1:"0";s:3:"pID";s:1:"3";s:13:"rs_permission";s:1:"1";}'));
+	
 	//$fv_base64_encode = base64_encode($fv);
 	$fv_md5 = md5($fv_serialize);		//作为文件路径
 	
