@@ -55,6 +55,28 @@ function is_tianya_cn_content($page_source){
 	  
         return false;   
 }
+//取得导航部分
+function get_pid_list($page_source, $first_second){
+	if($first_second == 1){
+    $nav = get_mid_content($page_source, '<!-- google_ad_section_start -->', '<table border="0" align="center" cellspacing="0" width="100%">');   
+    if($nav == null){        //只有首页
+        return false;   
+    }
+    $pid_list_str = get_mid_content($nav, '<input type=\'hidden\' name=\'idArticleslist\' value=\'', ',\'>');
+    $pid_list_array = explode(',', $pid_list_str);
+    //print_r( $pid_list_array );
+    
+	if($pid_list_array[0] == null){
+		$pid_list_array[0] = get_mid_content($page_source, 'var idArticle="', '";');
+	}	    
+    return $pid_list_array;
+  }else if($first_second == 2){
+  	$pid_list_str = get_mid_content($page_source, '<input type="hidden" name="apn" value="', '">');
+  	$pid_list_array = explode(',', $pid_list_str);
+  	return $pid_list_array;
+  }
+  return false;
+}
 
 $url = '';
 //取得参数
@@ -74,7 +96,10 @@ if($url != ''){
 	$page_obj = new get_url_cache($url);
 	$page_obj->getURL();
 	$content = $page_obj->getContent();
-	print_r(is_tianya_cn_content($content));
+	$nav = is_tianya_cn_content($content);
+	print_r($nav);
+	
+	print_r(get_pid_list($content, $nav[0]));
 }else{
 	echo '[need:url]';
 }
