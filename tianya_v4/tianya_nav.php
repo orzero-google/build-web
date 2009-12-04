@@ -78,6 +78,27 @@ function get_pid_list($page_source, $first_second){
   return false;
 }
 
+//创建连接
+function mk_link_list($url, $is_tianya, $pid_list){
+	$pid_str = implode(',', $pid_list);
+	if($is_tianya[0] == 1){
+
+	}else if($is_tianya[0] == 2){
+ 		
+  		$i = 0;
+  		$get = array();
+  		foreach($pid_list as $pid){
+  			$get[$i]['fu'] = $get[$i]['pu'] = $url;
+  			$get[$i]['fv'] = '{"apn":"'.$pid_str.'","intLogo":"0","pID":"'.$i++.'","rs_permission":"1"}';
+  			$get[$i]['st'] = true;
+  			$i++;
+  		}	
+  		$get[($i -1)]['st'] = false;
+  		return $get;
+	}
+  return false;
+}
+
 $url = '';
 //取得参数
 define('IS_GPC', get_magic_quotes_gpc());
@@ -99,7 +120,12 @@ if($url != ''){
 	$nav = is_tianya_cn_content($content);
 	print_r($nav);
 	
-	print_r(get_pid_list($content, $nav[0]));
+	$pid = get_pid_list($content, $nav[0]);
+	print_r($pid);
+	
+	$link = mk_link_list($url, $nav, $pid);
+	print_r($link);
+	
 }else{
 	echo '[need:url]';
 }
