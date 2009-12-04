@@ -66,6 +66,7 @@ function is_tianya_cn_content($page_source){
 	    $forum_name = '';
 	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
 	    $article_name = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    $article_name = preg_replace("'<[^<>]*>'i", '', $article_name);
 	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');
 	    //echo $channel;   
 	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){

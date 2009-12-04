@@ -58,21 +58,23 @@ include_once 'Snoopy.class.php';
 class get_url_cache{      
        
         //构造函数
-        public function __construct($Url, $File, $submit_vars='')
+        public function __construct($Url, $File='', $submit_vars='')
         {      
-                if($this->is_url($Url)){
-                        $this->Url = $Url;
-                }else{
-                        if($this->_show_log) echo 'false: $this->is_url('.$Url.')<br />';      
-                        return false;
-                }
+        		if($Url != ''){
+	                if($this->is_url($Url)){
+	                        $this->Url = $Url;
+	                }else{
+	                        if($this->_show_log) echo 'false: $this->is_url('.$Url.')<br />';      
+	                        //return false;
+	                }
+        		}
                
                 if($submit_vars != ''){
                         if(is_array($submit_vars)){
                                 $this->submit_vars = $submit_vars;
                         }else{
                                 if($this->_show_log) echo 'false: is_array('.$submit_vars.')<br />';    
-                                return false;
+                                //return false;
                         }
                 }else{
                         $this->submit_vars = '';
@@ -86,7 +88,7 @@ class get_url_cache{
                                 $this->File = $File;
                         }else{
                                 if($this->_show_log) echo '(preg_match ("/[^\w\-\.\/\\\\@\#\%\&\*\(\)\+\?\=]+/i", '.$File.')<br />';
-                                return false;
+                                //return false;
                         }
                 }else{
                         $this->File = '';
