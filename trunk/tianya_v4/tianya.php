@@ -212,7 +212,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<div id="pContentDiv"><DIV class=content style="WORD-WRAP:break-word;">',
 		    	'<div id="tianyaBrandSpan1">');
-		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
 			}else{
 		    	$p_content[$cn]['author_id'] = get_mid_content($content, 'vid=', '&vwriter=');
 		    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter');
@@ -220,7 +220,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'</TD></TR></table>',
 		    	'<TABLE cellspacing=0 border=0 bgcolor=');
-		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
 			}
 			$cn++;
 		}
@@ -241,7 +241,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<DIV class=content style="WORD-WRAP:break-word">',
 		    	'<div id="tianyaBrandSpan1"></div></DIV>');
-		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
 			}else{
 		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
 		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
@@ -249,7 +249,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<DIV class=content style="WORD-WRAP:break-word">',
 		    	'</DIV>');
-		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
 			}
 			$cn++;
 		}
@@ -280,7 +280,11 @@ function get_body($p_content){
 	$body = '<div id="wrap">'."\n";
 	$i=0;
 	foreach($p_content as $p){
+		
+		$str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
+		$p['content'] = str_replace($str_to_replace, '', $p['content']);
 		$p['content'] = iconv('GBK', 'UTF-8', $p['content']);
+		
 		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
 		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);
 		$body .= '<div class="section">'."\n";
