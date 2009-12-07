@@ -300,6 +300,7 @@ pID	2
 rs_permission	1
 */
 
+/*
 //第二版,取得内容
 function get_content_array($page_source, $first_second){
 	$rq_str_gbk = iconv('UTF-8', 'GBK', '日期：');
@@ -364,7 +365,72 @@ function get_content_array($page_source, $first_second){
 		return $p_content;		
 	}
 }
-
+*/
+//第三版,取得内容
+function get_content_array($page_source, $first_second){
+	$rq_str_gbk = iconv('UTF-8', 'GBK', '日期：');
+	$fw_str_gbk = iconv('UTF-8', 'GBK', '访问：');
+	$to_cut_bf = array('<table', '<TABLE', '<BR><BR>', '<br><br>', '<font', '<FONT');
+	
+	
+	if($first_second == 1){
+		$page_source = get_mid_content($page_source, '<TABLE id="firstAuthor"', '<br></DIV></div>');
+		$table_cut = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom></TD>', $page_source);
+		$cn = 0;
+		
+		foreach($table_cut as $content){
+			if($cn == 0){
+		    	$p_content[$cn]['author_id'] = '';
+		    	$p_content[$cn]['author'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['time'] = get_bf($fw_str_gbk, $p_content[$cn]['time']); //首页需二次过滤
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<div id="pContentDiv"><DIV class=content style="WORD-WRAP:break-word;">',
+		    	'<div id="tianyaBrandSpan1">');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+			}else{
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, 'vid=', '&vwriter=');
+		    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'</TD></TR></table>',
+		    	'<TABLE cellspacing=0 border=0 bgcolor=');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+			}
+			$cn++;
+		}
+		return $p_content;
+	}else if($first_second == 2){
+		//echo $page_source;
+		$page_source = get_mid_content($page_source, 
+		'<div id="pContentDiv"><',
+		'<div id="cttPageDiv1"');
+		$table_cut = explode('<TABLE align=center border=0 cellSpacing=0 width=\'100%\'><TR>', $page_source);
+		$cn = 0;
+		
+		foreach($table_cut as $content){
+			if($cn == 0){
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
+		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<DIV class=content style="WORD-WRAP:break-word">',
+		    	'<div id="tianyaBrandSpan1"></div></DIV>');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+			}else{
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
+		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<DIV class=content style="WORD-WRAP:break-word">',
+		    	'</DIV>');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+			}
+			$cn++;
+		}
+		return $p_content;		
+	}
+}
 
 function create_url($pid_list_r, $is_tianya_r){
 	$channel = $is_tianya_r[1];
