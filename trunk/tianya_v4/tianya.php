@@ -6,11 +6,12 @@ include_once './GetPg.class.php';
 include_once './objects/class.database.php';
 include_once './objects/class.pg.php';
 
-
+include_once './function.php';
+/*
 $fu = '';
 $pu = '';
 $fv = '';		//base64_encoded
-$st = '';		//页面状态：是否固定页面
+$st = '';		//页面状态：是否固定页面,是否动态
 
 
 //取得参数
@@ -44,7 +45,7 @@ $fv = json_decode($fv, true);
 
 
 print_r(get_tianya($fu, $pu, $fv, $st));
-
+*/
 function get_tianya($fu, $pu, $fv, $st){
 /**
  * 字段说明
@@ -181,8 +182,81 @@ function get_tianya($fu, $pu, $fv, $st){
 		$content = false;
 	}
 	
-	return array($sqlId, $content);
+	if($fv == ''){
+		return array(1, $sqlId, $content);
+	}else{
+		return array(2, $sqlId, $content);
+	}
 }
+
+
+//第三版,取得内容
+function get_content_array($page_source, $first_second){
+	$rq_str_gbk = iconv('UTF-8', 'GBK', '日期：');
+	$fw_str_gbk = iconv('UTF-8', 'GBK', '访问：');
+	$to_cut_bf = array('<table', '<TABLE', '<BR><BR>', '<br><br>', '<font', '<FONT');
+	
+	
+	if($first_second == 1){
+		$page_source = get_mid_content($page_source, '<TABLE id="firstAuthor"', '</DIV></div>');
+		//print_r($page_source);
+		$table_cut = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom></TD>', $page_source);
+		$cn = 0;
+		
+		foreach($table_cut as $content){
+			if($cn == 0){
+		    	$p_content[$cn]['author_id'] = '';
+		    	$p_content[$cn]['author'] = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['time'] = get_bf($fw_str_gbk, $p_content[$cn]['time']); //首页需二次过滤
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<div id="pContentDiv"><DIV class=content style="WORD-WRAP:break-word;">',
+		    	'<div id="tianyaBrandSpan1">');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+			}else{
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, 'vid=', '&vwriter=');
+		    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'</TD></TR></table>',
+		    	'<TABLE cellspacing=0 border=0 bgcolor=');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+			}
+			$cn++;
+		}
+		return $p_content;
+	}else if($first_second == 2){
+		//echo $page_source;
+		$page_source = get_mid_content($page_source, 
+		'<div id="pContentDiv"><',
+		'<div id="cttPageDiv1"');
+		$table_cut = explode('<TABLE align=center border=0 cellSpacing=0 width=\'100%\'><TR>', $page_source);
+		$cn = 0;
+		
+		foreach($table_cut as $content){
+			if($cn == 0){
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
+		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<DIV class=content style="WORD-WRAP:break-word">',
+		    	'<div id="tianyaBrandSpan1"></div></DIV>');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+			}else{
+		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
+		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
+		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
+		    	$p_content[$cn]['content'] = get_mid_content($content, 
+		    	'<DIV class=content style="WORD-WRAP:break-word">',
+		    	'</DIV>');
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+			}
+			$cn++;
+		}
+		return $p_content;		
+	}
+}
+
 //echo $same_list[0]->pgId;
 //echo $sqlId;
 //创建一个对象的实例

@@ -81,19 +81,28 @@ function get_pid_list($page_source, $first_second){
 //创建连接
 function mk_link_list($url, $is_tianya, $pid_list){
 	$pid_str = implode(',', $pid_list);
-	if($is_tianya[0] == 1){
-
-	}else if($is_tianya[0] == 2){
- 		
+	if($is_tianya[0] == 1){		
+		$i = 0;
+		foreach($pid_list as $pid){
+			$get[$i]['fu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid_list[0].'.shtml';
+			$get[$i]['pu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid.'.shtml';
+			$get[$i]['fv'] = '';
+			$get[$i]['st'] = false;
+			$i++;
+		}
+  		$get[($i -1)]['st'] = true;
+  		return $get;		
+	}else if($is_tianya[0] == 2){ 		
   		$i = 0;
   		$get = array();
   		foreach($pid_list as $pid){
-  			$get[$i]['fu'] = $get[$i]['pu'] = $url;
-  			$get[$i]['fv'] = '{"apn":"'.$pid_str.'","intLogo":"0","pID":"'.$i++.'","rs_permission":"1"}';
-  			$get[$i]['st'] = true;
+  			$get[$i]['fu'] = $url;
+  			$get[$i]['pu'] = $url;
+  			$get[$i]['fv'] = '{"apn":"'.$pid_str.'","intLogo":"0","pID":"'.($i+1).'","rs_permission":"1"}';
+  			$get[$i]['st'] = false;
   			$i++;
   		}	
-  		$get[($i -1)]['st'] = false;
+  		$get[($i -1)]['st'] = true;
   		return $get;
 	}
   return false;
@@ -113,6 +122,7 @@ foreach(array('_GET','_POST') as $_request) {
 	}
 }
 
+echo '<pre>';
 if($url != ''){
 	$page_obj = new get_url_cache($url);
 	$page_obj->getURL();
