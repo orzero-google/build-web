@@ -257,6 +257,39 @@ function get_content_array($page_source, $first_second){
 	}
 }
 
+
+function get_header($page_source, $first_second){		
+	return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Google Chart API 中文版 - 开发者指南</title>
+	<meta name="author" content="Cloudream (cloudream@gmail.com)" />
+	<meta name="keywords" content="Google Chart API, Google图表API, 谷歌图表API" />
+	<meta name="description" content="Google Chart API 参考中文版，提供强大的在线图表功能，生成的图表可直接以图片形式嵌入您的网页。调用方服务器无需支持动态语言。" />
+	<link rel="stylesheet" type="text/css" href="chartapi.css" />
+	<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.lazyload.js"></script>
+	<script type="text/javascript" src="chartapi.js"></script>
+</head>';
+}
+
+function get_footer($page_source, $first_second){		
+	return '
+<div id="history_panel">
+<table>
+<thead>
+<tr><td class="warning">新版文档翻译中</td></tr>
+<tr><td><a href="#contents" scrollto="contents">返回目录</a></td></tr><tr><th>浏览记录</th></tr>
+</thead>
+</table>
+<tbody id="history_list"></tbody>
+</div>
+
+</body>
+</html>
+';
+}
 //echo $same_list[0]->pgId;
 //echo $sqlId;
 //创建一个对象的实例
