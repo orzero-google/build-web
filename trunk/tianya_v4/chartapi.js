@@ -91,7 +91,7 @@
     }
 })(jQuery);
 $(document).ready(function () {
-    var url = "http://labs.cloudream.name/google/chart/api.html";
+    var url = "";
     var $window = $(window);
     var $wrap = $("#wrap");
     var maxWidth = 760;
@@ -127,7 +127,7 @@ $(document).ready(function () {
         effect: "fadeIn"
     });
     var backtocontent = '<p class="backToTop">';
-    backtocontent += '<a href="' + url + '#contents" scrollto="contents">a?‘è?”?????????</a>';
+    backtocontent += '<a href="' + url + '#contents" scrollto="contents">↑返回目录</a>';
     backtocontent += '</p>';
     $("h5,h6").before(backtocontent);
     $("div.scrap").append(backtocontent);
