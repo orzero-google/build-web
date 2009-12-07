@@ -76,4 +76,4 @@
 		return intval(mysql_insert_id($connection));
 	}
 }
-?>
+

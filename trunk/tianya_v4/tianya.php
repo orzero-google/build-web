@@ -258,7 +258,7 @@ function get_content_array($page_source, $first_second){
 }
 
 
-function get_header($page_source, $first_second){		
+function get_header(/*$page_source, $first_second*/){		
 	return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -271,10 +271,31 @@ function get_header($page_source, $first_second){
 	<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.lazyload.js"></script>
 	<script type="text/javascript" src="chartapi.js"></script>
-</head>';
+</head>
+<body>
+';
 }
 
-function get_footer($page_source, $first_second){		
+function get_body($p_content){		
+	$body = '<div id="wrap">'."\n";
+	$i=0;
+	foreach($p_content as $p){
+		$p['content'] = iconv('GBK', 'UTF-8', $p['content']);
+		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
+		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);
+		$body .= '<div class="section">'."\n";
+		$body .= '<h4>用户:<a id="p'.$i.'" name="'.$p['author'].'">'.$p['author'].'</a>time:'.$p['time'].'</h4>'."\n";		
+		$body .= '<div class="scrap" style="display: block;">'.$p['content'].'</div>';
+		$body .= '</div>'."\n";
+		$i++;
+	}
+	$body .= '</div>'."\n\n";
+	
+	return $body;
+}
+
+
+function get_footer(/*$page_source, $first_second*/){		
 	return '
 <div id="history_panel">
 <table>

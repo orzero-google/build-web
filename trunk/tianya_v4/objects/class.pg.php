@@ -369,4 +369,3 @@ class PG extends POG_Base
 		}
 	}
 }
-?>

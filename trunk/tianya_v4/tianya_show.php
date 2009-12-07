@@ -45,4 +45,9 @@ $tianya_page = get_tianya($fu, $pu, $fv, $st);
  * 元素提取
  */
 $blog_list = get_content_array($tianya_page[2], $tianya_page[0]);
-print_r($blog_list);
+//print_r($blog_list);
+
+
+echo get_header();
+echo get_body($blog_list);
+echo get_footer();

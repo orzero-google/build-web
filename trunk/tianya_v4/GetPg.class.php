@@ -116,7 +116,7 @@ class get_url_cache{
         private $content;
         private $size;
        
-        private $_show_log = true;      //是否显示日志
+        private $_show_log = false;      //是否显示日志
         //Protected     能在当前类和继承类中访问
         //private       只能在当前类中被调用
 
