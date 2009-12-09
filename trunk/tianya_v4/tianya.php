@@ -146,6 +146,12 @@ function get_tianya($fu, $pu, $fv, $st){
 			$sqlId = $pg_obj->Save();
 		}
 	}else{
+		//不变
+		//print_r($same_list);
+		$sqlId = $same_list[0]->pgId;		
+		$old_data_info = $pg_obj->Get($sqlId);
+		$pg_table['dir'] = $old_data_info->dir;
+		
 		//更新
 		if($same_list[0]->state == false){		//非固定页面
 			//$pg_obj->pgId = $same_list[0]->pgId;
@@ -165,11 +171,6 @@ function get_tianya($fu, $pu, $fv, $st){
 
 			}
 		}	
-		
-		//不变
-		//print_r($same_list);
-		$sqlId = $same_list[0]->pgId;
-
 	}
 	
 	$pg_now = $pg_obj->Get($sqlId);
@@ -202,7 +203,6 @@ function get_content_array($page_source, $first_second){
 		//print_r($page_source);
 		$table_cut = explode('<TD WIDTH=100 ALIGN=RIGHT VALIGN=bottom></TD>', $page_source);
 		$cn = 0;
-		
 		foreach($table_cut as $content){
 			if($cn == 0){
 		    	$p_content[$cn]['author_id'] = '';
@@ -212,7 +212,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<div id="pContentDiv"><DIV class=content style="WORD-WRAP:break-word;">',
 		    	'<div id="tianyaBrandSpan1">');
-		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
 			}else{
 		    	$p_content[$cn]['author_id'] = get_mid_content($content, 'vid=', '&vwriter=');
 		    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter');
@@ -220,7 +220,11 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'</TD></TR></table>',
 		    	'<TABLE cellspacing=0 border=0 bgcolor=');
-		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+		    	if($p_content[$cn]['content'] == false){
+		    		$content_tmp = explode('</TD></TR></table>', $content);
+		    		$p_content[$cn]['content'] = $content_tmp[1];
+		    	}
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
 			}
 			$cn++;
 		}
@@ -241,7 +245,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<DIV class=content style="WORD-WRAP:break-word">',
 		    	'<div id="tianyaBrandSpan1"></div></DIV>');
-		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
 			}else{
 		    	$p_content[$cn]['author_id'] = get_mid_content($content, '<a href=http://my.tianya.cn/', ' target=_blank>');
 		    	$p_content[$cn]['author'] = get_mid_content($content, ' target=_blank>', '</a>');
@@ -249,7 +253,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'<DIV class=content style="WORD-WRAP:break-word">',
 		    	'</DIV>');
-		    	//$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
+		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);			
 			}
 			$cn++;
 		}
@@ -278,21 +282,26 @@ function get_header(/*$page_source, $first_second*/){
 
 function get_body($p_content){		
 	$body = '<div id="wrap">'."\n";
+	$body .= '<h3>作者列表<a id="contents" name="contents"></a></h3>';
+	$body .= '<p id="content">载入中...</p>'."\n";
 	$i=0;
-	foreach($p_content as $p){
-		
+
+	foreach($p_content as $p){		
 		$str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
 		$p['content'] = str_replace($str_to_replace, '', $p['content']);
-		$p['content'] = iconv('GBK', 'UTF-8', $p['content']);
+
+		$p['content'] = iconv('GBK', 'UTF-8//IGNORE', $p['content']);		
 		
 		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
 		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);
+		
 		$body .= '<div class="section">'."\n";
-		$body .= '<h4>用户:<a id="p'.$i.'" name="'.$p['author'].'">'.$p['author'].'</a>time:'.$p['time'].'</h4>'."\n";		
-		$body .= '<div class="scrap" style="display: block;">'.$p['content'].'</div>';
+		$body .= '<h4><div class="tool" pname="'.md5($p['author']).'"><code>'.$p['author'].'</code></div><a id="pc_'.$i.'" name="pc_'.$i.'" time="'.$p['time'].'" ></a></h4>'."\n";		
+		$body .= '<div cname="'.md5($p['author']).'" class="scrap" style="display: none;">'."\n".$p['content']."\n".'</div>'."\n";
 		$body .= '</div>'."\n";
 		$i++;
-	}
+	}	
+	
 	$body .= '</div>'."\n\n";
 	
 	return $body;
@@ -300,20 +309,25 @@ function get_body($p_content){
 
 
 function get_footer(/*$page_source, $first_second*/){		
-	return '
+$ft = '
 <div id="history_panel">
 <table>
 <thead>
-<tr><td class="warning">新版文档翻译中</td></tr>
+<tr><td class="warning">工具栏</td></tr>
 <tr><td><a href="#contents" scrollto="contents">返回目录</a></td></tr><tr><th>浏览记录</th></tr>
 </thead>
 </table>
-<tbody id="history_list"></tbody>
-</div>
+<tbody id="history_list">
+';
 
+$ft .= ' 
+</tbody>
+</div>
 </body>
 </html>
 ';
+	
+	return $ft;
 }
 //echo $same_list[0]->pgId;
 //echo $sqlId;
