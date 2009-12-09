@@ -98,7 +98,7 @@ $(document).ready(function () {
     var contents = "";
     $("div.section h4:has(a)").each(function () {
         var $childrenAname = $(this).children("a:first").attr("name");
-        contents += '<li><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
+        contents += '<li style="display:inline; border: 0px; padding:5px;"><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
         var $childrenH5 = $(this).next("div.scrap").children("h5:has(a)");
         if ($childrenH5.length) {
             contents += ' <span class="switch">+</span><ul>';
@@ -110,7 +110,12 @@ $(document).ready(function () {
         }
         contents += '</li>'
     }).css("cursor", "pointer").click(function () {
-        $(this).next("div.scrap").slideToggle("fast")
+    	var pname = $(this).children("div[class='tool']").attr("pname");
+    	$("div[class='scrap']").each(function () {
+    		if($(this).attr('cname') == pname)
+    			$(this).slideToggle("fast");
+    	});
+        //$(this).next("div.scrap").slideToggle("fast")
     });
     contents = '<ol>' + contents + '</ol>';
     $("#content").html(contents);
@@ -158,7 +163,7 @@ $(document).ready(function () {
             }
         })
     });
-    $("a:not([href^=http://labs.cloudream.name/])").attr("target", "_blank");
+    //$("a:not([href^=http://localhost:8080/])").attr("target", "_blank");
     var history_panel = $("#history_panel");
     if (history_panel.length && $.browser.msie && $.browser.version < 7) {
         history_panel.css("position", "absolute");
@@ -173,7 +178,7 @@ $(document).ready(function () {
         }
     }).resize();
     $.getScript("http://www.google-analytics.com/urchin.js", function () {
-        _uacct = "UA-3179915-1";
+        _uacct = "UA-7387085-1";
         urchinTracker()
     })
 });
