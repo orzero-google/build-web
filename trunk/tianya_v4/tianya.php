@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 include_once './configuration.php';
 
 include_once './GetPg.class.php';
@@ -6,7 +6,7 @@ include_once './GetPg.class.php';
 include_once './objects/class.database.php';
 include_once './objects/class.pg.php';
 
-include_once './function.php';
+include_once './function.base.php';
 /*
 $fu = '';
 $pu = '';
@@ -262,22 +262,35 @@ function get_content_array($page_source, $first_second){
 }
 
 
-function get_header(/*$page_source, $first_second*/){		
-	return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+function get_header($p_info, $p_content){	
+	foreach($p_content as $content){
+		$author[] = iconv('GBK', 'UTF-8//IGNORE',$content['author']);
+	}	
+	$list = implode(', ', $author);
+
+	foreach($p_info as $info){
+		$p_info_utf8[] = iconv('GBK', 'UTF-8//IGNORE',$info);
+	}		
+	
+	$keywords = '或零网络>或零阅读,'.$p_info_utf8[3].','.$p_info_utf8[2].','.$p_info_utf8[1].','.$p_info_utf8[6].','.$p_info_utf8[4].','.$p_info_utf8[5].',或零易读,或零阅读,或零小说,或零在线';
+	$hd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Google Chart API 中文版 - 开发者指南</title>
-	<meta name="author" content="Cloudream (cloudream@gmail.com)" />
-	<meta name="keywords" content="Google Chart API, Google图表API, 谷歌图表API" />
-	<meta name="description" content="Google Chart API 参考中文版，提供强大的在线图表功能，生成的图表可直接以图片形式嵌入您的网页。调用方服务器无需支持动态语言。" />
+	<title>或零网络>或零阅读,'.$p_info_utf8[3].'</title>
+	<meta name="author" content="'.$p_info_utf8[6].'" />
+	<meta name="keywords" content="'.$keywords.'" />
+	<meta name="description" content="或零易读,或零阅读,或零小说,或零在线,'.$p_info_utf8[3].','.$list.'" />
 	<link rel="stylesheet" type="text/css" href="chartapi.css" />
 	<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.lazyload.js"></script>
+	<script type="text/javascript" src="md5.js"></script>
 	<script type="text/javascript" src="chartapi.js"></script>
 </head>
 <body>
 ';
+	//$header = iconv('GBK', 'UTF-8', $hd);
+	return $hd;
 }
 
 function get_body($p_content){		
@@ -296,9 +309,9 @@ function get_body($p_content){
 		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);
 		
 		$body .= '<div class="section">'."\n";
-		$body .= '<h4><div class="tool" pname="'.md5($p['author']).'"><code>'.$p['author'].'</code></div><a id="pc_'.$i.'" name="pc_'.$i.'" time="'.$p['time'].'" ></a></h4>'."\n";		
-		$body .= '<div cname="'.md5($p['author']).'" class="scrap" style="display: none;">'."\n".$p['content']."\n".'</div>'."\n";
-		$body .= '</div>'."\n";
+		$body .= '<h4 tname="'.md5($p['author']).'" style="display: none;"><div class="tool" pname="'.md5($p['author']).'"><code>'.$p['author'].'</code></div><a id="pc_'.$i.'" name="pc_'.$i.'" time="'.$p['time'].'" ></a></h4>'."\n";		
+		$body .= '<div cname="'.md5($p['author']).'" class="scrap" style="display: none;">'."\n".trim($p['content'])."\n".'</div>'."\n";
+		$body .= '</div>'."\n\n";
 		$i++;
 	}	
 	
@@ -346,6 +359,119 @@ $ft .= '
 //$get_content_obj->delCache();
 
 
+//判断是否是天涯的内容帖子,同时返回：
+//是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
+//是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
+function is_tianya_cn_content($page_source){
+ 		//主版
+    $channel = get_mid_content($page_source, 'var strItem="', '";');
+    if($channel != null){
+	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
+	    //print_r( $content_flag );      
+	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
+	    //$article_name = Snoopy::_striptext(get_mid_content($page_source, 'var chrTitle = "', '";'));
+	    $article_name_cut = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    //echo $article_name_cut;
+	    $article_name = preg_replace("'<[^<>]*>'i", '', $article_name_cut);
+	    //echo $article_name;
+	    //echo $article_name;
+	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');	    
+	    //echo $channel;   
+	    $blog_author = get_mid_content($page_source, 'var chrAuthorName = "', '";');
+	    if($blog_author != false){
+	    	$cut_temp = explode('&vwriter='.$blog_author.'&idwriter=0&key=0', $page_source, 2);
+	    	$id_str = substr($cut_temp[0], -20, 20);	    	
+	    	$cut_id_temp = explode('vid=', $id_str);
+	    	$blog_author_id = $cut_id_temp[1];
+	    }
+	    if(!is_numeric($blog_author_id)){
+	    	$blog_author_id = '';
+	    }
+	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
+	        if( isset($channel) ){
+	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name); 
+	            //echo '<pre>';
+	            //print_r( array(1, $channel, $forum_name, $article_name, $article_id) );
+	            return array(1, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author); 
+	        }
+	    }
+	  }
+		//副版
+    $channel = get_mid_content($page_source, 'var idItem="', '";');
+    if($channel != null){
+    	$content_flag = '';
+	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
+	    //print_r( $content_flag ); 
+	    $forum_name = '';
+	    $forum_name = get_mid_content($page_source, '" class="lb12">', '</a>');
+	    $article_name = get_mid_content($page_source, 'var chrTitle = "', '";');
+	    $article_name = preg_replace("'<[^<>]*>'i", '', $article_name);
+	    $article_id = get_mid_content($page_source, 'var idArticle="', '";');
+	    //echo $channel;   
+	    $blog_author_id = get_mid_content($page_source, 'var intAuthorId = "', '";');
+	    $blog_author = get_mid_content($page_source, 'var chrAuthorName = "', '";');
+	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
+	        if( isset($channel) ){
+	            //return array('first_second'=>2, 'channel'=>$channel, 'form_name'=>$forum_name);  
+	            return array(2, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author);
+	        }
+	    }
+	  }
+	  
+        return false;   
+}
+//取得导航部分
+function get_pid_list($page_source, $first_second){
+	if($first_second == 1){
+    $nav = get_mid_content($page_source, '<!-- google_ad_section_start -->', '<table border="0" align="center" cellspacing="0" width="100%">');   
+    if($nav == null){        //只有首页
+        return false;   
+    }
+    $pid_list_str = get_mid_content($nav, '<input type=\'hidden\' name=\'idArticleslist\' value=\'', ',\'>');
+    $pid_list_array = explode(',', $pid_list_str);
+    //print_r( $pid_list_array );
+    
+	if($pid_list_array[0] == null){
+		$pid_list_array[0] = get_mid_content($page_source, 'var idArticle="', '";');
+	}	    
+    return $pid_list_array;
+  }else if($first_second == 2){
+  	$pid_list_str = get_mid_content($page_source, '<input type="hidden" name="apn" value="', '">');
+  	$pid_list_array = explode(',', $pid_list_str);
+  	return $pid_list_array;
+  }
+  return false;
+}
+
+//创建连接
+function mk_link_list($url, $is_tianya, $pid_list){
+	$pid_str = implode(',', $pid_list);
+	if($is_tianya[0] == 1){		
+		$i = 0;
+		foreach($pid_list as $pid){
+			$get[$i]['fu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid_list[0].'.shtml';
+			$get[$i]['pu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid.'.shtml';
+			$get[$i]['fv'] = '';
+			$get[$i]['st'] = false;
+			$i++;
+		}
+  		$get[($i -1)]['st'] = true;
+  		return $get;		
+	}else if($is_tianya[0] == 2){ 		
+  		$i = 0;
+  		$get = array();
+  		foreach($pid_list as $pid){
+  			$get[$i]['fu'] = $url;
+  			$get[$i]['pu'] = $url;
+  			$get[$i]['fv'] = '{"apn":"'.$pid_str.'","intLogo":"0","pID":"'.($i+1).'","rs_permission":"1"}';
+  			$get[$i]['st'] = false;
+  			$i++;
+  		}	
+  		$get[($i -1)]['st'] = true;
+  		return $get;
+	}
+  return false;
+}
 
 
 
