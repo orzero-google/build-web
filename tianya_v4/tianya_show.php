@@ -44,10 +44,12 @@ $tianya_page = get_tianya($fu, $pu, $fv, $st);
 /**
  * 元素提取
  */
+$blog_info = is_tianya_cn_content($tianya_page[2]);
+//echo '<pre>';print_r($blog_info);
 $blog_list = get_content_array($tianya_page[2], $tianya_page[0]);
 //print_r($blog_list);
 
 
-echo get_header();
+echo get_header($blog_info, $blog_list);
 echo get_body($blog_list);
 echo get_footer();
