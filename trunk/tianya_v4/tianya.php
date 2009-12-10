@@ -284,7 +284,6 @@ function get_header($p_info, $p_content){
 	<link rel="stylesheet" type="text/css" href="chartapi.css" />
 	<script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 	<script type="text/javascript" src="jquery.lazyload.js"></script>
-	<script type="text/javascript" src="base64.js"></script>
 	<script type="text/javascript" src="chartapi.js"></script>
 </head>
 <body>
@@ -308,7 +307,7 @@ function get_body($p_content){
 		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
 		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);
 		
-		$author_md5 = base64_encode($p['author']);
+		$author_md5 = md5($p['author']);
 		
 		$body .= '<div class="section">'."\n";
 		$body .= '<h4 tname="'.$author_md5.'" style="display: none;">'."\n"
