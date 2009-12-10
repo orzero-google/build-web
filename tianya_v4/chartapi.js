@@ -99,7 +99,7 @@ $(document).ready(function () {
     //$("div.section h4:has(a)").each(function () {
     $("div.section h4:has(a)").each(function () {
         var $childrenAname = $(this).children("a:first").attr("name");
-        contents += '<li lname="'+base64_encode($(this).text())+'" style="display:inline; border: 0px; padding:5px;"><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
+        contents += '<li lname="'+$(this).attr('tname')+'" style="display:inline; border: 0px; padding:5px;"><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
         var $childrenH5 = $(this).next("div.scrap").children("h5:has(a)");
         if ($childrenH5.length) {
             contents += ' <span class="switch">+</span><ul>';
@@ -175,7 +175,7 @@ $(document).ready(function () {
     });
     
     //xami add
-   	var author_base64 = base64_encode($("meta[name='author']").attr('content'));
+   	//var author_base64 = base64_encode($("meta[name='author']").attr('content'));
    	//alert($("#content li").html());
    	/*
    	$("#content li").each(function () {
@@ -193,13 +193,13 @@ $(document).ready(function () {
    	$("#content li").each(function () {}).css("cursor", "pointer").click(function (){
    		var lname = $(this).attr('lname');
    		//alert($("div.section h4").html());
-   		alert(lname+'[lname]');
+   		//alert(lname+'[lname]');
     	$("div.section h4").each(function () {
     		var tname = $(this).attr('tname');    
-    		alert(tname);
+    		//alert(tname);
     		if(tname == lname){
-    			alert(tname);
-    			$(this).slideToggle("fast");alert(tname);
+    			//alert(tname);
+    			$(this).slideToggle("fast");//alert(tname);
     		}
     	});  
    	});   	
