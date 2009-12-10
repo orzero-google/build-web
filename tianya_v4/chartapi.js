@@ -96,9 +96,10 @@ $(document).ready(function () {
     var $wrap = $("#wrap");
     var maxWidth = 760;
     var contents = "";
+    //$("div.section h4:has(a)").each(function () {
     $("div.section h4:has(a)").each(function () {
         var $childrenAname = $(this).children("a:first").attr("name");
-        contents += '<li lname="'+MD5($(this).text())+'" style="display:inline; border: 0px; padding:5px;"><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
+        contents += '<li lname="'+base64_encode($(this).text())+'" style="display:inline; border: 0px; padding:5px;"><a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '">' + $(this).text() + '</a>';
         var $childrenH5 = $(this).next("div.scrap").children("h5:has(a)");
         if ($childrenH5.length) {
             contents += ' <span class="switch">+</span><ul>';
@@ -109,14 +110,55 @@ $(document).ready(function () {
             contents += '</ul>'
         }
         contents += '</li>'
-    }).css("cursor", "pointer").click(function () {
+    })/*.css("cursor", "pointer").click(function () {
     	var pname = $(this).children("div[class='tool']").attr("pname");
     	$("div[class='scrap']").each(function () {
     		if($(this).attr('cname') == pname)
     			$(this).slideToggle("fast");
     	});
         //$(this).next("div.scrap").slideToggle("fast")
+    });*/
+    //alert($("div.section div.tools").parents().next("div.scrap").html());
+    
+    $("div.section div.tools").each(function () {
+    	$(this).html('+');
+    	/*
+    	$(this).css("cursor", "pointer").toggle(function () {
+            $(this).text("-")
+        },
+        function () {
+            $(this).text("+")
+        }).click(function () {
+            $(this).next("ul").toggle()
+        });*/
+    }).css("cursor", "pointer").click(function () {
+    	var pname = $(this).attr("name");
+    	$("div[class='scrap']").each(function () {
+    		if($(this).attr('cname') == pname)
+    			$(this).slideToggle("fast");
+    	});
+        //$(this).next("div.scrap").slideToggle("fast")
+    }).toggle(function () {
+    	var pname = $(this).attr("name");
+    	$("div.section div.tools").each(function () {
+    		if($(this).attr('name') == pname)   	
+    			$(this).text("-")
+    	});
+    },
+    function () {
+    	var pname = $(this).attr("name");
+    	$("div.section div.tools").each(function () {
+    		if($(this).attr('name') == pname)   	
+    			$(this).text("+")
+    	});
     });
+    
+    //alert($("div.section code").html());
+    //$("div.section div[class='tool']").each(function () {}).css("cursor", "pointer").click(function () {
+    $("div.section code").each(function () {}).css("cursor", "pointer").click(function () {
+    	$(this).parent().parent().next("div.scrap").slideToggle("fast")
+    });    
+    
     contents = '<ol>' + contents + '</ol>';
     $("#content").html(contents);
     $("#content span.switch").css("cursor", "pointer").toggle(function () {
@@ -133,7 +175,7 @@ $(document).ready(function () {
     });
     
     //xami add
-   	var author_md5 = MD5($("meta[name='author']").attr('content'));
+   	var author_base64 = base64_encode($("meta[name='author']").attr('content'));
    	//alert($("#content li").html());
    	/*
    	$("#content li").each(function () {
@@ -150,10 +192,14 @@ $(document).ready(function () {
    	});*/
    	$("#content li").each(function () {}).css("cursor", "pointer").click(function (){
    		var lname = $(this).attr('lname');
-   		//alert(tname);
-    	$("h4").each(function () {
-    		if($(this).attr('tname') == lname){
-    			$(this).slideToggle("fast");
+   		//alert($("div.section h4").html());
+   		alert(lname+'[lname]');
+    	$("div.section h4").each(function () {
+    		var tname = $(this).attr('tname');    
+    		alert(tname);
+    		if(tname == lname){
+    			alert(tname);
+    			$(this).slideToggle("fast");alert(tname);
     		}
     	});  
    	});   	
