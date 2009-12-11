@@ -291,6 +291,7 @@ $(document).ready(function () {
 		
 	});    
 	
+	
     //高亮楼主
 	$("p[id='content'] li").each(function () {
 		var lname = $(this).attr('lname');
