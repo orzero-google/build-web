@@ -53,13 +53,14 @@ function get_tianya($fu, $pu, $fv, $st){
  * name: md5($fu)
  * url:	 $pu
  * dir: 
- * 		if($fv == '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu).php
- * 		if($fv != '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu)/md5($pg_table['form_vars']).php
- * 
+ * 		//if($fv == '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu).php
+ * 		//if($fv != '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu)/md5($pg_table['form_vars']).php
+ * 		if($fv == '') dir = tianya/md5($fu)/base64_encode($pu).php
+ * 		if($fv != '') dir = tianya/md5($fu)/base64_encode($pu)/md5($pg_table['form_vars']).php
  */
 	
 	$could_insert = true;
-	$root_dir = 'tianya/';	
+	$root_dir = 'tianya';	
 	$pg_obj = new PG();
 
 	$pg_table = array();
@@ -96,11 +97,13 @@ function get_tianya($fu, $pu, $fv, $st){
 	if($pg_table['form_vars'] == ''){
 		$pg_table['type'] = 1;
 		// tianya/2009-12-02/md5($fu)/base64_encode($pu).php
-		$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
+		//$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
+		$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
 	}else{
 		$pg_table['type'] = 2;
 		// tianya/2009-12-02/md5($fu)/base64_encode($pu)/$pg_table['form_vars'].php
-		$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
+		//$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
+		$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
 	}	
 	//echo $pg_table['dir'].'<br />';
 	
@@ -261,7 +264,7 @@ function get_content_array($page_source, $first_second){
 	}
 }
 
-
+/*
 function get_header($p_info, $p_content){	
 	foreach($p_content as $content){
 		$author[] = iconv('GBK', 'UTF-8//IGNORE',$content['author']);
@@ -292,8 +295,40 @@ function get_header($p_info, $p_content){
 ';
 	//$header = iconv('GBK', 'UTF-8', $hd);
 	return $hd;
+}*/
+function get_header($p_info, $p_content){	
+	foreach($p_content as $content){
+		$author[] = iconv('GBK', 'UTF-8//IGNORE',$content['author']);
+	}	
+	$list = implode(', ', $author);
+
+	foreach($p_info as $info){
+		$p_info_utf8[] = iconv('GBK', 'UTF-8//IGNORE',$info);
+	}	
+	$author_md5 = md5($p_info_utf8[6]);
+	
+	$keywords = '或零网络>或零阅读,'.$p_info_utf8[3].','.$p_info_utf8[2].','.$p_info_utf8[1].','.$p_info_utf8[6].','.$p_info_utf8[4].','.$p_info_utf8[5].',或零易读,或零阅读,或零小说,或零在线';
+	$hd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>或零网络>或零阅读,'.$p_info_utf8[3].'</title>
+	<meta name="author" content="'.$p_info_utf8[6].'" />
+	<meta name="keywords" content="'.$keywords.'" />
+	<meta name="description" content="或零易读,或零阅读,或零小说,或零在线,'.$p_info_utf8[3].','.$list.'" />
+	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>	
+	<script type="text/javascript" src="js/tianya.js"></script>	
+</head>
+<body>
+<div id="first_author" name="'.$author_md5.'"></div>
+';
+	//$header = iconv('GBK', 'UTF-8', $hd);
+	return $hd;
 }
 
+/*
 function get_body($p_content){		
 	$body = '<div id="wrap">'."\n";
 	$body .= '<h3>作者列表<a id="contents" name="contents"></a></h3>';
@@ -313,7 +348,7 @@ function get_body($p_content){
 		
 		$body .= '<div class="section">'."\n";
 		$body .= '<h4 tname="'.$author_md5.'" style="display: none;">'."\n"
-		.'<div style="width:10%;display:inline;background-color:#ffffff;" class="tool" pname="'.$author_md5.'"><code name="'.$author_md5.'">'.$p['author'].'</code></div>'."\n"
+		.'<div style="width:40%;display:inline;background-color:#ffffff;" class="tool" pname="'.$author_md5.'"><code style="display:inline;" name="'.$author_md5.'">'.$p['author'].'</code></div>'."\n"
 		.'<a id="pc_'.$i.'" name="pc_'.$i.'" time="'.$p['time'].'" ></a>'."\n"
 		.'<div class="sw" name="'.$author_md5.'"></div>'."\n"
 		.'<div class="tools" name="'.$author_md5.'"></div>'."\n"
@@ -327,12 +362,41 @@ function get_body($p_content){
 	$body .= '</div>'."\n\n";
 	
 	return $body;
+}*/
+function get_body($p_content){		
+	$body = '<div id="wrap">'."\n";
+	
+	$body .= '<h3>作者列表<a id="content"></a></h3>';
+	$body .= '<p id="contents">载入中...</p>'."\n";
+	
+	$i=0;
+	foreach($p_content as $p){		
+		$str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
+		$p['content'] = str_replace($str_to_replace, '', $p['content']);
+		$p['content'] = iconv('GBK', 'UTF-8//IGNORE', $p['content']);		
+		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
+		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);		
+		$author_md5 = md5($p['author']);
+		
+		$body .= '<div class="section">'."\n";
+		
+		$body .= '<h4 class="blog_author" name="'.$author_md5.'">'.$p['author'].'</h4>'."\n";		
+		$body .= '<div class="blog" name="'.$author_md5.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
+		
+		$body .= '</div>'."\n\n";
+		$i++;
+	}	
+	
+	$body .= '</div>'."\n\n";
+	
+	$body .= '<div id="count">'.$i.'</div>'."\n";
+	
+	return $body;
 }
-
 
 function get_footer(/*$page_source, $first_second*/){		
 $ft = '
-<div id="history_panel">
+<div id="history_panel" style="width:140px">
 <table>
 <thead>
 <tr><td class="warning" style="text-align:center;">工具栏</td></tr>
