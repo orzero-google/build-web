@@ -270,7 +270,8 @@ function get_header($p_info, $p_content){
 
 	foreach($p_info as $info){
 		$p_info_utf8[] = iconv('GBK', 'UTF-8//IGNORE',$info);
-	}		
+	}	
+	$author_md5 = md5($p_info_utf8[6]);
 	
 	$keywords = '或零网络>或零阅读,'.$p_info_utf8[3].','.$p_info_utf8[2].','.$p_info_utf8[1].','.$p_info_utf8[6].','.$p_info_utf8[4].','.$p_info_utf8[5].',或零易读,或零阅读,或零小说,或零在线';
 	$hd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -287,6 +288,7 @@ function get_header($p_info, $p_content){
 	<script type="text/javascript" src="chartapi.js"></script>
 </head>
 <body>
+<div id="author" value="'.$author_md5.'"></div>
 ';
 	//$header = iconv('GBK', 'UTF-8', $hd);
 	return $hd;
@@ -311,9 +313,10 @@ function get_body($p_content){
 		
 		$body .= '<div class="section">'."\n";
 		$body .= '<h4 tname="'.$author_md5.'" style="display: none;">'."\n"
-		.'<div style="width:10%;display:inline;background-color:#ffffff;" class="tool" pname="'.$author_md5.'"><code>'.$p['author'].'</code></div>'."\n"
+		.'<div style="width:10%;display:inline;background-color:#ffffff;" class="tool" pname="'.$author_md5.'"><code name="'.$author_md5.'">'.$p['author'].'</code></div>'."\n"
 		.'<a id="pc_'.$i.'" name="pc_'.$i.'" time="'.$p['time'].'" ></a>'."\n"
-		.'<div style="position:absolute;right:10px;width:10%;display:inline;background-color:#ffffff;" class="tools" name="'.$author_md5.'"></div>'."\n"
+		.'<div class="sw" name="'.$author_md5.'"></div>'."\n"
+		.'<div class="tools" name="'.$author_md5.'"></div>'."\n"
 		.'</h4>'."\n";	
 			
 		$body .= '<div cname="'.$author_md5.'" class="scrap" style="display: none;">'."\n".trim($p['content'])."\n".'</div>'."\n";
@@ -332,11 +335,15 @@ $ft = '
 <div id="history_panel">
 <table>
 <thead>
-<tr><td class="warning">工具栏</td></tr>
-<tr><td><a href="#contents" scrollto="contents">返回目录</a></td></tr><tr><th>浏览记录</th></tr>
+<tr><td class="warning" style="text-align:center;">工具栏</td></tr>
+<tr><th>全局功能</th></tr>
+<tr><td class="lz">显示楼主帖子</td></tr>
+<tr><td class="allzz">打开全部作者</td></tr>
+<tr><td><a href="#contents" scrollto="contents">返回作者列表</a></td></tr>
 </thead>
 </table>
 <tbody id="history_list">
+
 ';
 
 $ft .= ' 
