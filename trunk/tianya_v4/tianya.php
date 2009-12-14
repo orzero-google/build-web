@@ -317,6 +317,7 @@ function get_header($p_info, $p_content){
 	<meta name="keywords" content="'.$keywords.'" />
 	<meta name="description" content="或零易读,或零阅读,或零小说,或零在线,'.$p_info_utf8[3].','.$list.'" />
 	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+	<link type="text/css" href="./chartapi.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>	
 	<script type="text/javascript" src="js/tianya.js"></script>	
@@ -366,7 +367,7 @@ function get_body($p_content){
 function get_body($p_content){		
 	$body = '<div id="wrap">'."\n";
 	
-	$body .= '<h3>作者列表<a id="content"></a></h3>';
+	$body .= '<h3><span>作者列表</span><a id="content"></a></h3>';
 	$body .= '<p id="contents">载入中...</p>'."\n";
 	
 	$i=0;
@@ -380,8 +381,10 @@ function get_body($p_content){
 		
 		$body .= '<div class="section">'."\n";
 		
-		$body .= '<h4 class="blog_author" name="'.$author_md5.'">'.$p['author'].'</h4>'."\n";		
-		$body .= '<div class="blog" name="'.$author_md5.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
+		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
+			$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="tools" />';
+		$body .= '</h4>'."\n";		
+		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
 		
 		$body .= '</div>'."\n\n";
 		$i++;
@@ -389,14 +392,20 @@ function get_body($p_content){
 	
 	$body .= '</div>'."\n\n";
 	
-	$body .= '<div id="count">'.$i.'</div>'."\n";
+	$body .= '<div id="count" value="'.$i.'"></div>'."\n";
 	
 	return $body;
 }
 
 function get_footer(/*$page_source, $first_second*/){		
 $ft = '
-<div id="history_panel" style="width:140px">
+<div id="history_panel" style="
+width:140px;
+right:1000px;
+top:100px;
++position:absolute;
++top:expression(eval(document.body.scrollTop)+100);
+">
 <table>
 <thead>
 <tr><td class="warning" style="text-align:center;">工具栏</td></tr>
