@@ -367,8 +367,8 @@ function get_body($p_content){
 function get_body($p_content){		
 	$body = '<div id="wrap">'."\n";
 	
-	$body .= '<h3><span>作者列表</span><a id="content"></a></h3>';
-	$body .= '<p id="contents">载入中...</p>'."\n";
+	$body .= '<h3><span>作者列表</span><a id="content" name="content"></a></h3>';
+	$body .= '<p id="contents" name="contents">载入中...</p>'."\n";
 	
 	$i=0;
 	foreach($p_content as $p){		
@@ -382,7 +382,7 @@ function get_body($p_content){
 		$body .= '<div class="section">'."\n";
 		
 		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
-			$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="tools" />';
+			$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';
 		$body .= '</h4>'."\n";		
 		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
 		
@@ -392,27 +392,21 @@ function get_body($p_content){
 	
 	$body .= '</div>'."\n\n";
 	
-	$body .= '<div id="count" value="'.$i.'"></div>'."\n";
+	//$body .= '<div id="count" value="'.$i.'"></div>'."\n";
 	
 	return $body;
 }
 
 function get_footer(/*$page_source, $first_second*/){		
 $ft = '
-<div id="history_panel" style="
-width:140px;
-right:1000px;
-top:100px;
-+position:absolute;
-+top:expression(eval(document.body.scrollTop)+100);
-">
+<div id="history_panel" style="width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
 <table>
 <thead>
 <tr><td class="warning" style="text-align:center;">工具栏</td></tr>
 <tr><th>全局功能</th></tr>
 <tr><td class="lz">显示楼主帖子</td></tr>
 <tr><td class="allzz">打开全部作者</td></tr>
-<tr><td><a href="#contents" scrollto="contents">返回作者列表</a></td></tr>
+<tr><td><a href="#content" scrollto="content">返回作者列表</a></td></tr>
 </thead>
 </table>
 <tbody id="history_list">
