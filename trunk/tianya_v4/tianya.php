@@ -46,17 +46,18 @@ $fv = json_decode($fv, true);
 
 print_r(get_tianya($fu, $pu, $fv, $st));
 */
+//return: 1, $sqlId, $content
 function get_tianya($fu, $pu, $fv, $st){
 /**
  * 字段说明
  * pgid: 自增
- * name: md5($fu)
- * url:	 $pu
+ * name: base64_encode($fu)
+ * url:	 base64_encode($pu)
  * dir: 
  * 		//if($fv == '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu).php
  * 		//if($fv != '') dir = tianya/2009-12-02/md5($fu)/base64_encode($pu)/md5($pg_table['form_vars']).php
- * 		if($fv == '') dir = tianya/md5($fu)/base64_encode($pu).php
- * 		if($fv != '') dir = tianya/md5($fu)/base64_encode($pu)/md5($pg_table['form_vars']).php
+ * 		if($fv == '') dir = tianya/md5($fu)/md5($pu).php
+ * 		if($fv != '') dir = tianya/md5($fu)/md5($pu)/md5($pg_table['form_vars']).php
  */
 	
 	$could_insert = true;
@@ -64,7 +65,7 @@ function get_tianya($fu, $pu, $fv, $st){
 	$pg_obj = new PG();
 
 	$pg_table = array();
-	$pg_table['name'] = md5($fu);
+	$pg_table['name'] = base64_encode($fu);
 	$pg_table['url'] = base64_encode($pu);
 	$pg_table['form_vars'] = $fv;		//数组
 	
@@ -73,6 +74,8 @@ function get_tianya($fu, $pu, $fv, $st){
 	
 	//$fv_base64_encode = base64_encode($fv);
 	$fv_md5 = md5($fv_serialize);		//作为文件路径
+	$name_md5 = md5($fu);
+	$url_md5 = md5($pu);
 	
 	if($st == ''){
 		$pg_table['state'] = true;			// 是固定页面
@@ -98,12 +101,14 @@ function get_tianya($fu, $pu, $fv, $st){
 		$pg_table['type'] = 1;
 		// tianya/2009-12-02/md5($fu)/base64_encode($pu).php
 		//$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
-		$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
+		//$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'.php';
+		$pg_table['dir'] = $root_dir.'/'.$name_md5.'/'.$url_md5.'.php';
 	}else{
 		$pg_table['type'] = 2;
 		// tianya/2009-12-02/md5($fu)/base64_encode($pu)/$pg_table['form_vars'].php
 		//$pg_table['dir'] = $root_dir.date('Y-m-d').'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
-		$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
+		//$pg_table['dir'] = $root_dir.'/'.$pg_table['name'].'/'.$pg_table['url'].'/'.$fv_md5.'.php';
+		$pg_table['dir'] = $root_dir.'/'.$name_md5.'/'.$url_md5.'/'.$fv_md5.'.php';
 	}	
 	//echo $pg_table['dir'].'<br />';
 	
