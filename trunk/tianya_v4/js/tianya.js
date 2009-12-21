@@ -370,6 +370,9 @@ $(document).ready(function(){
     //显示楼主功能
     $("td.lz").css({"text-decoration":"underline","color":"blue"}).css("cursor", "pointer").click(function () {
     	var c = $(this).text();
+    	if(binfo == 'FF'){
+    		$("#contents").hide();
+    	}
     	if(c == '显示楼主帖子'){
 	    	$("div.blog").each(function () {
 	    		var name=$(this).attr('name');
@@ -413,10 +416,16 @@ $(document).ready(function(){
 	    	});	 
 	    	$(this).text('显示楼主帖子');
     	}
+    	if(binfo == 'FF'){
+    		$("#contents").show('fast');
+    	}
     });
     //打开全部作者
     $("td.allzz").css({"text-decoration":"underline","color":"blue"}).css("cursor", "pointer").click(function () {
     	var c = $(this).text();
+    	if(binfo == 'FF'){
+    		$("#contents").hide();
+    	}
     	if(c == '打开全部作者'){
 	    	$("div.section h4").each(function () {
 	    		$(this).show('fast');
@@ -444,6 +453,9 @@ $(document).ready(function(){
 	    		st.addClass('ui-icon ui-icon-circle-plus');
 	    	});
 	    	$(this).text('打开全部作者');
+	    	if(binfo == 'FF'){
+	    		$("#contents").show('fast');
+	    	}
     	}
     });   
     

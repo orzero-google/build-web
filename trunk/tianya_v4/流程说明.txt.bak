@@ -64,3 +64,8 @@ title
 author
 keywords
 description
+
+
+20091211第一版完成,兼容性不好,改用jquery-ui设计第二版
+
+20091221 js，ui基本完成，开始数据库设计
