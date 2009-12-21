@@ -321,7 +321,7 @@ function get_header($p_info, $p_content){
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>或零网络>或零阅读,'.$p_info_utf8[3].'</title>
+	<title>或零网络::或零阅读,'.$p_info_utf8[3].'</title>
 	<meta name="author" content="'.$p_info_utf8[6].'" />
 	<meta name="keywords" content="'.$keywords.'" />
 	<meta name="description" content="或零易读,或零阅读,或零小说,或零在线,'.$p_info_utf8[3].','.$list.'" />
@@ -461,7 +461,7 @@ $ft .= '
 //是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 //是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 function is_tianya_cn_content($page_source){
- 		//主版
+ 	//主版
     $channel = get_mid_content($page_source, 'var strItem="', '";');
     if($channel != null){
 	    $content_flag = get_mid_content_array($page_source, '<span class="lb12">', '</span>');
@@ -494,7 +494,7 @@ function is_tianya_cn_content($page_source){
 	        }
 	    }
 	  }
-		//副版
+	//副版
     $channel = get_mid_content($page_source, 'var idItem="', '";');
     if($channel != null){
     	$content_flag = '';
@@ -516,7 +516,7 @@ function is_tianya_cn_content($page_source){
 	    }
 	  }
 	  
-        return false;   
+	return false;   
 }
 //取得导航部分
 function get_pid_list($page_source, $first_second){
