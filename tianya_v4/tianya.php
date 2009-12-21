@@ -200,6 +200,7 @@ function get_tianya($fu, $pu, $fv, $st){
 
 
 //第三版,取得内容
+//return : author_id, author, time, content
 function get_content_array($page_source, $first_second){
 	$rq_str_gbk = iconv('UTF-8', 'GBK', '日期：');
 	$fw_str_gbk = iconv('UTF-8', 'GBK', '访问：');
@@ -301,6 +302,9 @@ function get_header($p_info, $p_content){
 	//$header = iconv('GBK', 'UTF-8', $hd);
 	return $hd;
 }*/
+//$p_info:
+//是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
+//是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 function get_header($p_info, $p_content){	
 	foreach($p_content as $content){
 		$author[] = iconv('GBK', 'UTF-8//IGNORE',$content['author']);
@@ -329,6 +333,7 @@ function get_header($p_info, $p_content){
 </head>
 <body>
 <div id="first_author" name="'.$author_md5.'"></div>
+<div id="first_author_id" name="'.$p_info_utf8[5].'"></div>
 ';
 	//$header = iconv('GBK', 'UTF-8', $hd);
 	return $hd;
@@ -369,7 +374,11 @@ function get_body($p_content){
 	
 	return $body;
 }*/
-function get_body($p_content){		
+function get_body($p_content,$p_info){		
+	foreach($p_info as $info){
+		$p_info_utf8[] = iconv('GBK', 'UTF-8//IGNORE',$info);
+	}
+	
 	$body = '<div id="wrap">'."\n";
 	
 	$body .= '<h3><span>作者列表</span><a id="content" name="content"></a></h3>';
@@ -381,10 +390,14 @@ function get_body($p_content){
 		$p['content'] = str_replace($str_to_replace, '', $p['content']);
 		$p['content'] = iconv('GBK', 'UTF-8//IGNORE', $p['content']);		
 		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
+		if($p['author_id'] == $p_info_utf8[5]){
+			$p['author'] = $p_info_utf8[6];
+			//echo $p_info_utf8[6];
+		}
 		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);		
 		$author_md5 = md5($p['author']);
 		
-		$body .= '<div class="section">'."\n";
+		$body .= '<div class="section" aid="'.$p['author_id'].'">'."\n";
 		
 		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
 			$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';

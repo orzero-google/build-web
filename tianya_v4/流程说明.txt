@@ -67,3 +67,24 @@ description
 
 
 20091211第一版完成,兼容性不好,改用jquery-ui设计第二版
+
+20091221 js，ui基本完成，开始数据库设计
+	CREATE TABLE `tianya_info` (
+	`tianya_infoid` int(11) NOT NULL auto_increment,
+	`name` VARCHAR(255) NOT NULL,
+	`type` TINYINT NOT NULL,
+	`channel_en` VARCHAR(255) NOT NULL,
+	`channel_cn` VARCHAR(255) NOT NULL,
+	`title` VARCHAR(255) NOT NULL,
+	`author_id` INT NOT NULL,
+	`author_name` VARCHAR(255) NOT NULL,
+	`pid_list` TEXT NOT NULL,
+	`time` TIME NOT NULL, PRIMARY KEY  (`tianya_infoid`)) ENGINE=MyISAM;
+	
+	CREATE TABLE `tianya_content` (
+	`tianya_contentid` int(11) NOT NULL auto_increment,
+	`info_id` INT NOT NULL,
+	`pg_id` INT NOT NULL,
+	`page_num` MEDIUMINT NOT NULL,
+	`url` VARCHAR(255) NOT NULL,
+	`dir` VARCHAR(255) NOT NULL, PRIMARY KEY  (`tianya_contentid`)) ENGINE=MyISAM;

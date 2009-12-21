@@ -51,5 +51,5 @@ $blog_list = get_content_array($tianya_page[2], $tianya_page[0]);
 
 
 echo get_header($blog_info, $blog_list);
-echo get_body($blog_list);
+echo get_body($blog_list,$blog_info);
 echo get_footer();
