@@ -222,10 +222,45 @@ $(document).ready(function(){
    		"padding-left":"5px"
    	});
    	
-    var backtocontent = '<p class="backToTop">';
+    var backtocontent = '<span style="float:right;position:relative;" class="open ui-icon ui-icon-gear"></span><p class="backToTop">';
     backtocontent += '<a href="' + url + '#content" scrollto="content">↑返回用户列表</a>';
     backtocontent += '</p>';
     $("div.blog").append(backtocontent);
+
+    $("div.blog span.open").each(function () {}).css("cursor", "pointer").click(function (){
+    	var name = $(this).parent().attr("name"); 
+    	$("div.section h4").each(function () {
+    		var the_name = $(this).attr("name");
+    		var st = $(this).css("display");    		
+    		if(the_name == name){
+    			if(st == 'block'){
+	    			$(this).hide();
+    			}else if(st == 'none'){
+	    			$(this).show("fast");
+    			}
+    		}
+    	}); 
+    	
+    	if(binfo == 'FF'){
+    		$("#contents").hide();
+    	}
+       	$("#contents li").each(function () {
+       		var the_name = $(this).attr('name');
+       		var st = $(this).css("display");  
+       		if(the_name == name){
+    			if(st == 'inline'){
+	    			$(this).hide();
+    			}else{
+    				$(this).hide();
+    				$(this).css('display', 'inline');    				
+	    			$(this).show("fast");
+    			}
+       		}
+       	});  
+    	if(binfo == 'FF'){
+    		$("#contents").show('fast');
+    	}
+    });
 
     //显示楼主帖子标题栏目,并高亮
     //alert(author_md5);
