@@ -478,9 +478,13 @@ function is_tianya_cn_content($page_source){
 	    $blog_author = get_mid_content($page_source, 'var chrAuthorName = "', '";');
 	    if($blog_author != false){
 	    	$cut_temp = explode('&vwriter='.$blog_author.'&idwriter=0&key=0', $page_source, 2);
-	    	$id_str = substr($cut_temp[0], -20, 20);	    	
-	    	$cut_id_temp = explode('vid=', $id_str);
-	    	$blog_author_id = $cut_id_temp[1];
+	    	if(isset($cut_temp[1])){
+		    	$id_str = substr($cut_temp[0], -20, 20);	    	
+		    	$cut_id_temp = explode('vid=', $id_str);
+		    	$blog_author_id = $cut_id_temp[1];
+	    	}else{
+	    		$blog_author_id = 0;
+	    	}
 	    }
 	    if(!is_numeric($blog_author_id)){
 	    	$blog_author_id = '';
@@ -570,6 +574,8 @@ function mk_link_list($url, $is_tianya, $pid_list){
 	}
   return false;
 }
+
+
 
 
 
