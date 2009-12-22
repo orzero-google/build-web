@@ -115,7 +115,7 @@ function is_url($url){
     if ( !( $parts = @parse_url( $url ) ) ) return false;
     else {
     	if (!isset($parts['scheme'])) return false;
-        if ( $parts['scheme'] != "http" && $parts['scheme'] != "https" && $parts['scheme'] != "ftp" && $parts['scheme'] != "gopher" ) return false;
+        if ( $parts['scheme'] != "http" && $parts['scheme'] != "https" /*&& $parts['scheme'] != "ftp" && $parts['scheme'] != "gopher"*/ ) return false;
         
         else if (!isset($parts['host'])) return false;
         	if ( !preg_match( "/^[0-9a-z]([-.]?[0-9a-z])*.[a-z]{2,4}$/i", $parts['host'], $regs ) ) return false;

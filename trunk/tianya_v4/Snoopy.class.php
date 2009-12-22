@@ -122,7 +122,6 @@ class Snoopy
 
 	function fetch($URI)
 	{
-	
 		//preg_match("|^([^:]+)://([^:/]+)(:[\d]+)*(.*)|",$URI,$URI_PARTS);
 		$URI_PARTS = parse_url($URI);
 		if (!empty($URI_PARTS["user"]))
