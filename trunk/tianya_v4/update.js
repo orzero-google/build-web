@@ -75,6 +75,13 @@ jQuery.fn.center = function(params) {
 };
 
 $(function () {
+    var bro=$.browser;	//浏览器版本
+    var binfo="";
+    if(bro.msie) {binfo="IE"}
+    if(bro.mozilla) {binfo="FF"}
+    if(bro.safari) {binfo="SF"}
+    if(bro.opera) {binfo="OP"}
+    
 	var o = $("input.inputtext");
 	var form = $("#urlform");	
 	var ds_text = $("div.description").text();
@@ -108,9 +115,90 @@ $(function () {
 			return false;
 		}
 	});
-
+	
+	$("div.show").show();
 	$("table.ui-widget").center({
 		vertical: false,
 		horizontal: true
 	});
+	
+	
+	
+	$("#progressbar").progressbar();
+	$("input.input-submit").attr({'disabled':false});
+	
+	var $update_log = $("#update_log");
+	if(binfo != "FF") run_st = 'clip';
+	else run_st = '';
+	
+	$update_log.attr('title', '整理');
+	$update_log.dialog({
+		bgiframe: true,
+		modal: true,
+		//resizable: false,
+		show: run_st,
+		autoOpen: false,
+		buttons: {
+			'Start': function() {
+				run_start();
+				$(this).dialog('option', 'title', '整理::第'+1+'页/总'+2+'页');
+				$("input.input-submit").attr({'value':'整理中'});
+				$(this).dialog('option', 'buttons', {'Stop':function(){
+				
+				}});
+			}
+		}
+	});	
+	
+	$("td.td-submit").css("cursor", "pointer").click(function (){
+		$("input.input-submit").attr({'disabled':true}).css({'background-color':'#00ced1'});
+		$update_log.dialog('open');		
+	});
+	
+	function run_start(){
+		var $link = $("#link_list ol");
+		var count_link = $link.size();
+		var the_link = Number($("#link_list").attr('value'));
+		
+		$.ajax({
+			type: "get",
+			url: rget_url,
+			dataType: "html",
+			timeout: 5000,
+			data: rdata,
+			beforeSend: function(XMLHttpRequest){
+				$('<div class="quick-alert">整理第'+page+'页</div>')
+				.insertAfter( $("#button2") )
+				.fadeIn('slow')
+				.animate({opacity: 1.0}, 3000)
+				.fadeOut('slow', function() {
+				 $(this).remove();
+				});
+				page = parseInt(to_get_pid)+parseInt(1);
+			},	
+			success: function(data, textStatus){
+				//alert(page);
+				$("#output_div2").empty().append(data); 
+				$("#to_get_pid").val(page);
+				get_page();
+			},
+			complete: function(XMLHttpRequest, textStatus){
+	
+			},
+			error: function(){
+				//请求出错处理
+				alert('开始整理:无法从服务器取得内容');
+			}
+		}); 
+		
+		$("#link_list").attr('value', (the_link+1));
+		
+		//测试
+		alert($link.eq(the_link).children("li.fu").html());			
+		alert($("#link_list").attr('value'));
+	}
+	
+	function stop(){
+		
+	}
 });

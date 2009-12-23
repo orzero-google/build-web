@@ -12,6 +12,7 @@
 	`author_id` INT NOT NULL,
 	`author_name` VARCHAR(255) NOT NULL,
 	`pid_list` TEXT NOT NULL,
+	`count` SMALLINT NOT NULL,
 	`time` TIME NOT NULL, PRIMARY KEY  (`tianya_infoid`)) ENGINE=MyISAM;
 */
 
@@ -20,7 +21,7 @@
 * @author Php Object Generator
 * @version POG 3.0e / PHP5
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_info&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27type%27%2C%0A++2+%3D%3E+%27channel_en%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27title%27%2C%0A++5+%3D%3E+%27author_id%27%2C%0A++6+%3D%3E+%27author_name%27%2C%0A++7+%3D%3E+%27pid_list%27%2C%0A++8+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27TINYINT%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++7+%3D%3E+%27TEXT%27%2C%0A++8+%3D%3E+%27TIME%27%2C%0A%29
+* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_info&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27type%27%2C%0A++2+%3D%3E+%27channel_en%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27title%27%2C%0A++5+%3D%3E+%27author_id%27%2C%0A++6+%3D%3E+%27author_name%27%2C%0A++7+%3D%3E+%27pid_list%27%2C%0A++8+%3D%3E+%27count%27%2C%0A++9+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27TINYINT%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++7+%3D%3E+%27TEXT%27%2C%0A++8+%3D%3E+%27SMALLINT%27%2C%0A++9+%3D%3E+%27TIME%27%2C%0A%29
 */
 include_once('class.pog_base.php');
 class tianya_info extends POG_Base
@@ -68,6 +69,11 @@ class tianya_info extends POG_Base
 	public $pid_list;
 	
 	/**
+	 * @var SMALLINT
+	 */
+	public $count;
+	
+	/**
 	 * @var TIME
 	 */
 	public $time;
@@ -82,6 +88,7 @@ class tianya_info extends POG_Base
 		"author_id" => array('db_attributes' => array("NUMERIC", "INT")),
 		"author_name" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"pid_list" => array('db_attributes' => array("TEXT", "TEXT")),
+		"count" => array('db_attributes' => array("NUMERIC", "SMALLINT")),
 		"time" => array('db_attributes' => array("NUMERIC", "TIME")),
 		);
 	public $pog_query;
@@ -103,7 +110,7 @@ class tianya_info extends POG_Base
 		}
 	}
 	
-	function tianya_info($name='', $type='', $channel_en='', $channel_cn='', $title='', $author_id='', $author_name='', $pid_list='', $time='')
+	function tianya_info($name='', $type='', $channel_en='', $channel_cn='', $title='', $author_id='', $author_name='', $pid_list='', $count='', $time='')
 	{
 		$this->name = $name;
 		$this->type = $type;
@@ -113,6 +120,7 @@ class tianya_info extends POG_Base
 		$this->author_id = $author_id;
 		$this->author_name = $author_name;
 		$this->pid_list = $pid_list;
+		$this->count = $count;
 		$this->time = $time;
 	}
 	
@@ -138,6 +146,7 @@ class tianya_info extends POG_Base
 			$this->author_id = $this->Unescape($row['author_id']);
 			$this->author_name = $this->Unescape($row['author_name']);
 			$this->pid_list = $this->Unescape($row['pid_list']);
+			$this->count = $this->Unescape($row['count']);
 			$this->time = $row['time'];
 		}
 		return $this;
@@ -232,6 +241,7 @@ class tianya_info extends POG_Base
 			$tianya_info->author_id = $this->Unescape($row['author_id']);
 			$tianya_info->author_name = $this->Unescape($row['author_name']);
 			$tianya_info->pid_list = $this->Unescape($row['pid_list']);
+			$tianya_info->count = $this->Unescape($row['count']);
 			$tianya_info->time = $row['time'];
 			$tianya_infoList[] = $tianya_info;
 		}
@@ -259,11 +269,12 @@ class tianya_info extends POG_Base
 			`author_id`='".$this->Escape($this->author_id)."', 
 			`author_name`='".$this->Escape($this->author_name)."', 
 			`pid_list`='".$this->Escape($this->pid_list)."', 
+			`count`='".$this->Escape($this->count)."', 
 			`time`='".$this->time."' where `tianya_infoid`='".$this->tianya_infoId."'";
 		}
 		else
 		{
-			$this->pog_query = "insert into `tianya_info` (`name`, `type`, `channel_en`, `channel_cn`, `title`, `author_id`, `author_name`, `pid_list`, `time` ) values (
+			$this->pog_query = "insert into `tianya_info` (`name`, `type`, `channel_en`, `channel_cn`, `title`, `author_id`, `author_name`, `pid_list`, `count`, `time` ) values (
 			'".$this->Escape($this->name)."', 
 			'".$this->Escape($this->type)."', 
 			'".$this->Escape($this->channel_en)."', 
@@ -272,6 +283,7 @@ class tianya_info extends POG_Base
 			'".$this->Escape($this->author_id)."', 
 			'".$this->Escape($this->author_name)."', 
 			'".$this->Escape($this->pid_list)."', 
+			'".$this->Escape($this->count)."', 
 			'".$this->time."' )";
 		}
 		$insertId = Database::InsertOrUpdate($this->pog_query, $connection);
