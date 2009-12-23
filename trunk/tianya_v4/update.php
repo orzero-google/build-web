@@ -5,6 +5,7 @@
  */
 include_once './GetPg.class.php';
 include_once './tianya.php';
+include_once './objects/class.tianya_info.php';
 
 $show = false;		//成功取得内容后置为真
 $url = '';
@@ -23,8 +24,60 @@ foreach(array('_GET','_POST') as $_request) {
 $url = trim($url);
 
 
-function do_info($url){
+function do_info($url, $info_r, $pid_list_r){
+	$info_id = 0;
+	$name = base64_encode($url);
+	$info_obj = new tianya_info();
+	$pid_list_s = serialize($pid_list_r);
 	
+	$info_old = $info_obj->GetList(array(array('name', '=', $name)), 'tianya_infoId', false, 1);
+	if(empty($info_old)){	//没有找到数据,插入
+		$tianya_info['name'] = $name;
+		$tianya_info['type'] = $info_r['type'];
+		$tianya_info['channel_en'] = $info_r['ch_en'];
+		$tianya_info['channel_cn'] = $info_r['ch_cn'];
+		$tianya_info['title'] = $info_r['title'];
+		$tianya_info['author_id'] = $info_r['aid'];
+		$tianya_info['author_name'] = $info_r['aname'];
+		$tianya_info['pid_list'] = $pid_list_s;
+		$tianya_info['count'] = 0;
+		$tianya_info['time'] = date('Y-m-d H:i:s');
+		
+		$info_obj->tianya_info(
+			$tianya_info['name'],
+			$tianya_info['type'],
+			$tianya_info['channel_en'],
+			$tianya_info['channel_cn'],
+			$tianya_info['title'],
+			$tianya_info['author_id'],
+			$tianya_info['author_name'],
+			$tianya_info['pid_list'],
+			$tianya_info['count'],
+			$tianya_info['time']
+		);
+		$info_id = $info_obj->Save();
+		
+	}else{		//找到数据,更新
+		$info_old_id = $info_old[0]->tianya_infoId;
+		
+		$info_new = $info_obj->Get($info_old_id);		
+		$info_obj->title = $info_r['title'];		
+		if($info_obj->author_id == 0){
+			if($info_r['aid'] > 0){
+				$info_obj->author_id = $info_r['aid'];
+			}
+		}		
+		$list_old_count = count(unserialize($info_obj->pid_list));
+		$list_new_count = count($pid_list_r);
+		if($list_new_count > $list_old_count){
+			$info_obj->pid_list = $pid_list_s;
+		}		
+		$info_obj->time = date('Y-m-d H:i:s');
+		
+		$info_id = $info_obj->Save();
+	}
+	
+	return $info_id;
 }
 
 if($url != ''){
@@ -53,7 +106,7 @@ if($url != ''){
 			if($nav == false){
 				$is_tian_poster = 'err';
 			}else{
-				$pid_list_r = get_pid_list($content, $nav[0]);
+				$pid_list_r = get_pid_list($content, $nav['type']);
 				//print_r($pid_list_r);
 			}
 		}else{
@@ -68,22 +121,24 @@ if($url != ''){
 	if(isset($pid_list_r)){
 		$info = array();
 		$info['name'] = base64_encode($url);
-		$info['type'] = $nav[0];
-		$info['channel_en'] = $nav[1];
-		$info['channel_cn'] = iconv('GBK', 'UTF-8//IGNORE',$nav[2]);
-		$info['title'] = iconv('GBK', 'UTF-8//IGNORE',$nav[3]);
-		$info['author_id'] = $nav[5];
-		$info['author_name'] = iconv('GBK', 'UTF-8//IGNORE',$nav[6]);
+		$info['type'] = $nav['type'];
+		$info['channel_en'] = $nav['ch_en'];
+		$info['channel_cn'] = iconv('GBK', 'UTF-8//IGNORE',$nav['ch_cn']);
+		$info['title'] = iconv('GBK', 'UTF-8//IGNORE',$nav['title']);
+		$info['author_id'] = $nav['aid'];
+		$info['author_name'] = iconv('GBK', 'UTF-8//IGNORE',$nav['aname']);
 		$info['pid_list'] = serialize($pid_list_r);
 		$info['time'] = date('Y-m-d H:i:s');
 		//print_r($info);
 		
-		$page_id_now = $nav[4];		// 副版意义不大
+		$page_id_now = $nav['pid'];		// 副版意义不大
 		
 		$link = mk_link_list($url, $nav, $pid_list_r);
 		//print_r($link);
 		$p_count = count($pid_list_r);
 		$show = true;
+		//更新页面信息
+		$tianya_info_id = do_info($url, $nav, $pid_list_r);
 	}
 }
 ?>
@@ -151,6 +206,7 @@ $(document).ready(function(){
 	});
 	log.dialog('open');
 <?php } ?>
+
 });
 </script>
 </head>
@@ -199,7 +255,7 @@ $(document).ready(function(){
 <div id="progressbar"></div>
 </div>
 
-<div id="link_list" style="display:none;" value="0">
+<div id="link_list" style="display:none;" value="0" infoid="0">
 <?php 
 $i = 0;
 foreach($link as $alink){
