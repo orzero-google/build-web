@@ -461,6 +461,7 @@ $ft .= '
 //是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 //是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 function is_tianya_cn_content($page_source){
+	$info = array();
  	//主版
     $channel = get_mid_content($page_source, 'var strItem="', '";');
     if($channel != null){
@@ -494,7 +495,15 @@ function is_tianya_cn_content($page_source){
 	            //return array('first_second'=>1, 'channel'=>$channel, 'form_name'=>$forum_name); 
 	            //echo '<pre>';
 	            //print_r( array(1, $channel, $forum_name, $article_name, $article_id) );
-	            return array(1, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author); 
+	            //return array(1, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author); 
+	            $info['type']  = 1;
+	            $info['ch_en'] = $channel;
+	            $info['ch_cn'] = $forum_name;
+	            $info['title'] = $article_name;
+	            $info['pid']   = $article_id;
+	            $info['aid']   = $blog_author_id;
+	            $info['aname'] = $blog_author;
+	            return $info;            
 	        }
 	    }
 	  }
@@ -515,7 +524,15 @@ function is_tianya_cn_content($page_source){
 	    if( (count($content_flag) == 3) && ($content_flag[0][0] == 0) && ($content_flag[1][0] == 1) && ($content_flag[2][0] == 1) ){
 	        if( isset($channel) ){
 	            //return array('first_second'=>2, 'channel'=>$channel, 'form_name'=>$forum_name);  
-	            return array(2, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author);
+	            //return array(2, $channel, $forum_name, $article_name, $article_id, $blog_author_id, $blog_author);
+	            $info['type']  = 2;
+	            $info['ch_en'] = $channel;
+	            $info['ch_cn'] = $forum_name;
+	            $info['title'] = $article_name;
+	            $info['pid']   = $article_id;
+	            $info['aid']   = $blog_author_id;
+	            $info['aname'] = $blog_author;
+	            return $info;
 	        }
 	    }
 	  }
@@ -548,18 +565,18 @@ function get_pid_list($page_source, $first_second){
 //创建连接
 function mk_link_list($url, $is_tianya, $pid_list){
 	$pid_str = implode(',', $pid_list);
-	if($is_tianya[0] == 1){		
+	if($is_tianya['type'] == 1){		
 		$i = 0;
 		foreach($pid_list as $pid){
-			$get[$i]['fu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid_list[0].'.shtml';
-			$get[$i]['pu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya[1].'/1/'.$pid.'.shtml';
+			$get[$i]['fu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya['ch_en'].'/1/'.$pid_list[0].'.shtml';
+			$get[$i]['pu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya['ch_en'].'/1/'.$pid.'.shtml';
 			$get[$i]['fv'] = '';
 			$get[$i]['st'] = false;
 			$i++;
 		}
   		$get[($i -1)]['st'] = true;
   		return $get;		
-	}else if($is_tianya[0] == 2){ 		
+	}else if($is_tianya['type'] == 2){ 		
   		$i = 0;
   		$get = array();
   		foreach($pid_list as $pid){

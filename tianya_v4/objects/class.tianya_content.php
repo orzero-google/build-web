@@ -8,7 +8,8 @@
 	`pg_id` INT NOT NULL,
 	`page_num` MEDIUMINT NOT NULL,
 	`url` VARCHAR(255) NOT NULL,
-	`dir` VARCHAR(255) NOT NULL, PRIMARY KEY  (`tianya_contentid`)) ENGINE=MyISAM;
+	`dir` VARCHAR(255) NOT NULL,
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`tianya_contentid`)) ENGINE=MyISAM;
 */
 
 /**
@@ -16,7 +17,7 @@
 * @author Php Object Generator
 * @version POG 3.0e / PHP5
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_content&attributeList=array+%28%0A++0+%3D%3E+%27info_id%27%2C%0A++1+%3D%3E+%27pg_id%27%2C%0A++2+%3D%3E+%27page_num%27%2C%0A++3+%3D%3E+%27url%27%2C%0A++4+%3D%3E+%27dir%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27INT%27%2C%0A++1+%3D%3E+%27INT%27%2C%0A++2+%3D%3E+%27MEDIUMINT%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A%29
+* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_content&attributeList=array+%28%0A++0+%3D%3E+%27info_id%27%2C%0A++1+%3D%3E+%27pg_id%27%2C%0A++2+%3D%3E+%27page_num%27%2C%0A++3+%3D%3E+%27url%27%2C%0A++4+%3D%3E+%27dir%27%2C%0A++5+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27INT%27%2C%0A++1+%3D%3E+%27INT%27%2C%0A++2+%3D%3E+%27MEDIUMINT%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27TIMESTAMP%27%2C%0A%29
 */
 include_once('class.pog_base.php');
 class tianya_content extends POG_Base
@@ -48,6 +49,11 @@ class tianya_content extends POG_Base
 	 */
 	public $dir;
 	
+	/**
+	 * @var TIMESTAMP
+	 */
+	public $time;
+	
 	public $pog_attribute_type = array(
 		"tianya_contentId" => array('db_attributes' => array("NUMERIC", "INT")),
 		"info_id" => array('db_attributes' => array("NUMERIC", "INT")),
@@ -55,6 +61,7 @@ class tianya_content extends POG_Base
 		"page_num" => array('db_attributes' => array("NUMERIC", "MEDIUMINT")),
 		"url" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"dir" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
+		"time" => array('db_attributes' => array("NUMERIC", "TIMESTAMP")),
 		);
 	public $pog_query;
 	
@@ -75,13 +82,14 @@ class tianya_content extends POG_Base
 		}
 	}
 	
-	function tianya_content($info_id='', $pg_id='', $page_num='', $url='', $dir='')
+	function tianya_content($info_id='', $pg_id='', $page_num='', $url='', $dir='', $time='')
 	{
 		$this->info_id = $info_id;
 		$this->pg_id = $pg_id;
 		$this->page_num = $page_num;
 		$this->url = $url;
 		$this->dir = $dir;
+		$this->time = $time;
 	}
 	
 	
@@ -103,6 +111,7 @@ class tianya_content extends POG_Base
 			$this->page_num = $this->Unescape($row['page_num']);
 			$this->url = $this->Unescape($row['url']);
 			$this->dir = $this->Unescape($row['dir']);
+			$this->time = $row['time'];
 		}
 		return $this;
 	}
@@ -193,6 +202,7 @@ class tianya_content extends POG_Base
 			$tianya_content->page_num = $this->Unescape($row['page_num']);
 			$tianya_content->url = $this->Unescape($row['url']);
 			$tianya_content->dir = $this->Unescape($row['dir']);
+			$tianya_content->time = $row['time'];
 			$tianya_contentList[] = $tianya_content;
 		}
 		return $tianya_contentList;
@@ -215,16 +225,18 @@ class tianya_content extends POG_Base
 			`pg_id`='".$this->Escape($this->pg_id)."', 
 			`page_num`='".$this->Escape($this->page_num)."', 
 			`url`='".$this->Escape($this->url)."', 
-			`dir`='".$this->Escape($this->dir)."' where `tianya_contentid`='".$this->tianya_contentId."'";
+			`dir`='".$this->Escape($this->dir)."', 
+			`time`='".$this->time."' where `tianya_contentid`='".$this->tianya_contentId."'";
 		}
 		else
 		{
-			$this->pog_query = "insert into `tianya_content` (`info_id`, `pg_id`, `page_num`, `url`, `dir` ) values (
+			$this->pog_query = "insert into `tianya_content` (`info_id`, `pg_id`, `page_num`, `url`, `dir`, `time` ) values (
 			'".$this->Escape($this->info_id)."', 
 			'".$this->Escape($this->pg_id)."', 
 			'".$this->Escape($this->page_num)."', 
 			'".$this->Escape($this->url)."', 
-			'".$this->Escape($this->dir)."' )";
+			'".$this->Escape($this->dir)."', 
+			'".$this->time."' )";
 		}
 		$insertId = Database::InsertOrUpdate($this->pog_query, $connection);
 		if ($this->tianya_contentId == "")

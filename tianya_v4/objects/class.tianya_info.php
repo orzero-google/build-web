@@ -13,7 +13,7 @@
 	`author_name` VARCHAR(255) NOT NULL,
 	`pid_list` TEXT NOT NULL,
 	`count` SMALLINT NOT NULL,
-	`time` TIME NOT NULL, PRIMARY KEY  (`tianya_infoid`)) ENGINE=MyISAM;
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`tianya_infoid`)) ENGINE=MyISAM;
 */
 
 /**
@@ -21,7 +21,7 @@
 * @author Php Object Generator
 * @version POG 3.0e / PHP5
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_info&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27type%27%2C%0A++2+%3D%3E+%27channel_en%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27title%27%2C%0A++5+%3D%3E+%27author_id%27%2C%0A++6+%3D%3E+%27author_name%27%2C%0A++7+%3D%3E+%27pid_list%27%2C%0A++8+%3D%3E+%27count%27%2C%0A++9+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27TINYINT%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++7+%3D%3E+%27TEXT%27%2C%0A++8+%3D%3E+%27SMALLINT%27%2C%0A++9+%3D%3E+%27TIME%27%2C%0A%29
+* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=tianya_info&attributeList=array+%28%0A++0+%3D%3E+%27name%27%2C%0A++1+%3D%3E+%27type%27%2C%0A++2+%3D%3E+%27channel_en%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27title%27%2C%0A++5+%3D%3E+%27author_id%27%2C%0A++6+%3D%3E+%27author_name%27%2C%0A++7+%3D%3E+%27pid_list%27%2C%0A++8+%3D%3E+%27count%27%2C%0A++9+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++1+%3D%3E+%27TINYINT%27%2C%0A++2+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27INT%27%2C%0A++6+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++7+%3D%3E+%27TEXT%27%2C%0A++8+%3D%3E+%27SMALLINT%27%2C%0A++9+%3D%3E+%27TIMESTAMP%27%2C%0A%29
 */
 include_once('class.pog_base.php');
 class tianya_info extends POG_Base
@@ -74,7 +74,7 @@ class tianya_info extends POG_Base
 	public $count;
 	
 	/**
-	 * @var TIME
+	 * @var TIMESTAMP
 	 */
 	public $time;
 	
@@ -89,7 +89,7 @@ class tianya_info extends POG_Base
 		"author_name" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"pid_list" => array('db_attributes' => array("TEXT", "TEXT")),
 		"count" => array('db_attributes' => array("NUMERIC", "SMALLINT")),
-		"time" => array('db_attributes' => array("NUMERIC", "TIME")),
+		"time" => array('db_attributes' => array("NUMERIC", "TIMESTAMP")),
 		);
 	public $pog_query;
 	
