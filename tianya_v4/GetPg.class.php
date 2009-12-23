@@ -343,7 +343,7 @@ class get_url_cache{
         }
        
         public function Get($cache=true){
-        	$st = false;
+        	$st = false;		//是否成功
         	$cache_size = 0;
         	$pg_size = 0;
         	$cache_time = 0;        	

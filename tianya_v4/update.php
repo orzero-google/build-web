@@ -22,6 +22,11 @@ foreach(array('_GET','_POST') as $_request) {
 }
 $url = trim($url);
 
+
+function do_info($url){
+	
+}
+
 if($url != ''){
 	/*
 	 * 事例	
@@ -98,6 +103,7 @@ if($url != ''){
 	<script type="text/javascript" src="./update.js"></script>	
 <script type="text/javascript">
 $(document).ready(function(){	
+	var log = $("#dialog");
 <?php if(isset($is_tian_poster) && ($is_tian_poster=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的帖子链接' + '</p>');	
@@ -150,7 +156,7 @@ $(document).ready(function(){
 </head>
 <body>
 <div class="logo">
-<a href="http://www.orzero.com"><img width="200" height="30" border="0" src="http://www.orzero.com/orzero.jpg" /></a>
+<a href="http://www.orzero.com"><img border="0" src="http://www.orzero.com/orzero.jpg" /></a>
 </div>
 <div style="display: none;" class="description">
 <span>请在文本框输入您想要整理的贴子的完整链接,然后再点</span>
@@ -160,13 +166,13 @@ $(document).ready(function(){
 
 <form id="urlform" action="" method="post">
 <div class="form">
-<input class="inputtext" name="url" type="text" value="<?php echo $url; ?>" size="80" maxlength="255" />
+<input class="inputtext" name="url" type="text" value="<?php echo $url; ?>" size="70" maxlength="255" />
 <input class="input-submit" type="submit" value="分析" />
 </div>
 </form>
 
-<div class="show">
 <?php if($show){ ?>
+<div class="show" style="display:none;">
 	<table class="ui-widget ui-widget-content">
 		<thead>
 			<tr class="ui-widget-header">
@@ -174,6 +180,7 @@ $(document).ready(function(){
 				<th>标题</th>
 				<th>作者</th>
 				<th>页数</th>
+				<th>功能</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -182,14 +189,32 @@ $(document).ready(function(){
 				<td><?php echo $info['title']; ?></td>
 				<td><?php echo $info['author_name']; ?></td>
 				<td><?php echo '&nbsp;'.$p_count; ?></td>
+				<td id="update" class="td-submit">整理</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
-<?php } ?>
-<div id="dialog" style="display:none;">
+
+<div id="update_log" style="display:none;">
+<div id="progressbar"></div>
 </div>
 
+<div id="link_list" style="display:none;" value="0">
+<?php 
+$i = 0;
+foreach($link as $alink){
+	echo '<ol>'
+		.'<li class="fu">'.$alink['fu'].'</li>'
+		.'<li class="pu">'.$alink['pu'].'</li>'
+		.'<li class="fv">'.$alink['fv'].'</li>'
+		.'<li class="st">'.$alink['st'].'</li>'
+	.'</ol>'."\n";
+}
+?>
+</div>
+<?php } ?>
+
+<div id="dialog" style="display:none;"></div>
 </body>
 </html>
 
