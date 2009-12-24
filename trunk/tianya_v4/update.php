@@ -26,7 +26,8 @@ $url = trim($url);
 
 function do_info($url, $info_r, $pid_list_r){
 	$info_id = 0;
-	$name = base64_encode($url);
+	//$name = base64_encode($url);
+	$name = $url;
 	$info_obj = new tianya_info();
 	$pid_list_s = serialize($pid_list_r);
 	
@@ -120,7 +121,8 @@ if($url != ''){
 	//构造元素
 	if(isset($pid_list_r)){
 		$info = array();
-		$info['name'] = base64_encode($url);
+		//$info['name'] = base64_encode($url);
+		$info['name'] = $url;
 		$info['type'] = $nav['type'];
 		$info['channel_en'] = $nav['ch_en'];
 		$info['channel_cn'] = iconv('GBK', 'UTF-8//IGNORE',$nav['ch_cn']);
@@ -255,7 +257,7 @@ $(document).ready(function(){
 <div id="progressbar"></div>
 </div>
 
-<div id="link_list" style="display:none;" value="0" infoid="0">
+<div id="link_list" style="display:none;" value="0" infoid="0" run="1">
 <?php 
 $i = 0;
 foreach($link as $alink){
