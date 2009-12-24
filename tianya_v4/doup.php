@@ -42,14 +42,17 @@ function do_pg($fu, $pu, $fv, $st){
  * 		if($fv == '') dir = tianya/md5($fu)/md5($pu).php
  * 		if($fv != '') dir = tianya/md5($fu)/md5($pu)/md5($pg_table['form_vars']).php
  */
-	
+	$sqlId = 0;
 	$could_insert = true;
 	$root_dir = 'tianya';
 	$pg_obj = new PG();
 
 	$pg_table = array();
-	$pg_table['name'] = base64_encode($fu);
-	$pg_table['url'] = base64_encode($pu);
+	//$pg_table['name'] = base64_encode($fu);
+	//$pg_table['url'] = base64_encode($pu);
+	$pg_table['name'] = trim($fu);
+	$pg_table['url'] = trim($pu);	
+	
 	$pg_table['form_vars'] = $fv;		//数组
 	
 	$fv_serialize = serialize($fv);
@@ -58,8 +61,14 @@ function do_pg($fu, $pu, $fv, $st){
 	$name_md5 = md5($fu);
 	$url_md5 = md5($pu);
 	
-	if($st == ''){
-		$pg_table['state'] = true;			// 是固定页面
+	if(isset($st)){
+		if($st == 'fixed'){
+			$pg_table['state'] = true;			// 是固定页面
+		}else if($st == 'unfixed'){
+			$pg_table['state'] = false;
+		}else{
+			$pg_table['state'] = false;
+		}
 	}else{
 		$pg_table['state'] = false;
 	}
@@ -108,7 +117,8 @@ function do_pg($fu, $pu, $fv, $st){
 	}
 	
 	if($could_insert){			//没有入库过当前页面,从原始地址取得网页
-		$get_url_cache_obj = new get_url_cache(base64_decode($pg_table['url']), $pg_table['dir'], $pg_table['form_vars']);
+		//$get_url_cache_obj = new get_url_cache(base64_decode($pg_table['url']), $pg_table['dir'], $pg_table['form_vars']);
+		$get_url_cache_obj = new get_url_cache($pg_table['url'], $pg_table['dir'], $pg_table['form_vars']);
 		$getpg_st = $get_url_cache_obj->Get(false);	
 		
 		if($getpg_st[0]){		
@@ -133,7 +143,8 @@ function do_pg($fu, $pu, $fv, $st){
 		//重新取得页面,如果正确,则同时更新数据库
 		if($same_list[0]->state == false){		//非固定页面,一般最后一页内容可能增加
 			//$pg_obj->pgId = $same_list[0]->pgId;
-			$get_url_cache_obj = new get_url_cache(base64_decode($pg_table['url']), $pg_table['dir'], $pg_table['form_vars']);
+			//$get_url_cache_obj = new get_url_cache(base64_decode($pg_table['url']), $pg_table['dir'], $pg_table['form_vars']);
+			$get_url_cache_obj = new get_url_cache($pg_table['url'], $pg_table['dir'], $pg_table['form_vars']);
 			$getpg_st = $get_url_cache_obj->Get(false);	
 			
 			if($getpg_st[0]){
@@ -157,5 +168,6 @@ function do_pg($fu, $pu, $fv, $st){
 	}
 }
 
-$do_pg_id = do_pg($fu, $pu, $fv, $st);
+
+$pg_id = do_pg($fu, $pu, $fv, $st);
 

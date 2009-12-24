@@ -140,66 +140,92 @@ $(function () {
 		autoOpen: false,
 		buttons: {
 			'Start': function() {
-				run_start();
-				$(this).dialog('option', 'title', '整理::第'+1+'页/总'+2+'页');
-				$("input.input-submit").attr({'value':'整理中'});
-				$(this).dialog('option', 'buttons', {'Stop':function(){
-				
-				}});
+				start();
 			}
 		}
 	});	
+
+	function start(){
+		var run = $("#link_list").attr('run');
+		alert(run)
+		if(run == 1){
+			run_start();
+		}
+		$("input.input-submit").attr({'disabled':true,'value':'整理中'}).css({'background-color':'#00CED1'});
+		$("#update_log").dialog('option', 'buttons', {'Stop':function(){
+			stop();
+		}});
+		
+		$("#link_list").attr('value', 0).attr('run', 1);
+		$("#progressbar").progressbar('option', 'value', 0);		
+	}
+	
+	function stop(){
+		$("input.input-submit").attr({'disabled':false,'value':'分析'}).css({'background-color':'#005EAC'});
+		$("#update_log").dialog('option', 'buttons', {'Start':function(){
+			start();
+		}});
+		
+		$("#link_list").attr('value', 0).attr('run', 0);
+		$("#progressbar").progressbar('option', 'value', 0);		
+	}
 	
 	$("td.td-submit").css("cursor", "pointer").click(function (){
-		$("input.input-submit").attr({'disabled':true}).css({'background-color':'#00ced1'});
-		$update_log.dialog('open');		
+		$update_log.dialog('open');
 	});
+	
 	
 	function run_start(){
 		var $link = $("#link_list ol");
 		var count_link = $link.size();
 		var the_link = Number($("#link_list").attr('value'));
+		var run = $("#link_list").attr('run');
+		var $link_info = $link.eq(the_link);
+		var sdata = 'fu=' + $link_info.children("li.fu").text() +
+					'&pu=' + $link_info.children("li.pu").text() +
+					'&fv=' + $link_info.children("li.fv").text() +
+					'&st=' + $link_info.children("li.st").text();
+		//进度条
+		var progressVal = (the_link/count_link)*100;
+		$("#progressbar").progressbar('option', 'value', progressVal);
 		
+		//改变标题和分析按钮
+		if(the_link < count_link)
+		$("#update_log").dialog('option', 'title', '整理::第'+(the_link+1)+'页/总'+count_link+'页');
+				
 		$.ajax({
 			type: "get",
-			url: rget_url,
+			url: 'doup.php',
 			dataType: "html",
+			cache: false,
 			timeout: 5000,
-			data: rdata,
+			data: sdata,
 			beforeSend: function(XMLHttpRequest){
-				$('<div class="quick-alert">整理第'+page+'页</div>')
-				.insertAfter( $("#button2") )
-				.fadeIn('slow')
-				.animate({opacity: 1.0}, 3000)
-				.fadeOut('slow', function() {
-				 $(this).remove();
-				});
-				page = parseInt(to_get_pid)+parseInt(1);
+				
 			},	
 			success: function(data, textStatus){
-				//alert(page);
-				$("#output_div2").empty().append(data); 
-				$("#to_get_pid").val(page);
-				get_page();
+				$("#link_list").attr('value', (the_link+1));	//成功,计数器+1
+				if(the_link < count_link && run == 1){
+					run_start();
+				}
+				if(the_link == count_link){
+					stop();
+				}
 			},
 			complete: function(XMLHttpRequest, textStatus){
-	
+
 			},
 			error: function(){
 				//请求出错处理
 				alert('开始整理:无法从服务器取得内容');
 			}
 		}); 
-		
-		$("#link_list").attr('value', (the_link+1));
+			
 		
 		//测试
-		alert($link.eq(the_link).children("li.fu").html());			
-		alert($("#link_list").attr('value'));
-	}
-	
-	function stop(){
-		
+		//alert(sdata);
+		//alert($link.eq(the_link).children("li.fu").html());			
+		//alert($("#link_list").attr('value'));
 	}
 	
 });

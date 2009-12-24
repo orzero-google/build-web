@@ -571,10 +571,10 @@ function mk_link_list($url, $is_tianya, $pid_list){
 			$get[$i]['fu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya['ch_en'].'/1/'.$pid_list[0].'.shtml';
 			$get[$i]['pu'] = 'http://www.tianya.cn/publicforum/content/'.$is_tianya['ch_en'].'/1/'.$pid.'.shtml';
 			$get[$i]['fv'] = '';
-			$get[$i]['st'] = false;
+			$get[$i]['st'] = 'fixed';
 			$i++;
 		}
-  		$get[($i -1)]['st'] = true;
+  		$get[($i -1)]['st'] = 'unfixed';
   		return $get;		
 	}else if($is_tianya['type'] == 2){ 		
   		$i = 0;
@@ -583,10 +583,10 @@ function mk_link_list($url, $is_tianya, $pid_list){
   			$get[$i]['fu'] = $url;
   			$get[$i]['pu'] = $url;
   			$get[$i]['fv'] = '{"apn":"'.$pid_str.'","intLogo":"0","pID":"'.($i+1).'","rs_permission":"1"}';
-  			$get[$i]['st'] = false;
+  			$get[$i]['st'] = 'fixed';
   			$i++;
   		}	
-  		$get[($i -1)]['st'] = true;
+  		$get[($i -1)]['st'] = 'unfixed';
   		return $get;
 	}
   return false;
