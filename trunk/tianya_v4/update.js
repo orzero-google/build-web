@@ -147,7 +147,7 @@ $(function () {
 
 	function start(){
 		var run = $("#link_list").attr('run');
-		alert(run)
+		alert(log.html())
 		if(run == 1){
 			run_start();
 		}
@@ -179,19 +179,21 @@ $(function () {
 		var $link = $("#link_list ol");
 		var count_link = $link.size();
 		var the_link = Number($("#link_list").attr('value'));
+		var page = (the_link+1);
 		var run = $("#link_list").attr('run');
 		var $link_info = $link.eq(the_link);
 		var sdata = 'fu=' + $link_info.children("li.fu").text() +
 					'&pu=' + $link_info.children("li.pu").text() +
 					'&fv=' + $link_info.children("li.fv").text() +
-					'&st=' + $link_info.children("li.st").text();
+					'&st=' + $link_info.children("li.st").text() +
+					'&page=' + page;
 		//进度条
 		var progressVal = (the_link/count_link)*100;
 		$("#progressbar").progressbar('option', 'value', progressVal);
 		
 		//改变标题和分析按钮
 		if(the_link < count_link)
-		$("#update_log").dialog('option', 'title', '整理::第'+(the_link+1)+'页/总'+count_link+'页');
+		$("#update_log").dialog('option', 'title', '整理::到'+ page +'页/总'+count_link+'页');
 				
 		$.ajax({
 			type: "get",
@@ -204,7 +206,7 @@ $(function () {
 				
 			},	
 			success: function(data, textStatus){
-				$("#link_list").attr('value', (the_link+1));	//成功,计数器+1
+				$("#link_list").attr('value', page);	//成功,计数器+1
 				if(the_link < count_link && run == 1){
 					run_start();
 				}

@@ -5,7 +5,7 @@
  */
 include_once './GetPg.class.php';
 include_once './tianya.php';
-include_once './objects/class.tianya_info.php';
+include_once './objects/class.info.php';
 
 $show = false;		//成功取得内容后置为真
 $url = '';
@@ -26,12 +26,13 @@ $url = trim($url);
 
 function do_info($url, $info_r, $pid_list_r){
 	$info_id = 0;
+	$count = 0;	//整理到的页号
 	//$name = base64_encode($url);
 	$name = $url;
-	$info_obj = new tianya_info();
+	$info_obj = new info();
 	$pid_list_s = serialize($pid_list_r);
 	
-	$info_old = $info_obj->GetList(array(array('name', '=', $name)), 'tianya_infoId', false, 1);
+	$info_old = $info_obj->GetList(array(array('name', '=', $name)), 'infoId', false, 1);
 	if(empty($info_old)){	//没有找到数据,插入
 		$tianya_info['name'] = $name;
 		$tianya_info['type'] = $info_r['type'];
@@ -44,7 +45,7 @@ function do_info($url, $info_r, $pid_list_r){
 		$tianya_info['count'] = 0;
 		$tianya_info['time'] = date('Y-m-d H:i:s');
 		
-		$info_obj->tianya_info(
+		$info_obj->info(
 			$tianya_info['name'],
 			$tianya_info['type'],
 			$tianya_info['channel_en'],
@@ -56,18 +57,18 @@ function do_info($url, $info_r, $pid_list_r){
 			$tianya_info['count'],
 			$tianya_info['time']
 		);
-		$info_id = $info_obj->Save();
-		
+		$info_id = $info_obj->Save();	
 	}else{		//找到数据,更新
 		$info_old_id = $info_old[0]->tianya_infoId;
+		$count = $info_old[0]->count;
 		
-		$info_new = $info_obj->Get($info_old_id);		
-		$info_obj->title = $info_r['title'];		
+		$info_new = $info_obj->Get($info_old_id);
+		$info_obj->title = $info_r['title'];
 		if($info_obj->author_id == 0){
 			if($info_r['aid'] > 0){
 				$info_obj->author_id = $info_r['aid'];
 			}
-		}		
+		}
 		$list_old_count = count(unserialize($info_obj->pid_list));
 		$list_new_count = count($pid_list_r);
 		if($list_new_count > $list_old_count){
@@ -161,6 +162,8 @@ if($url != ''){
 <script type="text/javascript">
 $(document).ready(function(){	
 	var log = $("#dialog");
+	var info_id = <?php echo $tianya_info_id; ?>;
+	var page = 
 <?php if(isset($is_tian_poster) && ($is_tian_poster=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的帖子链接' + '</p>');	
@@ -246,7 +249,7 @@ $(document).ready(function(){
 				<td><?php echo $info['channel_cn']; ?></td>
 				<td><?php echo $info['title']; ?></td>
 				<td><?php echo $info['author_name']; ?></td>
-				<td><?php echo '&nbsp;'.$p_count; ?></td>
+				<td><?php echo $p_count; ?></td>
 				<td id="update" class="td-submit">整理</td>
 			</tr>
 		</tbody>
@@ -257,7 +260,7 @@ $(document).ready(function(){
 <div id="progressbar"></div>
 </div>
 
-<div id="link_list" style="display:none;" value="0" infoid="0" run="1">
+<div id="link_list" style="display:none;" value="" run="1">
 <?php 
 $i = 0;
 foreach($link as $alink){
