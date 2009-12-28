@@ -33,6 +33,7 @@ function do_info($url, $info_r, $pid_list_r){
 	$pid_list_s = serialize($pid_list_r);
 	
 	$info_old = $info_obj->GetList(array(array('name', '=', $name)), 'infoId', false, 1);
+	//print_r($info_old);
 	if(empty($info_old)){	//没有找到数据,插入
 		$tianya_info['name'] = $name;
 		$tianya_info['type'] = $info_r['type'];
@@ -59,10 +60,11 @@ function do_info($url, $info_r, $pid_list_r){
 		);
 		$info_id = $info_obj->Save();	
 	}else{		//找到数据,更新
-		$info_old_id = $info_old[0]->tianya_infoId;
+		$info_old_id = $info_old[0]->infoId;
 		$count = $info_old[0]->count;
 		
 		$info_new = $info_obj->Get($info_old_id);
+		//print_r($info_new);
 		$info_obj->title = $info_r['title'];
 		if($info_obj->author_id == 0){
 			if($info_r['aid'] > 0){
@@ -78,8 +80,12 @@ function do_info($url, $info_r, $pid_list_r){
 		
 		$info_id = $info_obj->Save();
 	}
-	
-	return $info_id;
+	//echo $info_id;
+	//print_r($info_r);
+	$out = array();
+	$out['id'] = $info_id;
+	$out['count'] = $count;
+	return $out;
 }
 
 if($url != ''){
@@ -141,7 +147,9 @@ if($url != ''){
 		$p_count = count($pid_list_r);
 		$show = true;
 		//更新页面信息
-		$tianya_info_id = do_info($url, $nav, $pid_list_r);
+		$tianya_db = do_info($url, $nav, $pid_list_r);
+		$tianya_info_id = $tianya_db['id'];
+		$tianya_info_count = $tianya_db['count'];
 	}
 }
 ?>
@@ -163,7 +171,7 @@ if($url != ''){
 $(document).ready(function(){	
 	var log = $("#dialog");
 	var info_id = <?php echo $tianya_info_id; ?>;
-	var page = 
+	var info_count = <?php echo $tianya_info_count; ?>;
 <?php if(isset($is_tian_poster) && ($is_tian_poster=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的帖子链接' + '</p>');	
@@ -260,7 +268,7 @@ $(document).ready(function(){
 <div id="progressbar"></div>
 </div>
 
-<div id="link_list" style="display:none;" value="" run="1">
+<div id="link_list" style="display:none;" value="<?php echo $tianya_info_count; ?>" run="1">
 <?php 
 $i = 0;
 foreach($link as $alink){

@@ -146,18 +146,18 @@ $(function () {
 	});	
 
 	function start(){
+		//$("#link_list").attr('value', 0).attr('run', 1);
+		$("#link_list").attr('run', 1);
 		var run = $("#link_list").attr('run');
-		alert(log.html())
 		if(run == 1){
 			run_start();
 		}
 		$("input.input-submit").attr({'disabled':true,'value':'整理中'}).css({'background-color':'#00CED1'});
 		$("#update_log").dialog('option', 'buttons', {'Stop':function(){
 			stop();
-		}});
+		}});	
 		
-		$("#link_list").attr('value', 0).attr('run', 1);
-		$("#progressbar").progressbar('option', 'value', 0);		
+		//$("#progressbar").progressbar('option', 'value', 0);	
 	}
 	
 	function stop(){
@@ -165,9 +165,9 @@ $(function () {
 		$("#update_log").dialog('option', 'buttons', {'Start':function(){
 			start();
 		}});
-		
-		$("#link_list").attr('value', 0).attr('run', 0);
-		$("#progressbar").progressbar('option', 'value', 0);		
+		$("#link_list").attr('run', 0);
+		//$("#link_list").attr('value', 0).attr('run', 0);
+		//$("#progressbar").progressbar('option', 'value', 0);		
 	}
 	
 	$("td.td-submit").css("cursor", "pointer").click(function (){
@@ -193,7 +193,7 @@ $(function () {
 		
 		//改变标题和分析按钮
 		if(the_link < count_link)
-		$("#update_log").dialog('option', 'title', '整理::到'+ page +'页/总'+count_link+'页');
+		$("#update_log").dialog('option', 'title', '整理到'+ page +'页/总'+count_link+'页');
 				
 		$.ajax({
 			type: "get",
