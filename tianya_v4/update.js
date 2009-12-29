@@ -147,6 +147,7 @@ $(function () {
 
 	function start(){
 		//$("#link_list").attr('value', 0).attr('run', 1);
+		alert(info_id);
 		$("#link_list").attr('run', 1);
 		var run = $("#link_list").attr('run');
 		if(run == 1){
@@ -186,7 +187,8 @@ $(function () {
 					'&pu=' + $link_info.children("li.pu").text() +
 					'&fv=' + $link_info.children("li.fv").text() +
 					'&st=' + $link_info.children("li.st").text() +
-					'&page=' + page;
+					'&page=' + page +
+					'&info_id=' + info_id;
 		//进度条
 		var progressVal = (the_link/count_link)*100;
 		$("#progressbar").progressbar('option', 'value', progressVal);
