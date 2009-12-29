@@ -5,7 +5,8 @@ $fu = '';
 $pu = '';
 $fv = '';		//base64_encoded
 $st = '';		//页面状态：是否固定页面,是否动态
-
+$page = 0;
+$info_id = 0;
 
 //取得参数
 define('IS_GPC', get_magic_quotes_gpc());
@@ -19,11 +20,18 @@ foreach(array('_GET','_POST') as $_request) {
 		}
 	}
 }
+$fu = trim($fu);
+$pu = trim($pu);
+$fv = trim($fv);
+$st = trim($st);
+$page = trim($page);
+$info_id = trim($info_id);
 
 if($fu == ''){
 	echo json_encode('[need:fu]');
 	exit;
-}else if($pu == ''){
+}
+if($pu == ''){
 	echo json_encode('[need:pu]');
 	exit;
 }
@@ -50,8 +58,8 @@ function do_pg($fu, $pu, $fv, $st){
 	$pg_table = array();
 	//$pg_table['name'] = base64_encode($fu);
 	//$pg_table['url'] = base64_encode($pu);
-	$pg_table['name'] = trim($fu);
-	$pg_table['url'] = trim($pu);	
+	$pg_table['name'] = $fu;
+	$pg_table['url'] = $pu;	
 	
 	$pg_table['form_vars'] = $fv;		//数组
 	
@@ -168,7 +176,27 @@ function do_pg($fu, $pu, $fv, $st){
 	}
 }
 
+function up_info_count($info_id, $page){
+	$info_obj = new info();
+	$info = $info_obj->Get($info_id);
+	if($info->name == $fu){
+		$info_obj->count = $page;
+		$update_id = $info_obj->Save();
+		return $update_id;
+	}else{
+		return false;
+	}
+}
+
+function new_content(){
+
+}
 
 $pg_id = do_pg($fu, $pu, $fv, $st);
+if($pg_id){
+	$up_info_id = $up_info_count($info_id, $page);
+}
+
+
 
 

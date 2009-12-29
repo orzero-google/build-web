@@ -5,7 +5,8 @@ include_once './GetPg.class.php';
 
 include_once './objects/class.database.php';
 include_once './objects/class.pg.php';
-
+include_once './objects/class.info.php';
+include_once './objects/class.content.php';
 include_once './function.base.php';
 /*
 $fu = '';

@@ -82,15 +82,19 @@ function do_info($url, $info_r, $pid_list_r){
 	}
 	//echo $info_id;
 	//print_r($info_r);
-	$out = array();
-	$out['id'] = $info_id;
-	$out['count'] = $count;
-	return $out;
+	if($info_id > 0){
+		$out = array();
+		$out['id'] = $info_id;
+		$out['count'] = $count;
+		return $out;
+	}else{
+		return false;
+	}
 }
 
 if($url != ''){
 	/*
-	 * 事例	
+	 * 示例	
 	$page_obj = new get_url_cache($url);
 	$page_obj->getURL();
 	$content = $page_obj->getContent();
@@ -146,14 +150,18 @@ if($url != ''){
 		//print_r($link);
 		$p_count = count($pid_list_r);
 		$show = true;
+		
 		//更新页面信息
+		$tianya_info_id = 0;
+		$tianya_info_count = 0;
 		$tianya_db = do_info($url, $nav, $pid_list_r);
-		$tianya_info_id = $tianya_db['id'];
-		$tianya_info_count = $tianya_db['count'];
+		if($tianya_db){
+			$tianya_info_id = $tianya_db['id'];
+			$tianya_info_count = $tianya_db['count'];
+		}
 	}
 }
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -165,13 +173,24 @@ if($url != ''){
 	<link href="./css/info.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>	
-	<script type="text/javascript" src="./update.js"></script>	
+	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script type="text/javascript" src="./update.js"></script>
 <script type="text/javascript">
+<?php 
+//定义全局变量,便于js调用:信息ID,整理到的页号;	
+if(isset($tianya_info_id) && $tianya_info_id > 0){
+	echo "\t".'var info_id = '.$tianya_info_id.';'."\n";
+}else{
+	echo "\t".'var info_id = 0;';
+}
+if(isset($tianya_info_count) && $tianya_info_count > 0){
+	echo "\t".'var info_count = '.$tianya_info_count.';';
+}else{
+	echo "\t".'var info_count = 0;';
+}
+?>
 $(document).ready(function(){	
 	var log = $("#dialog");
-	var info_id = <?php echo $tianya_info_id; ?>;
-	var info_count = <?php echo $tianya_info_count; ?>;
 <?php if(isset($is_tian_poster) && ($is_tian_poster=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的帖子链接' + '</p>');	
@@ -186,9 +205,8 @@ $(document).ready(function(){
 		}
 	});
 	log.dialog('open');
-<?php } ?>
-
-<?php if(isset($is_tian) && ($is_tian=='err')){ ?>
+<?php }
+	if(isset($is_tian) && ($is_tian=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的内容' + '</p>');	
 	log.dialog({
@@ -202,9 +220,8 @@ $(document).ready(function(){
 		}
 	});
 	log.dialog('open');
-<?php } ?>
-
-<?php if(isset($right_url) && ($right_url=='err')){ ?>
+<?php }
+	if(isset($right_url) && ($right_url=='err')){ ?>
 	log.attr('title', '不是正确的网址');
 	log.html('<p>' + '请检查您输入的网址是否正确'  + '</p>');	
 	log.dialog({
