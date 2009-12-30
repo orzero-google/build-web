@@ -174,15 +174,18 @@ if($url != ''){
 	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.json-2.2.min.js"></script>
 	<script type="text/javascript" src="./update.js"></script>
 <script type="text/javascript">
 <?php 
 //定义全局变量,便于js调用:信息ID,整理到的页号;	
+/*
+ * 安全性考虑,取消info_id的传递;
 if(isset($tianya_info_id) && $tianya_info_id > 0){
 	echo "\t".'var info_id = '.$tianya_info_id.';'."\n";
 }else{
 	echo "\t".'var info_id = 0;';
-}
+}*/
 if(isset($tianya_info_count) && $tianya_info_count > 0){
 	echo "\t".'var info_count = '.$tianya_info_count.';';
 }else{
