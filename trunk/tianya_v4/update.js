@@ -147,7 +147,6 @@ $(function () {
 
 	function start(){
 		//$("#link_list").attr('value', 0).attr('run', 1);
-		alert(info_id);
 		$("#link_list").attr('run', 1);
 		var run = $("#link_list").attr('run');
 		if(run == 1){
@@ -171,7 +170,33 @@ $(function () {
 		//$("#progressbar").progressbar('option', 'value', 0);		
 	}
 	
+	function err(){
+		//请求出错处理
+		//alert('开始整理:无法从服务器取得内容');
+		var log = $("#dialog");
+		log.attr('title', '出错');
+		log.html('<p>' + '整理进程遇到错误,终止'  + '</p>');	
+		log.dialog({
+			bgiframe: true,
+			modal: true,
+			resizable: false,
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		log.dialog('open');
+		stop();
+	}
+	
 	$("td.td-submit").css("cursor", "pointer").click(function (){
+		var $link = $("#link_list ol");
+		var count_link = $link.size();
+		var the_link = Number($("#link_list").attr('value'));
+		var progressVal = (the_link/count_link)*100;
+		$("#progressbar").progressbar('option', 'value', progressVal);
+		
 		$update_log.dialog('open');
 	});
 	
@@ -187,8 +212,7 @@ $(function () {
 					'&pu=' + $link_info.children("li.pu").text() +
 					'&fv=' + $link_info.children("li.fv").text() +
 					'&st=' + $link_info.children("li.st").text() +
-					'&page=' + page +
-					'&info_id=' + info_id;
+					'&page=' + page;
 		//进度条
 		var progressVal = (the_link/count_link)*100;
 		$("#progressbar").progressbar('option', 'value', progressVal);
@@ -202,26 +226,47 @@ $(function () {
 			url: 'doup.php',
 			dataType: "html",
 			cache: false,
-			timeout: 5000,
+			timeout: 8000,
 			data: sdata,
 			beforeSend: function(XMLHttpRequest){
 				
-			},	
+			},
 			success: function(data, textStatus){
-				$("#link_list").attr('value', page);	//成功,计数器+1
-				if(the_link < count_link && run == 1){
-					run_start();
+				//编码引起有隐含字符附加在data前
+				var source_data = data.toSource();
+				//alert(source_data);
+				var end = source_data.lastIndexOf('"');
+				var start = source_data.indexOf('FEFF') + 4;
+				//start = 19;
+				if((start != -1) && (end != -1)){
+				//if(end != -1){
+					//var str_data = source_data.slice(start, end).replace(/\\/g, '').replace(/\"/g, '');
+					//var json_data = $.toJSON(str_data);
+					//var page_id = $.evalJSON(str_data).pid;
+					var page_id = source_data.slice(start, end);
 				}
-				if(the_link == count_link){
-					stop();
+				//if(number_data == page)
+				//alert(str_data.replace(/\\/g, ''));
+				//alert(str_data);
+				//alert(json_data);
+				//alert(page_id);
+				if(page_id == page){
+					$("#link_list").attr('value', page);	//成功,计数器+1
+					if(the_link < count_link && run == 1){
+						run_start();
+					}
+					if(the_link == count_link){
+						stop();
+					}
+				}else{
+					err();
 				}
 			},
 			complete: function(XMLHttpRequest, textStatus){
-
+				
 			},
 			error: function(){
-				//请求出错处理
-				alert('开始整理:无法从服务器取得内容');
+				err();
 			}
 		}); 
 			
