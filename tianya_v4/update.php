@@ -174,12 +174,13 @@ if($url != ''){
 	?>" />
 	<meta name="keywords" content="免费阅读,热帖,只看楼主,整理阅读,楼主帖子" />
 	<meta name="description" content="或零网络,提供人性化的阅读体验,或零易读,或零阅读,或零小说,或零在线,楼主帖子" />
-	<link href="./css/info.css" rel="stylesheet" type="text/css" />
+	<link href="css/info.css" rel="stylesheet" type="text/css" />
+	<link href="css/index.css" rel="stylesheet" type="text/css" />
 	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
 	<script type="text/javascript" src="js/jquery.json-2.2.min.js"></script>
-	<script type="text/javascript" src="./update.js"></script>
+	<script type="text/javascript" src="js/update.js"></script>
 <script type="text/javascript">
 <?php 
 //定义全局变量,便于js调用:信息ID,整理到的页号;	
