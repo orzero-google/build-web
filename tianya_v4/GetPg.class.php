@@ -365,6 +365,7 @@ class get_url_cache{
 							$pg_size = $this->size;
                                 if($this->saveCache()){                                		
                                         //return true;
+                                        $cache_time = $this->time;
                                         $cache_size = $this->size;
                                         $st = true;
                                 }else{

@@ -147,6 +147,14 @@ $(function () {
 
 	function start(){
 		//$("#link_list").attr('value', 0).attr('run', 1);
+		//页号退1
+		var page = $("#link_list").attr('value');
+		if(page > 0){
+			$("#link_list").attr('value', (page-1));
+		}else{
+			$("#link_list").attr('value', 0);
+		}
+		
 		$("#link_list").attr('run', 1);
 		var run = $("#link_list").attr('run');
 		if(run == 1){
@@ -175,7 +183,7 @@ $(function () {
 		//alert('开始整理:无法从服务器取得内容');
 		var log = $("#dialog");
 		log.attr('title', '出错');
-		log.html('<p>' + '整理进程遇到错误,终止'  + '</p>');	
+		log.html('<p>' + '整理进程遇到错误,可能服务器繁忙,请稍后再试'  + '</p>');	
 		log.dialog({
 			bgiframe: true,
 			modal: true,
@@ -189,14 +197,41 @@ $(function () {
 		log.dialog('open');
 		stop();
 	}
+	function suc(){
+		//请求出错处理
+		//alert('开始整理:无法从服务器取得内容');
+		var log = $("#dialog");
+		log.attr('title', '完成');
+		log.html('<p>' + '如果有新的内容,请先分析后,再整理'  + '</p>');	
+		log.dialog({
+			bgiframe: true,
+			modal: true,
+			resizable: false,
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		log.dialog('open');
+		stop();
+		$("#update_log").dialog('close');
+	}	
 	
 	$("td.td-submit").css("cursor", "pointer").click(function (){
 		var $link = $("#link_list ol");
 		var count_link = $link.size();
 		var the_link = Number($("#link_list").attr('value'));
-		var progressVal = (the_link/count_link)*100;
+		if(the_link <= 1){
+			var progressVal = 0;
+		}else{
+			var progressVal = ((the_link-1)/count_link)*100;
+		}
 		$("#progressbar").progressbar('option', 'value', progressVal);
 		
+		
+		if(the_link > 0)
+		$("#update_log").dialog('option', 'title', '整理::到'+ the_link +'页/总'+count_link+'页');
 		$update_log.dialog('open');
 	});
 	
@@ -219,14 +254,14 @@ $(function () {
 		
 		//改变标题和分析按钮
 		if(the_link < count_link)
-		$("#update_log").dialog('option', 'title', '整理到'+ page +'页/总'+count_link+'页');
+		$("#update_log").dialog('option', 'title', '整理::到'+ page +'页/总'+count_link+'页');
 				
 		$.ajax({
 			type: "get",
 			url: 'doup.php',
 			dataType: "html",
 			cache: false,
-			timeout: 8000,
+			timeout: 5000,
 			data: sdata,
 			beforeSend: function(XMLHttpRequest){
 				
@@ -250,16 +285,18 @@ $(function () {
 				//alert(str_data);
 				//alert(json_data);
 				//alert(page_id);
-				if(page_id == page){
-					$("#link_list").attr('value', page);	//成功,计数器+1
-					if(the_link < count_link && run == 1){
-						run_start();
-					}
-					if(the_link == count_link){
-						stop();
-					}
+				if(the_link == count_link){
+					suc();
 				}else{
-					err();
+					if(page_id == page){
+						$("#link_list").attr('value', page);	//成功,计数器+1
+						if(the_link < count_link && run == 1){
+							run_start();
+						}
+	
+					}else{
+						err();
+					}
 				}
 			},
 			complete: function(XMLHttpRequest, textStatus){

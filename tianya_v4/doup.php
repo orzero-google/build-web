@@ -169,6 +169,7 @@ function do_pg($fu, $pu, $fv, $st){
 			//$get_url_cache_obj = new get_url_cache(base64_decode($pg_table['url']), $pg_table['dir'], $pg_table['form_vars']);
 			$get_url_cache_obj = new get_url_cache($pg_table['url'], $pg_table['dir'], $pg_table['form_vars']);
 			$getpg_st = $get_url_cache_obj->Get(false);	
+			//var_dump($getpg_st);
 			
 			if($getpg_st[0]){
 				//更新数据库
@@ -176,14 +177,17 @@ function do_pg($fu, $pu, $fv, $st){
 				`time`='".date('Y-m-d H:i:s', $getpg_st[3])."', 
 				`page_size`='".$pg_obj->Escape($getpg_st[1])."', 
 				`cache_size`='".$pg_obj->Escape($getpg_st[2])."', 
-				`state`='".$pg_obj->Escape($pg_table['state'])."' where `pgid`='".$sqlId."'";
+				`state`='0' where `pgid`='".$sqlId."'";
+				//var_dump($pog_query);
 				
 				$connection = Database::Connect();
 				
-				$out['url'] = $pg_table['url'];
-				$out['dir'] = $pg_table['dir'];	
-				$sqlId = Database::InsertOrUpdate($pog_query, $connection);
-				$out['id']  = $sqlId;
+				$up_status = Database::Reader($pog_query, $connection);
+				if($up_status){
+					$out['id']  = $sqlId;
+					$out['url'] = $pg_table['url'];
+					$out['dir'] = $pg_table['dir'];	
+				}
 			}
 		}else{
 			$out['id']  = $sqlId;

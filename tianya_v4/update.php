@@ -167,7 +167,11 @@ if($url != ''){
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>或零网络::天涯百宝箱</title>
-	<meta name="author" content="'.$p_info_utf8[6].'" />
+	<meta name="author" content="<?php 
+	if(isset($info['author_name']))
+		echo $info['author_name']; 
+	else echo 'www.orzero.com';
+	?>" />
 	<meta name="keywords" content="免费阅读,热帖,只看楼主,整理阅读,楼主帖子" />
 	<meta name="description" content="或零网络,提供人性化的阅读体验,或零易读,或零阅读,或零小说,或零在线,楼主帖子" />
 	<link href="./css/info.css" rel="stylesheet" type="text/css" />
@@ -187,13 +191,14 @@ if(isset($tianya_info_id) && $tianya_info_id > 0){
 	echo "\t".'var info_id = 0;';
 }*/
 if(isset($tianya_info_count) && $tianya_info_count > 0){
-	echo "\t".'var info_count = '.$tianya_info_count.';';
+	echo 'var info_count = '.$tianya_info_count.';'."\n";
 }else{
-	echo "\t".'var info_count = 0;';
+	$tianya_info_count = 0;
+	echo 'var info_count = 0;'."\n";
 }
 ?>
 $(document).ready(function(){	
-	var log = $("#dialog");
+var log = $("#dialog");
 <?php if(isset($is_tian_poster) && ($is_tian_poster=='err')){ ?>
 	log.attr('title', '链接错误');
 	log.html('<p>' + '当前网址不是天涯的帖子链接' + '</p>');	
@@ -239,14 +244,15 @@ $(document).ready(function(){
 	});
 	log.dialog('open');
 <?php } ?>
-
 });
 </script>
 </head>
 <body>
+
 <div class="logo">
 <a href="http://www.orzero.com"><img border="0" src="http://www.orzero.com/orzero.jpg" /></a>
 </div>
+
 <div style="display: none;" class="description">
 <span>请在文本框输入您想要整理的贴子的完整链接,然后再点</span>
 <span style="color:#ffffff;background-color:#005EAC;">[分析]</span>
@@ -304,6 +310,7 @@ foreach($link as $alink){
 <?php } ?>
 
 <div id="dialog" style="display:none;"></div>
+
 </body>
 </html>
 
