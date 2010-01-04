@@ -152,7 +152,7 @@ color:#F00;
 #content ol ul {
 display:none;
 }
-#contents li{
+#list li{
 border-top-width:1px;
 border-right-width-value:1px;
 border-right-width-ltr-source:physical;
@@ -198,7 +198,7 @@ margin-bottom:4px;
 position:relative;
 }
 
-#contents ol{
+#list ol{
 margin-top:0pt;
 margin-right:0pt;
 margin-bottom:0pt;

@@ -285,19 +285,20 @@ $(function () {
 				//alert(str_data);
 				//alert(json_data);
 				//alert(page_id);
+				//alert(the_link +'_'+ count_link);
 				if(the_link == count_link){
 					suc();
-				}else{
-					if(page_id == page){
-						$("#link_list").attr('value', page);	//成功,计数器+1
-						if(the_link < count_link && run == 1){
-							run_start();
-						}
-	
-					}else{
-						err();
-					}
+					return;
 				}
+				if(page_id == page){
+					$("#link_list").attr('value', page);	//成功,计数器+1
+					if(the_link < count_link && run == 1){
+						run_start();
+					}
+				}else{
+					err();alert(the_link +'_'+ count_link);
+				}
+
 			},
 			complete: function(XMLHttpRequest, textStatus){
 				
