@@ -87,7 +87,6 @@ $(document).ready(function(){
     var $history_panel = $("#history_panel");
     var maxWidth = 800;
     var body_width = document.body.offsetWidth;
-    //var contents = "";
     var author_md5 = $("#first_author").attr('name');
     
     var bro=$.browser;	//浏览器版本
@@ -96,24 +95,7 @@ $(document).ready(function(){
     if(bro.mozilla) {binfo="FF"}
     if(bro.safari) {binfo="SF"}
     if(bro.opera) {binfo="OP"}
-    //alert(binfo);
-    
-    //$wrap.hide();
-    //$history_panel.hide();
 
-    //用户列表和跳转
-    /*
-    $("div.section h4:has(a)").each(function () {
-        var $childrenAname = $(this).children("a").attr("name");
-        var name = $(this).attr("name");
-        contents += '<li name="'+ name +'" style="display:inline">' 
-        	+ $(this).children("span").text() 
-        	+ '<a href="' + url + '#' + $childrenAname + '" scrollto="' + $childrenAname + '"></a></li>';
-    });
-    contents = '<ol>' + contents + '</ol>';   
-    $("#contents").html(contents);  
-    */
-    alert($("#list li").html());
     //打开作者标题栏
    	$("#list li").each(function () {}).css("cursor", "pointer").click(function (){
    		var name = $(this).attr('name');
@@ -396,10 +378,7 @@ $(document).ready(function(){
         $wrap.center({
         	"vertical": false
         });
-        $list.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
-        $list.center({
-        	"vertical": false
-        });
+
         //if ($history_panel.length) {		//显示在最上层
         //    $history_panel.css({"margin-left":($window.width()-$history_panel.width()-10), "z-index":9, "position":"absolute", "display":"block", "top":0, "overflow":hidden});            
         //} 
