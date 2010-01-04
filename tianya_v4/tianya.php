@@ -482,20 +482,20 @@ function get_body($p_content, $p_info){
 		$content .= '<li name="'.$author_md5.'" style="display:inline">' . $p['author']
         	. '<a href="#'.'blog_'.$i.'" scrollto="'.'blog_'.$i.'"></a></li>';
         	
-		$body .= '<div class="section" aid="'.$p['author_id'].'">'."\n";		
+		$body .= '<div class="section" aid="'.$p['author_id'].'" name="'.$author_md5.'">'."\n";
 		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
 		$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';
-		$body .= '</h4>'."\n";		
-		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";		
+		$body .= '</h4>'."\n";
+		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
 		$body .= '</div>'."\n\n";
 		$i++;
 	}
 	
 	$list = '<div id="list">'."\n"
 			.'<h3><span>作者列表</span><a id="list_h" name="list_h"></a></h3>'."\n"
-			.'<p id="lists" name="lists"><ol>'."\n"
+			.'<div id="lists" name="lists">'."\n"
 			.$content."\n"
-			.'</ol></p>'."\n"
+			.'</div>'."\n"
 			.'</div>'."\n\n";
 	
 	$wrap = '<div id="wrap">'."\n"
@@ -517,7 +517,7 @@ $ft = '
 <tr><th>全局功能</th></tr>
 <tr><td class="lz">显示楼主帖子</td></tr>
 <tr><td class="allzz">打开全部作者</td></tr>
-<tr><td><a href="#content" scrollto="content">返回作者列表</a></td></tr>
+<tr><td><a href="#list" scrollto="list">返回作者列表</a></td></tr>
 </thead>
 </table>
 <tbody id="history_list">

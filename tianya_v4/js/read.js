@@ -108,7 +108,7 @@ $(document).ready(function(){
     	if(binfo == 'FF'){
     		$("#lists").hide('fast');
     	}
-    	$("#lists li").each(function () {
+    	$("#list li").each(function () {
     		var the_name = $(this).attr('name');
     		if(the_name == name){
     			$(this).hide();
@@ -118,20 +118,23 @@ $(document).ready(function(){
     		$("#lists").show('fast');
     	}
    	});   
-   	$("#lists li").each(function () {
+	
+	//勾号
+   	$("#list li").each(function () {
    		if(binfo == 'FF'){
-   			$(this).append('<span style="position:absolute;right:0" class="ui-icon ui-icon-check"></span>');
+   			$(this).append('<span style="position:absolute;right:0;" class="ui-icon ui-icon-check"></span>');
    		}else{
    			$(this).append('<span style="position:absolute;" class="ui-icon ui-icon-check"></span>');
    		}
    	});
 
-   	
+   	//内容返回列表快捷键
     var backtocontent = '<span style="float:right;position:relative;" class="open ui-icon ui-icon-gear"></span><p class="backToTop">';
     backtocontent += '<a href="' + url + '#lists" scrollto="lists">↑返回用户列表</a>';
     backtocontent += '</p>';
     $("div.blog").append(backtocontent);
-
+	
+	//当前作者标题开关快捷键
     $("div.blog span.open").each(function () {}).css("cursor", "pointer").click(function (){
     	var name = $(this).parent().attr("name"); 
     	$("div.section h4").each(function () {
@@ -149,7 +152,7 @@ $(document).ready(function(){
     	if(binfo == 'FF'){
     		$("#lists").hide();
     	}
-       	$("#lists li").each(function () {
+       	$("#list li").each(function () {
        		var the_name = $(this).attr('name');
        		var st = $(this).css("display");  
        		if(the_name == name){
@@ -178,7 +181,7 @@ $(document).ready(function(){
 			$(this).show("fast");
 			i++;
 		}
-    	$("#lists li").each(function () {
+    	$("#list li").each(function () {
     		var the_name = $(this).attr('name');
     		if(the_name == author_md5){
     			$(this).css('background-color','#90ee90');
@@ -203,7 +206,7 @@ $(document).ready(function(){
 		if(binfo == 'FF'){
 			$("#lists").hide('fast');
 		}
-		$("#lists li").each(function () {
+		$("#list li").each(function () {
 			var the_name = $(this).attr("name");
 			if(the_name == name){
 				$(this).hide();
@@ -335,7 +338,7 @@ $(document).ready(function(){
 	    	$("div.section h4").each(function () {
 	    		$(this).show('fast');
 	    	});
-	    	$("#lists li").each(function () {
+	    	$("#list li").each(function () {
 	    		$(this).hide();
 	    	});	    
 	    	$("#lists").hide();
@@ -344,7 +347,7 @@ $(document).ready(function(){
 	    	$("div.section h4").each(function () {
 	    		$(this).hide();
 	    	});
-	    	$("#lists li").each(function () {
+	    	$("#list li").each(function () {
 	    		$(this).css('display', 'inline');
 	    		$(this).show('fast');
 	    	});	
@@ -374,11 +377,14 @@ $(document).ready(function(){
         
 	//窗口定位
     $window.resize(function () {
-        $wrap.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block", "both":"clear"});
+        $wrap.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
         $wrap.center({
         	"vertical": false
         });
-
+        $list.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
+        $list.center({
+        	"vertical": false
+        });
         //if ($history_panel.length) {		//显示在最上层
         //    $history_panel.css({"margin-left":($window.width()-$history_panel.width()-10), "z-index":9, "position":"absolute", "display":"block", "top":0, "overflow":hidden});            
         //} 
