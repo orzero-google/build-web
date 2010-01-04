@@ -83,10 +83,11 @@ $(document).ready(function(){
     var url = "";
     var $window = $(window);
     var $wrap = $("#wrap");
+    var $list = $("#list");
     var $history_panel = $("#history_panel");
     var maxWidth = 800;
     var body_width = document.body.offsetWidth;
-    var contents = "";
+    //var contents = "";
     var author_md5 = $("#first_author").attr('name');
     
     var bro=$.browser;	//浏览器版本
@@ -112,9 +113,9 @@ $(document).ready(function(){
     contents = '<ol>' + contents + '</ol>';   
     $("#contents").html(contents);  
     */
-    alert($("#contents ol").html());
+    alert($("#list li").html());
     //打开作者标题栏
-   	$("#contents li").each(function () {}).css("cursor", "pointer").click(function (){
+   	$("#list li").each(function () {}).css("cursor", "pointer").click(function (){
    		var name = $(this).attr('name');
     	$("div.section h4").each(function () {
     		var the_name = $(this).attr('name');    
@@ -123,19 +124,19 @@ $(document).ready(function(){
     		}
     	});  
     	if(binfo == 'FF'){
-    		$("#contents").hide('fast');
+    		$("#lists").hide('fast');
     	}
-    	$("#contents li").each(function () {
+    	$("#lists li").each(function () {
     		var the_name = $(this).attr('name');
     		if(the_name == name){
     			$(this).hide();
     		}    		
     	});    	
     	if(binfo == 'FF'){
-    		$("#contents").show('fast');
+    		$("#lists").show('fast');
     	}
    	});   
-   	$("#contents li").each(function () {
+   	$("#lists li").each(function () {
    		if(binfo == 'FF'){
    			$(this).append('<span style="position:absolute;right:0" class="ui-icon ui-icon-check"></span>');
    		}else{
@@ -145,7 +146,7 @@ $(document).ready(function(){
 
    	
     var backtocontent = '<span style="float:right;position:relative;" class="open ui-icon ui-icon-gear"></span><p class="backToTop">';
-    backtocontent += '<a href="' + url + '#content" scrollto="content">↑返回用户列表</a>';
+    backtocontent += '<a href="' + url + '#lists" scrollto="lists">↑返回用户列表</a>';
     backtocontent += '</p>';
     $("div.blog").append(backtocontent);
 
@@ -164,9 +165,9 @@ $(document).ready(function(){
     	}); 
     	
     	if(binfo == 'FF'){
-    		$("#contents").hide();
+    		$("#lists").hide();
     	}
-       	$("#contents li").each(function () {
+       	$("#lists li").each(function () {
        		var the_name = $(this).attr('name');
        		var st = $(this).css("display");  
        		if(the_name == name){
@@ -180,7 +181,7 @@ $(document).ready(function(){
        		}
        	});  
     	if(binfo == 'FF'){
-    		$("#contents").show('fast');
+    		$("#lists").show('fast');
     	}
     });
 
@@ -195,7 +196,7 @@ $(document).ready(function(){
 			$(this).show("fast");
 			i++;
 		}
-    	$("#contents li").each(function () {
+    	$("#lists li").each(function () {
     		var the_name = $(this).attr('name');
     		if(the_name == author_md5){
     			$(this).css('background-color','#90ee90');
@@ -218,9 +219,9 @@ $(document).ready(function(){
 			}
 		});	
 		if(binfo == 'FF'){
-			$("#contents").hide('fast');
+			$("#lists").hide('fast');
 		}
-		$("#contents li").each(function () {
+		$("#lists li").each(function () {
 			var the_name = $(this).attr("name");
 			if(the_name == name){
 				$(this).hide();
@@ -229,7 +230,7 @@ $(document).ready(function(){
 			}
 		});	
 		if(binfo == 'FF'){
-			$("#contents").show('fast');
+			$("#lists").show('fast');
 		}
     });
 	//显示当前作者所有内容
@@ -272,7 +273,7 @@ $(document).ready(function(){
 
 	//显示当前标题内容
     $("h3 > span").css("cursor", "pointer").click(function () {
-    	$("#contents").slideToggle('normal');
+    	$("#lists").slideToggle('normal');
     });   
     $("h4 > span").css("cursor", "pointer").click(function () {
     	$(this).parent().next("div.blog").slideToggle('normal');
@@ -293,7 +294,7 @@ $(document).ready(function(){
     $("td.lz").css({"text-decoration":"underline","color":"blue"}).css("cursor", "pointer").click(function () {
     	var c = $(this).text();
     	if(binfo == 'FF'){
-    		$("#contents").hide();
+    		$("#lists").hide();
     	}
     	if(c == '显示楼主帖子'){
 	    	$("div.blog").each(function () {
@@ -339,33 +340,33 @@ $(document).ready(function(){
 	    	$(this).text('显示楼主帖子');
     	}
     	if(binfo == 'FF'){
-    		$("#contents").show('fast');
+    		$("#lists").show('fast');
     	}
     });
     //打开全部作者
     $("td.allzz").css({"text-decoration":"underline","color":"blue"}).css("cursor", "pointer").click(function () {
     	var c = $(this).text();
     	if(binfo == 'FF'){
-    		$("#contents").hide();
+    		$("#lists").hide();
     	}
     	if(c == '打开全部作者'){
 	    	$("div.section h4").each(function () {
 	    		$(this).show('fast');
 	    	});
-	    	$("#contents li").each(function () {
+	    	$("#lists li").each(function () {
 	    		$(this).hide();
 	    	});	    
-	    	$("#contents").hide();
+	    	$("#lists").hide();
 	    	$(this).text('关闭全部作者');
     	}else if(c == '关闭全部作者'){
 	    	$("div.section h4").each(function () {
 	    		$(this).hide();
 	    	});
-	    	$("#contents li").each(function () {
+	    	$("#lists li").each(function () {
 	    		$(this).css('display', 'inline');
 	    		$(this).show('fast');
 	    	});	
-	    	$("#contents").show('fast');
+	    	$("#lists").show('fast');
 	    	$("div.blog").each(function () {
 	    		$(this).hide();
 	    	});	    
@@ -376,7 +377,7 @@ $(document).ready(function(){
 	    	});
 	    	$(this).text('打开全部作者');
 	    	if(binfo == 'FF'){
-	    		$("#contents").show('fast');
+	    		$("#lists").show('fast');
 	    	}
     	}
     });   
@@ -386,13 +387,17 @@ $(document).ready(function(){
     	$(this).children("div.blog").addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active").hide();
     	$(this).children("h4.blog_author").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all").hide();
     });
-    $("#contents").addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active");
+    $("#lists").addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active");
 	$("h3").addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-all");
         
 	//窗口定位
     $window.resize(function () {
-        $wrap.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
+        $wrap.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block", "both":"clear"});
         $wrap.center({
+        	"vertical": false
+        });
+        $list.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
+        $list.center({
         	"vertical": false
         });
         //if ($history_panel.length) {		//显示在最上层
@@ -407,8 +412,8 @@ $(document).ready(function(){
     	}else if(binfo == 'FF'){
     		//$history_panel.css({"right":"0", "text-align":"right", "position":"absolute"})
     		$history_panel.css("left", (($window.width() - maxWidth) / 2) + maxWidth);
-    		$("#contents").hide('fast');
-    		$("#contents").show('fast');
+    		$("#lists").hide('fast');
+    		$("#lists").show('fast');
     	}
         //} 
         

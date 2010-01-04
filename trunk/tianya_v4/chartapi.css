@@ -1,6 +1,6 @@
 ﻿/*
-Cloudream Copyright
-http://www.5iya.com/blog
+或零网络
+http://www.orzero.com
 */
 html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td {margin:0;padding:0;}
 img,body,html {border:0;}
@@ -151,4 +151,87 @@ color:#F00;
 }
 #content ol ul {
 display:none;
+}
+#contents li{
+border-top-width:1px;
+border-right-width-value:1px;
+border-right-width-ltr-source:physical;
+border-right-width-rtl-source:physical;
+border-bottom-width:1px;
+border-left-width-value:1px;
+border-left-width-ltr-source:physical;
+border-left-width-rtl-source:physical;
+border-top-style:solid;
+border-right-style-value:solid;
+border-right-style-ltr-source:physical;
+border-right-style-rtl-source:physical;
+border-bottom-style:solid;
+border-left-style-value:solid;
+border-left-style-ltr-source:physical;
+border-left-style-rtl-source:physical;
+border-top-color:#cad8f3;
+border-right-color-value:#cad8f3;
+border-right-color-ltr-source:physical;
+border-right-color-rtl-source:physical;
+border-bottom-color:#cad8f3;
+border-left-color-value:#cad8f3;
+border-left-color-ltr-source:physical;
+border-left-color-rtl-source:physical;
+background-color:#dee7f8;
+background-image:none;
+background-repeat:repeat;
+background-attachment:scroll;
+background-position:0% 0%;
+padding-top:1px;
+padding-right:15px;
+padding-bottom:2px;
+padding-left:5px;
+margin-right:5px;
+margin-bottom:4px;
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+-moz-border-radius-bottomleft:6px;
+-moz-border-radius-bottomright:6px;
+-moz-border-radius-topleft:6px;
+-moz-border-radius-topright:6px;
+position:relative;
+}
+
+#contents ol{
+margin-top:0pt;
+margin-right:0pt;
+margin-bottom:0pt;
+margin-left:0pt;
+border-top-width:1px;
+border-right-width-value:1px;
+border-right-width-ltr-source:physical;
+border-right-width-rtl-source:physical;
+border-bottom-width:1px;
+border-left-width-value:1px;
+border-left-width-ltr-source:physical;
+border-left-width-rtl-source:physical;
+border-top-style:solid;
+border-right-style-value:solid;
+border-right-style-ltr-source:physical;
+border-right-style-rtl-source:physical;
+border-bottom-style:solid;
+border-left-style-value:solid;
+border-left-style-ltr-source:physical;
+border-left-style-rtl-source:physical;
+border-top-color:#999999;
+border-right-color-value:#999999;
+border-right-color-ltr-source:physical;
+border-right-color-rtl-source:physical;
+border-bottom-color:#999999;
+border-left-color-value:#999999;
+border-left-color-ltr-source:physical;
+border-left-color-rtl-source:physical;
+overflow-x:hidden;
+overflow-y:hidden;
+height:auto;
+padding-top:4px;
+padding-right:5px;
+padding-bottom:0pt;
+padding-left:5px;
 }

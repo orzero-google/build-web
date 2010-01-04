@@ -205,8 +205,7 @@ function get_tianya($fu, $pu, $fv, $st){
 function get_content_array($page_source, $first_second){
 	$rq_str_gbk = iconv('UTF-8', 'GBK', '日期：');
 	$fw_str_gbk = iconv('UTF-8', 'GBK', '访问：');
-	$to_cut_bf = array('<table', '<TABLE', '<BR><BR>', '<br><br>', '<font', '<FONT');
-	
+	$to_cut_bf = array('<table', '<TABLE', '<BR><BR>', '<br><br>', '<font', '<FONT');	
 	
 	if($first_second == 1){
 		$page_source = get_mid_content($page_source, '<TABLE id="firstAuthor"', '</DIV></div>');
@@ -225,7 +224,7 @@ function get_content_array($page_source, $first_second){
 		    	$p_content[$cn]['content'] = get_bf($to_cut_bf, $p_content[$cn]['content']);
 			}else{
 		    	$p_content[$cn]['author_id'] = get_mid_content($content, 'vid=', '&vwriter=');
-		    	$p_content[$cn]['author'] = get_mid_content($content, '&vwriter=', '&idwriter');
+		    	$p_content[$cn]['author'] = get_mid_content($content, 'vwriter=', '&idwriter');
 		    	$p_content[$cn]['time'] = get_mid_content($content, $rq_str_gbk, '</font>');
 		    	$p_content[$cn]['content'] = get_mid_content($content, 
 		    	'</TD></TR></table>',
@@ -269,6 +268,8 @@ function get_content_array($page_source, $first_second){
 		}
 		return $p_content;		
 	}
+	
+	return false;
 }
 
 /*
@@ -304,6 +305,7 @@ function get_header($p_info, $p_content){
 	return $hd;
 }*/
 //$p_info:
+/*
 //是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 //是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
 function get_header($p_info, $p_content){	
@@ -339,7 +341,48 @@ function get_header($p_info, $p_content){
 	//$header = iconv('GBK', 'UTF-8', $hd);
 	return $hd;
 }
+*/
 
+//第三版,配合read.php
+//是主版则返回:(1,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
+//是副版则返回:(2,频道英文缩写,频道中文名称,标题,当前页id,作者id,作者名称)
+function get_header($p_info, $p_content, $tid){
+	foreach($p_content as $content){
+		$author[] = iconv('GBK', 'UTF-8//IGNORE',$content['author']);
+	}	
+	$list = implode(', ', $author);
+
+	$p_info->channel_cn = iconv('GBK', 'UTF-8//IGNORE', $p_info->channel_cn);
+	$p_info->title = iconv('GBK', 'UTF-8//IGNORE', $p_info->title);
+	$p_info->author_name = iconv('GBK', 'UTF-8//IGNORE', $p_info->author_name);
+	
+	$author_md5 = md5($p_info->author_name);
+	
+	$keywords = '或零网络>或零阅读,'.$p_info->title.',第'.$tid.'页,'.$p_info->channel_cn
+	.','.$p_info->channel_en.','.$p_info->author_name.','.',或零易读,或零阅读,或零小说,或零在线';
+	$hd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>或零网络::或零阅读,'.$p_info->title.',[第'.$tid.'页]</title>
+	<meta name="author" content="'.$p_info->author_name.'" />
+	<meta name="keywords" content="'.$keywords.'" />
+	<meta name="description" content="或零易读,或零阅读,或零小说,或零在线,'.$p_info->title.','.$list.'" />
+	<link type="text/css" href="css/start/jquery-ui-1.7.2.custom.css" rel="stylesheet" />	
+	<link type="text/css" href="./chartapi.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>	
+	<script type="text/javascript" src="js/read.js"></script>	
+</head>
+<body>
+
+<div id="first_author" name="'.$author_md5.'"></div>
+<div id="first_author_id" name="'.$p_info->author_id.'"></div>
+
+';
+	//$header = iconv('GBK', 'UTF-8', $hd);
+	return $hd;
+}
 /*
 function get_body($p_content){		
 	$body = '<div id="wrap">'."\n";
@@ -375,6 +418,7 @@ function get_body($p_content){
 	
 	return $body;
 }*/
+/*
 function get_body($p_content,$p_info){		
 	foreach($p_info as $info){
 		$p_info_utf8[] = iconv('GBK', 'UTF-8//IGNORE',$info);
@@ -414,6 +458,54 @@ function get_body($p_content,$p_info){
 	//$body .= '<div id="count" value="'.$i.'"></div>'."\n";
 	
 	return $body;
+}
+*/
+//第三版,配合read.php
+function get_body($p_content, $p_info){			
+	$body = '';
+	$content = '';
+	$i=0;
+	foreach($p_content as $p){		
+		$str_to_replace = array(base64_decode('DQqj'), base64_decode('lKOU'));
+		$p['content'] = str_replace($str_to_replace, '', $p['content']);
+		$p['content'] = iconv('GBK', 'UTF-8//IGNORE', $p['content']);		
+		$p['author'] = iconv('GBK', 'UTF-8', $p['author']);
+		if($p['author_id'] == $p_info->author_id && $p_info->author_id != 0){
+			$p['author'] = $p_info->author_name;
+			//echo $p_info_utf8[6];
+		}
+		$p['time'] = iconv('GBK', 'UTF-8', $p['time']);		
+		$author_md5 = md5($p['author']);
+		
+		//$content .= '<li name="'.$author_md5.'" style="display:inline">' . $p['author']
+        //	. '<a href="#'.'blog_'.$i.'" scrollto="'.'blog_'.$i.'"></a></li>'."\n";
+		$content .= '<li name="'.$author_md5.'" style="display:inline">' . $p['author']
+        	. '<a href="#'.'blog_'.$i.'" scrollto="'.'blog_'.$i.'"></a></li>';
+        	
+		$body .= '<div class="section" aid="'.$p['author_id'].'">'."\n";		
+		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
+		$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';
+		$body .= '</h4>'."\n";		
+		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";		
+		$body .= '</div>'."\n\n";
+		$i++;
+	}
+	
+	$list = '<div id="list">'."\n"
+			.'<h3><span>作者列表</span><a id="list_h" name="list_h"></a></h3>'."\n"
+			.'<p id="lists" name="lists"><ol>'."\n"
+			.$content."\n"
+			.'</ol></p>'."\n"
+			.'</div>'."\n\n";
+	
+	$wrap = '<div id="wrap">'."\n"
+			//.'<h3><span>作者列表</span><a id="content" name="content"></a></h3>'
+			//.'<p id="contents" name="contents">载入中......</p>'."\n"
+			//.'<p id="contents" name="contents"><ol>'."\n".$content.'</ol></p>'."\n\n"
+			.$body
+			.'</div>'."\n\n";
+	//$body .= '<div id="count" value="'.$i.'"></div>'."\n";	
+	return $list.$wrap;
 }
 
 function get_footer(/*$page_source, $first_second*/){		
