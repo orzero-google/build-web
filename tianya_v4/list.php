@@ -3,6 +3,9 @@ include_once './configuration.php';
 include_once './objects/class.database.php';
 include_once './objects/class.info.php';
 
+$channel = '';
+$set['show_log'] = true;
+
 define('IS_GPC', get_magic_quotes_gpc());
 foreach(array('_GET','_POST') as $_request) {
 	foreach($$_request as $_key => $_value) {
@@ -14,9 +17,14 @@ foreach(array('_GET','_POST') as $_request) {
 		}
 	}
 }
-
+$channel = trim($channel);
 //检查参数
-
+if($channel == ''){
+	$err['channel'] = 'NULL';
+	if($set['show_log'])
+		echo json_encode($err);
+	exit;
+}
 
 //取得数据
 function get_channel($info_obj){		//取得所有频道列表
@@ -54,18 +62,19 @@ function gbk2utf8($str){
 }
 
 $info_obj = new info();
-$channel_r = get_channel($info_obj);
-//print_r($channel_r);
 
-$list_channel_tid = array();
-foreach($channel_r as $channel){
-	$channel_en = $channel['channel_en'];
-	$channel_tid_r = get_channel_tid($info_obj, $channel_en);
-	//print_r($channel_tid_r);
-	$list_channel_tid[] = $channel_tid_r;
+if($channel == 'index'){
+	$channel_r = get_channel($info_obj);
+	//print_r($channel_r);
+	$list_channel_tid = array();
+	foreach($channel_r as $channel){
+		$channel_en = $channel['channel_en'];
+		$channel_tid_r = get_channel_tid($info_obj, $channel_en);
+		//print_r($channel_tid_r);
+		$list_channel_tid[] = $channel_tid_r;
+	}
+	//print_r($list_channel_tid);
 }
-
-//print_r($list_channel_tid);
 
 //构造页面
 ?>
@@ -85,45 +94,39 @@ foreach($channel_r as $channel){
 <body>
     
 <div id="content">
-	<h1>豆瓣电影标签</h1>
+	<h1>或零整理帖子</h1>
 	<div class="grid-16-8 clearfix">
 		<div class="article">
         
 			<div style="height:20px; border-bottom: 1px solid rgb(204, 204, 204); padding-bottom: 5px; margin-bottom: 10px;" class="clearfix">
 				<span class="rr greyinput">
-					分类浏览 /<a href="/movie/tag/?view=cloud">所有热门标签</a>
+					分类浏览&nbsp;/&nbsp;<a href="/movie/tag/?view=cloud">所有热门标签</a>
 				</span>
 			</div>
 	        
-			<a name="类型"><h2 style="padding-top:10px">类型 · · · · · · </h2></a>
+			<a name="类型"><h2 style="padding-top:10px">频道列表 · · · · · · </h2></a>
 			<table class="tagCol">
 				<tbody>
-	               <!-- <tr>
-	                    <td><a href="./爱情">爱情</a><b>(1347770)</b></td>
-	                    <td><a href="./喜剧">喜剧</a><b>(1154055)</b></td>	
-	                    <td><a href="./经典">经典</a><b>(778823)</b></td>
-	                    <td><a href="./科幻">科幻</a><b>(652474)</b></td>
-	                    </tr> -->
-					<tr>               
-<?php
-$i = 1;		//循环4次换一个tr标记
-foreach($list_channel_tid as $channel_tid){
-	$td['id'] = $channel_tid[0]['infoid'];
-	$td['channel_cn'] = gbk2utf8($channel_tid[0]['channel_cn']);
-	$td['count'] = count($channel_tid);
-?>
-
-<td><a href="./<?php echo $td['id']; ?>"><?php echo $td['channel_cn']; ?></a><b>(<?php echo $td['count']; ?>)</b></td>
-
-<?php
-	if($i >= 4){
-		$i = 1;
-?>
 					<tr>
-					</tr>
 <?php
+if($channel == 'index'){
+	$i = 1;		//循环4次换一个tr标记
+	foreach($list_channel_tid as $channel_tid){
+		$td['id'] = $channel_tid[0]['infoid'];
+		$td['channel_cn'] = gbk2utf8($channel_tid[0]['channel_cn']);
+		$td['count'] = count($channel_tid);
+?>
+						<td><a href="./<?php echo $td['id']; ?>"><?php echo $td['channel_cn']; ?></a><b>(<?php echo $td['count']; ?>)</b></td>
+<?php
+		if($i >= 4){
+			$i = 1;
+?>
+					</tr>
+					<tr>
+<?php
+		}
+		$i++;
 	}
-	$i++;
 }
 ?>
 					</tr>
