@@ -22,7 +22,7 @@ $configuration['db_encoding'] = 0;
 $configuration['db']	= 'tianya_20091130';		//	<- database name
 $configuration['host'] 	= 'localhost';	//	<- database host
 $configuration['user'] 	= 'root';		//	<- database user
-$configuration['pass']	= '555aaa';		//	<- database password
+$configuration['pass']	= '';		//	<- database password
 $configuration['port']	= '3306';		//	<- database port
 
 

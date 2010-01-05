@@ -95,7 +95,51 @@ $(document).ready(function(){
     if(bro.mozilla) {binfo="FF"}
     if(bro.safari) {binfo="SF"}
     if(bro.opera) {binfo="OP"}
+    
+    //晃动时候闭合列表,执行关闭打开用户列表,以便勾号归位
+	function rep_r(){
+		var $list = $("#list");		
+		if(binfo == 'FF'){
+			$list.hide();
+			$list.show('fast');
+		}
+	}	
+    //作者标题栏浮动
+	function show_list(){
+		var log = $("#list");
+		log.attr('title', '作者列表');
+		//log.html('<p>' + '整理进程遇到错误,可能服务器繁忙,请稍后再试'  + '</p>');	
+		log.dialog({
+			bgiframe: true,
+			modal: false,
+			resizable: true,
+			autoOpen: false,
+			minWidth: 600,
+			width: 600,
+			//minHeight: 400,
+			dragStart: function() {rep_r();},
+			resizeStop: function() {rep_r();},
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		rep_r();
+		log.dialog('open');
+	}
+	
+	var backtocontent = '<span style="float:right;position:relative;" class="open ui-icon ui-icon-gear"></span><p class="backToTop">';
+		backtocontent += '<span class="show_list">显示作者列表</span>';
+	    backtocontent += '</p>';
+	    $("div.blog").append(backtocontent);
+	    
+	$(".show_list").css({"text-decoration":"underline","color":"green"}).css("cursor", "pointer").click(function (){
+		show_list();
+	});
 
+	
+	
     //打开作者标题栏
    	$("#list li").each(function () {}).css("cursor", "pointer").click(function (){
    		var name = $(this).attr('name');
@@ -123,16 +167,18 @@ $(document).ready(function(){
    	$("#list li").each(function () {
    		if(binfo == 'FF'){
    			$(this).append('<span style="position:absolute;right:0;" class="ui-icon ui-icon-check"></span>');
-   		}else{
+   		}else if(binfo == 'IE'){
    			$(this).append('<span style="position:absolute;" class="ui-icon ui-icon-check"></span>');
    		}
    	});
 
+   	/*
    	//内容返回列表快捷键
     var backtocontent = '<span style="float:right;position:relative;" class="open ui-icon ui-icon-gear"></span><p class="backToTop">';
     backtocontent += '<a href="' + url + '#lists" scrollto="lists">↑返回用户列表</a>';
     backtocontent += '</p>';
     $("div.blog").append(backtocontent);
+    */
 	
 	//当前作者标题开关快捷键
     $("div.blog span.open").each(function () {}).css("cursor", "pointer").click(function (){
@@ -257,10 +303,11 @@ $(document).ready(function(){
 
 
 	//显示当前标题内容
-    $("h3 > span").css("cursor", "pointer").click(function () {
+    /*
+    $("h3").css({"cursor":"pointer"}).click(function () {
     	$("#lists").slideToggle('normal');
-    });   
-    $("h4 > span").css("cursor", "pointer").click(function () {
+    })；*/
+    $("h4 > span").css({"cursor":"pointer", "margin-left":"8px"}).click(function () {
     	$(this).parent().next("div.blog").slideToggle('normal');
     	var st = $(this).parent().children("div.tools").children("span");
     	//alert(st.attr('class'))    	
@@ -381,10 +428,8 @@ $(document).ready(function(){
         $wrap.center({
         	"vertical": false
         });
-        $list.width(Math.min($window.width(), maxWidth)).css({"position":"absolute", "display":"block"});
-        $list.center({
-        	"vertical": false
-        });
+        
+
         //if ($history_panel.length) {		//显示在最上层
         //    $history_panel.css({"margin-left":($window.width()-$history_panel.width()-10), "z-index":9, "position":"absolute", "display":"block", "top":0, "overflow":hidden});            
         //} 

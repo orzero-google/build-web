@@ -81,7 +81,6 @@ white-space:pre-wrap;
 word-wrap:break-word;
 }
 a:link, a:visited, a:active {
-border-bottom:1px dashed;
 text-decoration:none;
 }
 a:hover {
@@ -152,7 +151,7 @@ color:#F00;
 #content ol ul {
 display:none;
 }
-#list li{
+#list li, h4 span.name{
 border-top-width:1px;
 border-right-width-value:1px;
 border-right-width-ltr-source:physical;
