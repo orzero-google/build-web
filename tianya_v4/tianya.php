@@ -358,7 +358,7 @@ function get_header($p_info, $p_content, $tid){
 	
 	$author_md5 = md5($p_info->author_name);
 	
-	$keywords = '或零网络>或零阅读,'.$p_info->title.',第'.$tid.'页,'.$p_info->channel_cn
+	$keywords = '或零网络,或零阅读,'.$p_info->title.',第'.$tid.'页,'.$p_info->channel_cn
 	.','.$p_info->channel_en.','.$p_info->author_name.','.',或零易读,或零阅读,或零小说,或零在线';
 	$hd = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
