@@ -491,11 +491,11 @@ function get_body($p_content, $p_info){
 		$i++;
 	}
 	
-	$list = '<div id="list">'."\n"
-			.'<h3><span>作者列表</span><a id="list_h" name="list_h"></a></h3>'."\n"
-			.'<div id="lists" name="lists">'."\n"
+	$list = '<div id="list" style="display:none;">'."\n"
+			//.'<h3><span class="name"></span><a id="list_h" name="list_h"></a></h3>'."\n"
+			.'<div id="lists" name="lists"><ol>'."\n"
 			.$content."\n"
-			.'</div>'."\n"
+			.'</ol></div>'."\n"
 			.'</div>'."\n\n";
 	
 	$wrap = '<div id="wrap">'."\n"
@@ -517,7 +517,7 @@ $ft = '
 <tr><th>全局功能</th></tr>
 <tr><td class="lz">显示楼主帖子</td></tr>
 <tr><td class="allzz">打开全部作者</td></tr>
-<tr><td><a href="#list" scrollto="list">返回作者列表</a></td></tr>
+<tr><td class="show_list">显示作者列表</td></tr>
 </thead>
 </table>
 <tbody id="history_list">
