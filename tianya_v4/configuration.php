@@ -37,3 +37,6 @@ $configuration['proxy_password'] = false;
 $configuration['plugins_path'] = dirname(__FILE__).'/plugins';  //absolute path to plugins folder, e.g c:/mycode/test/plugins or /home/phpobj/public_html/plugins
 
 Date_default_timezone_set("PRC");	//设定为中华人民共和国
+
+//是否显示日志
+$set['show_log'] = true;
