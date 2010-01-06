@@ -484,7 +484,7 @@ function get_body($p_content, $p_info){
         	
 		$body .= '<div class="section" aid="'.$p['author_id'].'" name="'.$author_md5.'">'."\n";
 		$body .= '<h4 class="blog_author" name="'.$author_md5.'">';
-		$body .= '<span>'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';
+		$body .= '<span style="float:left;" class="fopen fshow ui-icon ui-icon-folder-collapsed"></span><span class="fopen">'.$p['author'].'</span><a name="'.'blog_'.$i.'"></a><div class="close"></div><div class="tools"></div>';
 		$body .= '</h4>'."\n";
 		$body .= '<div class="blog" name="'.$author_md5.'" bid="'.'blog_'.$i.'">'."\n".trim($p['content'])."\n".'</div>'."\n";
 		$body .= '</div>'."\n\n";
@@ -508,25 +508,33 @@ function get_body($p_content, $p_info){
 	return $list.$wrap;
 }
 
-function get_footer(/*$page_source, $first_second*/){		
+function get_footer($page_count, $tid, $pid){		
 $ft = '
-<div id="history_panel" style="width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
+
+<div id="tools_panel" style="width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
 <table>
-<thead>
-<tr><td class="warning" style="text-align:center;">工具栏</td></tr>
-<tr><th>全局功能</th></tr>
-<tr><td class="lz">显示楼主帖子</td></tr>
-<tr><td class="allzz">打开全部作者</td></tr>
-<tr><td class="show_list">显示作者列表</td></tr>
-</thead>
+	<thead style="font-size:14px;">
+		<tr><td class="warning" style="text-align:center;">工具栏</td></tr>
+		<tr><th class="qj" style="text-align:center;">全局功能</th></tr>
+		<tr><td class="qj lz"><span style="float:left;" class="ui-icon ui-icon-lightbulb"></span>显示楼主帖子</td></tr>
+		<tr><td class="qj allzz"><span style="float:left;" class="open ui-icon ui-icon-gear"></span>打开全部作者</td></tr>
+		<tr><td class="qj show_list"><span style="float:left;" class="ui-icon ui-icon-newwin"></span>显示作者列表</td></tr>
+		<tr><th class="dh" style="font-size:12px;text-align:center;">导航功能<br /><span style="font-size:12px;color:#A4A4A4;cursor:pointer;">(总'.$page_count.'页)</span></th></tr>
+		<tr>
+			<td class="dh" style="font-size:12px;text-align:center;padding-left:1px;padding-top:9px;padding-right:1px;padding-bottom:9px;">
+				<span class="prev">&lt;前页</span>&nbsp;<span class="current">[第'.$pid.'页]</span>&nbsp;<span class="next">后页&gt;</span>
+			</td>
+		</tr>
+	</thead>
 </table>
-<tbody id="history_list">
+</div>
 
 ';
 
-$ft .= ' 
-</tbody>
+$ft .= '
+<div id="page_info" tid="'.$tid.'" pid="'.$pid.'" count="'.$page_count.'">
 </div>
+
 </body>
 </html>
 ';

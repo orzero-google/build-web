@@ -8,7 +8,8 @@ include_once './function.base.php';
 include_once './tianya.php';
 
 $tid = 0;	//表[content]:	字段[info_id]
-$pid = 0; 	//表[content	:	字段[page_num]
+$pid = 1; 	//表[content	:	字段[page_num]
+
 define('IS_GPC', get_magic_quotes_gpc());
 foreach(array('_GET','_POST') as $_request) {
 	foreach($$_request as $_key => $_value) {
@@ -20,14 +21,18 @@ foreach(array('_GET','_POST') as $_request) {
 		}
 	}
 }
-//检查参数
+$tid = trim($tid);
+$pid = trim($pid);
+
+//检查参数:tid必须有且大于1,pid没有则默认为1
 $run = array();
 $run['get_parameter'] = false;
 if((isset($tid) && $tid>0) && (isset($pid) && $pid>0)){
 	$run['get_parameter'] = true;
 }else{
-	$log['err'] = 'Need:infoid,contentid';
-	echo json_encode($log);
+	$log['err'] = 'Need:tid';
+	if($set['show_log'])
+		echo json_encode($log);
 	exit;
 }
 
@@ -73,6 +78,7 @@ if($run['get_parameter']){
 //取得回复列表
 if($run['info']->type == 1 || $run['info']->type == 2){
 	$run['blog_list'] = get_content_array($run['content'], $run['info']->type);
+	$run['page'] = $run['info']->count;
 }
 
 //开始构造页面
@@ -80,10 +86,11 @@ if($run['blog_list']){
 	//echo '<pre>'."\n";
 	//var_dump($run['info']);
 	//var_dump($run['blog_list']);
+	//var_dump($run['count']);
 	//echo '</pre>'."\n";
 	
 	echo get_header($run['info'], $run['blog_list'], $tid);
 	//print_r($run['blog_list']);
 	echo get_body($run['blog_list'],$run['info']);
-	echo get_footer();
+	echo get_footer($run['page'], $tid, $pid);
 }

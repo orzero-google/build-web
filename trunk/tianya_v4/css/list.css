@@ -44,7 +44,7 @@ h2{
 	font-size-adjust: none;
 	font-stretch: normal;
 	-x-system-font: none;
-	color: #006600;
+	color: #0080FF;
 	margin-top: 0pt;
 	margin-right: 0pt;
 	margin-bottom: 12px;
@@ -114,6 +114,9 @@ float:right;
 }
 .clearfix{
 display: block;
+padding-bottom: 5px;
+margin-bottom: 10px;
+height:20px;
 }
 
 .grid-16-8 .article{
@@ -125,4 +128,45 @@ padding-right: 40px;
 html, div, map, dt, isindex, form {
 display:block;
 }
+.ul {
+border-bottom-width: 1px;
+border-bottom-style: dashed;
+border-bottom-color: #dddddd;
+line-height: 100%;
+clear: both;
+}
+.info {
+	color: #A4A4A4;
+	float: right;
+}
 
+.paginator {
+-x-system-font:none;
+color:#AAAAAA;
+font-family:normal Arial,Helvetica,sans-serif;
+font-size:14px;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:normal;
+font-weight:normal;
+line-height:150%;
+margin:20px 0;
+text-align:center;
+}
+.prev {
+margin-right:20px;
+}
+
+.paginator .thispage {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:#83BF73 none repeat scroll 0 0;
+color:#FFFFFF;
+}
+
+.paginator a, .thispage, .break {
+margin:2px;
+padding:0 4px;
+}
