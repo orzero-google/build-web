@@ -170,3 +170,9 @@ color:#FFFFFF;
 margin:2px;
 padding:0 4px;
 }
+.paginator .prev {
+margin-right:6px;
+}
+.paginator .next {
+margin-left:6px;
+}

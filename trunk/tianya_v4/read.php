@@ -74,6 +74,7 @@ if($run['get_parameter']){
 		$run['info'] = get_sql_info($tid);
 	}
 }
+//print_r($run['info']);
 
 //取得回复列表
 if($run['info']->type == 1 || $run['info']->type == 2){

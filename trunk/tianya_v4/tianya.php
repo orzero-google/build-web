@@ -511,10 +511,10 @@ function get_body($p_content, $p_info){
 function get_footer($page_count, $tid, $pid){		
 $ft = '
 
-<div id="tools_panel" style="width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
+<div id="tools_panel" style="display:none;width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
 <table>
 	<thead style="font-size:14px;">
-		<tr><td class="warning" style="text-align:center;">工具栏</td></tr>
+		<tr><td class="warning" style="text-align:center;">工具栏<a title="或零整理帖子" target="_blank" href="http://www.orzero.net/2010/01/%E5%A4%A9%E6%B6%AF%E6%98%93%E8%AF%BB%E6%95%B4%E7%90%86.html"><span style="font-size:12px;text-decoration:underline;color:#666666;">[问题反馈]</span></a></td></tr>
 		<tr><th class="qj" style="text-align:center;">全局功能</th></tr>
 		<tr><td class="qj lz"><span style="float:left;" class="ui-icon ui-icon-lightbulb"></span>显示楼主帖子</td></tr>
 		<tr><td class="qj allzz"><span style="float:left;" class="open ui-icon ui-icon-gear"></span>打开全部作者</td></tr>
@@ -522,7 +522,7 @@ $ft = '
 		<tr><th class="dh" style="font-size:12px;text-align:center;">导航功能<br /><span style="font-size:12px;color:#A4A4A4;cursor:pointer;">(总'.$page_count.'页)</span></th></tr>
 		<tr>
 			<td class="dh" style="font-size:12px;text-align:center;padding-left:1px;padding-top:9px;padding-right:1px;padding-bottom:9px;">
-				<span class="prev">&lt;前页</span>&nbsp;<span class="current">[第'.$pid.'页]</span>&nbsp;<span class="next">后页&gt;</span>
+				<span title="打开前一页" class="prev">&lt;前页</span>&nbsp;<span title="当前页" class="current">[第'.$pid.'页]</span>&nbsp;<span title="打开后一页" class="next">后页&gt;</span>
 			</td>
 		</tr>
 	</thead>
@@ -533,7 +533,14 @@ $ft = '
 
 $ft .= '
 <div id="page_info" tid="'.$tid.'" pid="'.$pid.'" count="'.$page_count.'">
+';
+for($i=1; $i<=$page_count; $i++){
+	$ft .= "\t".'<a class="jump" pid="'.$i.'" title="或零整理帖子" href="?tid='.$tid.'&pid='.$i.'"><span style="text-decoration:underline;color:blue;background:#DEE7F8;">[第'.$i.'页]</span></a>'."\n";
+}
+$ft .= '
 </div>
+
+<div id="err"></div>
 
 </body>
 </html>
