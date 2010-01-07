@@ -2,6 +2,7 @@
 $(function () {
 	$("#wrap").hide();
 	$("#tools_panel").hide();
+	$("#page_info").hide();
 });
 /**
  * @author Alexandre Magno
@@ -117,7 +118,9 @@ $(document).ready(function(){
 			minWidth: 600,
 			width: 600,
 			//minHeight: 400,
+			drag: function() {rep_r();},
 			dragStart: function() {rep_r();},
+			dragStop: function() {rep_r();},
 			resizeStop: function() {rep_r();},
 			buttons: {
 				Ok: function() {
@@ -426,34 +429,92 @@ $(document).ready(function(){
     });   
     
     //导航
+    //作者标题栏浮动
+	function show_nav_log($count, $pid, $prev_next){
+		var log = $("#err");
+		log.attr('title', '页面跳转错误');
+		
+		if($prev_next == 'prev'){
+			log.html(
+				'<p>总共整理了' + $count + '页</p>' +
+				'<p>当前第' + $pid + '页</p>' +
+				'<p>已经是最前一页</p>'
+			);
+		}else if($prev_next == 'next'){
+			log.html(
+				'<p>总共整理了' + $count + '页</p>' +
+				'<p>当前第' + $pid + '页</p>' +
+				'<p>已经是最后一页</p>'
+			);
+		}
+		log.dialog({
+			bgiframe: true,
+			modal: false,
+			resizable: true,
+			autoOpen: false,
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		log.dialog('open');
+	}
+	function show_link_log($count){
+		var log = $("#page_info");
+		log.attr('title', '导航列表:总共整理了'+$count+'页');		
+		log.dialog({
+			bgiframe: true,
+			modal: false,
+			width: 800,
+			resizable: true,
+			autoOpen: false,
+			buttons: {
+				关闭: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		log.dialog('open');
+	}
     var $tid = Number($("#page_info").attr('tid'));
     var $pid = Number($("#page_info").attr('pid'));
     var $count = Number($("#page_info").attr('count'));
     //alert($tid,$pid,$count);
     $("span.prev")
-    .css({"text-decoration":"underline","color":"blue","background":"#DEE7F8","padding-left":"2px","padding-top":"4px","padding-right":"4px","padding-bottom":"4px"})
+    .css({"text-decoration":"underline","color":"blue","background":"#DEE7F8","padding-left":"0px","padding-top":"4px","padding-right":"2px","padding-bottom":"4px"})
     .css("cursor", "pointer").click(function () {
     	var $to_pid = ($pid - 1);
     	if($to_pid > 0){
-    		alert('r');
+    		$("a.jump").each(function(){
+    			if($(this).attr('pid') == $to_pid){
+    				var $link = $(this).attr('href');
+    				window.location.href=$link;
+    			}
+    		});
     	}else{
-    		alert('w');
+    		show_nav_log($count, $pid, 'prev');
     	}
     });
     $("span.next")
-    .css({"text-decoration":"underline","color":"blue","background":"#DEE7F8","padding-left":"4px","padding-top":"4px","padding-right":"2px","padding-bottom":"4px"})
+    .css({"text-decoration":"underline","color":"blue","background":"#DEE7F8","padding-left":"2px","padding-top":"4px","padding-right":"0px","padding-bottom":"4px"})
     .css("cursor", "pointer").click(function () {
     	var $to_pid = ($pid + 1);
     	if($to_pid <= $count){
-    		alert('r');
+    		$("a.jump").each(function(){
+    			if($(this).attr('pid') == $to_pid){
+    				var $link = $(this).attr('href');
+    				window.location.href=$link;
+    			}
+    		});
     	}else{
-    		alert('w');
+    		show_nav_log($count, $pid, 'next');
     	}   	
     });    
     $("span.current")
     .css({"text-decoration":"underline","color":"blue","background":"#DEE7F8","padding-left":"0px","padding-top":"4px","padding-right":"0px","padding-bottom":"4px"})
     .css("cursor", "pointer").click(function () {
-    	
+    	show_link_log($count);
     });  
     
     
@@ -479,6 +540,7 @@ $(document).ready(function(){
         //if ($history_panel.length) {
             //$history_panel.css("left", ($window.width() + maxWidth) / 2 + 2)
         	//$history_panel.css("left", (($window.width() - maxWidth) / 2) + maxWidth)
+        
         $tools_panel.css("display","block");
     	if(binfo == 'IE'){
     		$tools_panel.css({"right":((($window.width() - maxWidth) / 2)-140)+"px", "text-align":"right", "position":"absolute"})

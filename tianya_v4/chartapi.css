@@ -140,7 +140,7 @@ width:95%;
 table#parameters_table th, table#parameters_table td {
 text-align:center;
 }
-#history_panel {
+#tools_panel {
 position:fixed;
 top:20px;
 width:120px;

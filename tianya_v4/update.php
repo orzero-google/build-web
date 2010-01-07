@@ -312,6 +312,7 @@ foreach($link as $alink){
 
 <div id="dialog" style="display:none;"></div>
 
+<frame src="list.php?channel=index" name="left"></frame>
 </body>
 </html>
 

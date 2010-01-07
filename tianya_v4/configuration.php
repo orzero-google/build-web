@@ -39,4 +39,5 @@ $configuration['plugins_path'] = dirname(__FILE__).'/plugins';  //absolute path 
 Date_default_timezone_set("PRC");	//设定为中华人民共和国
 
 //是否显示日志
+$set = array();
 $set['show_log'] = true;
