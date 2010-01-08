@@ -4,7 +4,7 @@ include_once './objects/class.database.php';
 include_once './objects/class.info.php';
 
 $channel = '';
-$set['one_page_list'] = 20;
+$set['one_page_list'] = 5;
 $pid = 1;
 
 define('IS_GPC', get_magic_quotes_gpc());
@@ -199,12 +199,12 @@ function show_nav($count, $pid){
 	}
 		
 $nav = '
-<p class="ul"></p>
 <div class="paginator">
 	<span class="prev">'.$prev.'</span>';
 $nav .= $loop;
 $nav .= '<span class="next">'.$next.'</span>
 </div>
+<div style="width=630px;" class="ul"></div>
 <div class="clearfix" style="border-bottom: 1px solid rgb(204, 204, 204);margin-bottom:0;height:0;">
 ';
 
@@ -225,7 +225,11 @@ if($channel == 'index'){
 	//print_r($list_channel_tid);
 }else{
 	$channel_en = $channel;
-	$channel_cn = gbk2utf8(get_channel_cn($info_obj, $channel_en));
+	if($channel == 'all'){
+		$channel_cn = '归档';
+	}else{
+		$channel_cn = gbk2utf8(get_channel_cn($info_obj, $channel_en));
+	}
 	$channel_pid_c = count_channel_tid($info_obj, $channel_en);				//总数
 	$channel_pid_r = get_channel_tid($info_obj, $channel_en, $pid, true);	
 	$channel_pid_p = ceil($channel_pid_c / $set['one_page_list']);
@@ -251,34 +255,35 @@ if($channel == 'index'){
     
 <div id="content">
 	<h1>或零整理帖子</h1>
+	<div style="border-bottom: 1px solid rgb(204, 204, 204);width:630px;" class="clearfix"></div>
 	<div class="grid-16-8 clearfix">
-		<div class="article">
-        
-			<div style="border-bottom: 1px solid rgb(204, 204, 204); " class="clearfix">
-				<span class="rr greyinput">
-				<?php if($channel != 'index'){ ?>
-					<a href="?channel=index">分类浏览</a>
-				<?php }else{ ?>
-					<span>分类浏览</span>
-				<?php } ?>
-					&nbsp;/&nbsp;
-				<?php if($channel != 'all'){ ?>
-					<a href="?channel=all">所有热门标签</a>
-				<?php }else{ ?>
-					<span>所有热门标签</span>
-				<?php } ?>	
-				</span>
-			</div>
+		<div class="article">			
 		<?php if($channel == 'index'){ ?>
 			<h2 style="padding-top:10px">频道列表 · · · · · · </h2>
 		<?php }else{ ?>
 			<h2 style="padding-top:10px"><?php echo $channel_cn; ?> · · · · · · </h2>
 		<?php } ?>
+			<span class="rr greyinput">
+			<?php if($channel != 'index'){ ?>
+				<a href="?channel=index">分类浏览</a>
+			<?php }else{ ?>
+				<span>分类浏览</span>
+			<?php } ?>
+				&nbsp;/&nbsp;
+			<?php if($channel != 'all'){ ?>
+				<a href="?channel=all">所有整理帖子</a>
+			<?php }else{ ?>
+				<span>所有热门标签</span>
+			<?php } ?>	
+			</span>
+			<div style="border-bottom: 1px solid rgb(204, 204, 204);" class="clearfix"></div>
 			<table class="tagCol">
-				<tbody>
-					<tr>
+				<tbody>					
 <?php
 if($channel == 'index'){
+?>
+					<tr>
+<?php
 	$i = 1;		//循环4次换一个tr标记
 	foreach($list_channel_tid as $channel_tid){
 		$td['id'] = $channel_tid[0]['infoid'];
@@ -300,7 +305,13 @@ if($channel == 'index'){
 		}
 		$i++;
 	}
+?>
+					</tr>
+<?php 					
 }else{
+?>
+					<p style="width=630px;" class="ul"></p>
+<?php
 	foreach($channel_pid_r as $channel_pid){
 		$td['title'] = gbk2utf8($channel_pid['title']);
 		$td['author_name'] = gbk2utf8($channel_pid['author_name']);
@@ -308,7 +319,7 @@ if($channel == 'index'){
 		$td['url'] = $channel_pid['name'];
 		$td['tid'] = $channel_pid['infoid'];
 ?>
-						<p class="ul"></p>
+					<tr>
 						<a href="read.php?tid=<?php echo $td['tid']; ?>" target="_blank" title="<?php echo $td['title']; ?>">
 							<span style="color:#006600;"><?php echo $td['title']; ?></span>
 						</a>
@@ -318,12 +329,11 @@ if($channel == 'index'){
 							<span>[整理时间:<?php echo $td['time']; ?>]</span>							
 						<div>
 					</tr>
-					<tr>
+					<p style="width=630px;" class="ul"></p>
 <?php
 	}
 }
 ?>
-					</tr>
 				</tbody>
 			</table>
 <?php 

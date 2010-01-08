@@ -10,7 +10,8 @@
 	`channel_cn` VARCHAR(255) NOT NULL,
 	`url` VARCHAR(255) NOT NULL,
 	`dir` VARCHAR(255) NOT NULL,
-	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`contentid`)) ENGINE=MyISAM;
+	`time` TIMESTAMP NOT NULL,
+	`posts` SMALLINT NOT NULL, PRIMARY KEY  (`contentid`)) ENGINE=MyISAM;
 */
 
 /**
@@ -18,7 +19,7 @@
 * @author Php Object Generator
 * @version POG 3.0e / PHP5
 * @copyright Free for personal & commercial use. (Offered under the BSD license)
-* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=content&attributeList=array+%28%0A++0+%3D%3E+%27info_id%27%2C%0A++1+%3D%3E+%27pg_id%27%2C%0A++2+%3D%3E+%27page_num%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27url%27%2C%0A++5+%3D%3E+%27dir%27%2C%0A++6+%3D%3E+%27time%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27INT%27%2C%0A++1+%3D%3E+%27INT%27%2C%0A++2+%3D%3E+%27MEDIUMINT%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++6+%3D%3E+%27TIMESTAMP%27%2C%0A%29
+* @link http://www.phpobjectgenerator.com/?language=php5&wrapper=pog&objectName=content&attributeList=array+%28%0A++0+%3D%3E+%27info_id%27%2C%0A++1+%3D%3E+%27pg_id%27%2C%0A++2+%3D%3E+%27page_num%27%2C%0A++3+%3D%3E+%27channel_cn%27%2C%0A++4+%3D%3E+%27url%27%2C%0A++5+%3D%3E+%27dir%27%2C%0A++6+%3D%3E+%27time%27%2C%0A++7+%3D%3E+%27posts%27%2C%0A%29&typeList=array+%28%0A++0+%3D%3E+%27INT%27%2C%0A++1+%3D%3E+%27INT%27%2C%0A++2+%3D%3E+%27MEDIUMINT%27%2C%0A++3+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++4+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++5+%3D%3E+%27VARCHAR%28255%29%27%2C%0A++6+%3D%3E+%27TIMESTAMP%27%2C%0A++7+%3D%3E+%27SMALLINT%27%2C%0A%29
 */
 include_once('class.pog_base.php');
 class content extends POG_Base
@@ -60,6 +61,11 @@ class content extends POG_Base
 	 */
 	public $time;
 	
+	/**
+	 * @var SMALLINT
+	 */
+	public $posts;
+	
 	public $pog_attribute_type = array(
 		"contentId" => array('db_attributes' => array("NUMERIC", "INT")),
 		"info_id" => array('db_attributes' => array("NUMERIC", "INT")),
@@ -69,6 +75,7 @@ class content extends POG_Base
 		"url" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"dir" => array('db_attributes' => array("TEXT", "VARCHAR", "255")),
 		"time" => array('db_attributes' => array("NUMERIC", "TIMESTAMP")),
+		"posts" => array('db_attributes' => array("NUMERIC", "SMALLINT")),
 		);
 	public $pog_query;
 	
@@ -89,7 +96,7 @@ class content extends POG_Base
 		}
 	}
 	
-	function content($info_id='', $pg_id='', $page_num='', $channel_cn='', $url='', $dir='', $time='')
+	function content($info_id='', $pg_id='', $page_num='', $channel_cn='', $url='', $dir='', $time='', $posts='')
 	{
 		$this->info_id = $info_id;
 		$this->pg_id = $pg_id;
@@ -98,6 +105,7 @@ class content extends POG_Base
 		$this->url = $url;
 		$this->dir = $dir;
 		$this->time = $time;
+		$this->posts = $posts;
 	}
 	
 	
@@ -121,6 +129,7 @@ class content extends POG_Base
 			$this->url = $this->Unescape($row['url']);
 			$this->dir = $this->Unescape($row['dir']);
 			$this->time = $row['time'];
+			$this->posts = $this->Unescape($row['posts']);
 		}
 		return $this;
 	}
@@ -213,6 +222,7 @@ class content extends POG_Base
 			$content->url = $this->Unescape($row['url']);
 			$content->dir = $this->Unescape($row['dir']);
 			$content->time = $row['time'];
+			$content->posts = $this->Unescape($row['posts']);
 			$contentList[] = $content;
 		}
 		return $contentList;
@@ -237,18 +247,20 @@ class content extends POG_Base
 			`channel_cn`='".$this->Escape($this->channel_cn)."', 
 			`url`='".$this->Escape($this->url)."', 
 			`dir`='".$this->Escape($this->dir)."', 
-			`time`='".$this->time."' where `contentid`='".$this->contentId."'";
+			`time`='".$this->time."', 
+			`posts`='".$this->Escape($this->posts)."' where `contentid`='".$this->contentId."'";
 		}
 		else
 		{
-			$this->pog_query = "insert into `content` (`info_id`, `pg_id`, `page_num`, `channel_cn`, `url`, `dir`, `time` ) values (
+			$this->pog_query = "insert into `content` (`info_id`, `pg_id`, `page_num`, `channel_cn`, `url`, `dir`, `time`, `posts` ) values (
 			'".$this->Escape($this->info_id)."', 
 			'".$this->Escape($this->pg_id)."', 
 			'".$this->Escape($this->page_num)."', 
 			'".$this->Escape($this->channel_cn)."', 
 			'".$this->Escape($this->url)."', 
 			'".$this->Escape($this->dir)."', 
-			'".$this->time."' )";
+			'".$this->time."', 
+			'".$this->Escape($this->posts)."' )";
 		}
 		$insertId = Database::InsertOrUpdate($this->pog_query, $connection);
 		if ($this->contentId == "")

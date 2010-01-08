@@ -462,7 +462,7 @@ $(document).ready(function(){
 	}
 	function show_link_log($count){
 		var log = $("#page_info");
-		log.attr('title', '导航列表:总共整理了'+$count+'页');		
+		log.attr('title', '导航列表:总共整理了'+$count+'页&nbsp;&nbsp;&nbsp;格式:<span style="color:#000000;font-size:12px;line-height:1.3;padding-top:2px;padding-bottom:2px;background:#DEE7F8;">页数(楼主发帖数)</span>');		
 		log.dialog({
 			bgiframe: true,
 			modal: false,

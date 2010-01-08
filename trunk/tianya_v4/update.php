@@ -295,7 +295,7 @@ var log = $("#dialog");
 <div id="progressbar"></div>
 </div>
 
-<div id="link_list" style="display:none;" value="<?php echo $tianya_info_count; ?>" run="1">
+<div id="link_list" style="display:none;" value="<?php echo $tianya_info_count; ?>" run="1" status="start">
 <?php 
 $i = 0;
 foreach($link as $alink){
@@ -312,7 +312,9 @@ foreach($link as $alink){
 
 <div id="dialog" style="display:none;"></div>
 
-<frame src="list.php?channel=index" name="left"></frame>
+<iframe id="nav" src="list.php?channel=index" frameborder="0" style="border:0;top:300px;width:640px;height:400px;">
+</iframe>
+
 </body>
 </html>
 

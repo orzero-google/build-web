@@ -117,7 +117,7 @@ $(function () {
 	});
 	
 	$("div.show").show();
-	$("table.ui-widget").center({
+	$("table.ui-widget,#nav").center({
 		vertical: false,
 		horizontal: true
 	});
@@ -155,16 +155,17 @@ $(function () {
 			$("#link_list").attr('value', 0);
 		}
 		
-		$("#link_list").attr('run', 1);
-		var run = $("#link_list").attr('run');
-		if(run == 1){
-			run_start();
+		if($("#link_list").attr('status') == 'start'){
+			$("#link_list").attr('run', 1);
+			var run = $("#link_list").attr('run');
+			if(run == 1){
+				run_start();
+			}
+			$("input.input-submit").attr({'disabled':true,'value':'整理中'}).css({'background-color':'#00CED1'});
+			$("#update_log").dialog('option', 'buttons', {'Stop':function(){
+				stop();
+			}});	
 		}
-		$("input.input-submit").attr({'disabled':true,'value':'整理中'}).css({'background-color':'#00CED1'});
-		$("#update_log").dialog('option', 'buttons', {'Stop':function(){
-			stop();
-		}});	
-		
 		//$("#progressbar").progressbar('option', 'value', 0);	
 	}
 	
@@ -174,6 +175,7 @@ $(function () {
 			start();
 		}});
 		$("#link_list").attr('run', 0);
+		$("#link_list").attr('status', 'stop');
 		//$("#link_list").attr('value', 0).attr('run', 0);
 		//$("#progressbar").progressbar('option', 'value', 0);		
 	}
@@ -268,24 +270,28 @@ $(function () {
 			},
 			success: function(data, textStatus){
 				//编码引起有隐含字符附加在data前
-				var source_data = data.toSource();
-				//alert(source_data);
-				var end = source_data.lastIndexOf('"');
-				var start = source_data.indexOf('FEFF') + 4;
-				//start = 19;
-				if((start != -1) && (end != -1)){
-				//if(end != -1){
-					//var str_data = source_data.slice(start, end).replace(/\\/g, '').replace(/\"/g, '');
-					//var json_data = $.toJSON(str_data);
-					//var page_id = $.evalJSON(str_data).pid;
-					var page_id = source_data.slice(start, end);
-				}
+				if(binfo=="FF"){
+					var source_data = data.toSource();
+					//alert(source_data);
+					var end = source_data.lastIndexOf('"');
+					var start = source_data.indexOf('FEFF') + 4;
+					//start = 19;
+					if((start != -1) && (end != -1)){
+					//if(end != -1){
+						//var str_data = source_data.slice(start, end).replace(/\\/g, '').replace(/\"/g, '');
+						//var json_data = $.toJSON(str_data);
+						//var page_id = $.evalJSON(str_data).pid;
+						var page_id = source_data.slice(start, end);
+					}				
 				//if(number_data == page)
 				//alert(str_data.replace(/\\/g, ''));
 				//alert(str_data);
 				//alert(json_data);
 				//alert(page_id);
 				//alert(the_link +'_'+ count_link);
+				}else{
+					var page_id = data;
+				}
 				if(the_link == count_link){
 					suc();
 					return;
@@ -296,12 +302,13 @@ $(function () {
 						run_start();
 					}
 				}else{
-					err();alert(the_link +'_'+ count_link);
+					err();
+					//alert(the_link +'_'+ count_link);
 				}
 
 			},
 			complete: function(XMLHttpRequest, textStatus){
-				
+				$("#link_list").attr('status', 'start');
 			},
 			error: function(){
 				err();

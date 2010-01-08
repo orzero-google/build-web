@@ -1,12 +1,4 @@
 @CHARSET "UTF-8";
-element.style {
-border-bottom-color:#CCCCCC;
-border-bottom-style:solid;
-border-bottom-width:1px;
-margin-bottom:10px;
-padding-bottom:5px;
-}
-
 html{
 	color: #111;
 	background: #fff
@@ -32,7 +24,8 @@ font-size:25px;
 font-weight:700;
 line-height:1.1em;
 margin:0;
-padding:5px 0 15px;
+padding:5px 0 5px;
+text-align:center;
 }
 
 h2{
@@ -73,19 +66,7 @@ a:hover{
 	background-attachment: scroll;
 	background-position: 0% 0%;
 }
-/*
-body, td, th{
-	font-family: Arial,Helvetica,sans-serif;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: normal;
-	font-size: 12px;
-	font-size-adjust: none;
-	font-stretch: normal;
-	-x-system-font: none;
-	line-height: 162%;
-}
-*/
+
 body, td, th {
 font-family:Arial,Helvetica,sans-serif;
 font-size:12px;
@@ -96,9 +77,14 @@ font-weight:normal;
 line-height:162%;
 }
 
-.tagCol td{
+.tagCol {
+	width: 630px;
+}
+	
+td{
 	width: 10%;
 	font-size: 14px;
+	
 }
 .tagCol td b{
 	font-weight: normal;
@@ -112,17 +98,10 @@ color:#CCCCCC;
 .rr {
 float:right;
 }
-.clearfix{
-display: block;
-padding-bottom: 5px;
-margin-bottom: 10px;
-height:20px;
-}
 
 .grid-16-8 .article{
 float: left;
-width: 590px;
-padding-right: 40px;
+width: 630px;
 }
 
 html, div, map, dt, isindex, form {
@@ -151,7 +130,6 @@ font-style:normal;
 font-variant:normal;
 font-weight:normal;
 line-height:150%;
-margin:20px 0;
 text-align:center;
 }
 .prev {

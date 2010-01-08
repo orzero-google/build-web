@@ -508,7 +508,7 @@ function get_body($p_content, $p_info){
 	return $list.$wrap;
 }
 
-function get_footer($page_count, $tid, $pid){		
+function get_footer($page_count, $tid, $pid, $posts_list){		
 $ft = '
 
 <div id="tools_panel" style="display:none;width:140px;right:0;top:100px;+position:absolute;+top:expression(eval(document.body.scrollTop)+100);">
@@ -535,7 +535,12 @@ $ft .= '
 <div id="page_info" tid="'.$tid.'" pid="'.$pid.'" count="'.$page_count.'">
 ';
 for($i=1; $i<=$page_count; $i++){
-	$ft .= "\t".'<a class="jump" pid="'.$i.'" title="或零整理帖子" href="?tid='.$tid.'&pid='.$i.'"><span style="text-decoration:underline;color:blue;background:#DEE7F8;">[第'.$i.'页]</span></a>'."\n";
+	$style = 'style="font-size:14px;line-height:1.3;padding-top:2px;padding-bottom:2px;background:#DEE7F8;"';
+	if($posts_list[$i] > 0){
+		$style = 'style="font-size:14px;line-height:1.3;padding-top:2px;padding-bottom:2px;background:#90EE90;"';
+	}
+	
+	$ft .= "\t".'<a class="jump" pid="'.$i.'" title="或零整理帖子" href="?tid='.$tid.'&pid='.$i.'"><span '.$style.'>第'.$i.'页('.$posts_list[$i].')</span></a>'."\n";
 }
 $ft .= '
 </div>
