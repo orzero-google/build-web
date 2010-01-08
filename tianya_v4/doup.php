@@ -218,6 +218,8 @@ function up_info_count($fu, $page){
 				$out['id'] = $update_id;
 				$out['count'] = $page;
 				$out['channel_cn'] = $info->channel_cn;
+				$out['type'] = $info->type;
+				$out['author_name'] = $info->author_name;
 				return $out;
 			}
 		}
@@ -239,7 +241,7 @@ function save_content($content_r,$page){
 	//var_dump($content);
 	
 	if(isset($content[0]->page_num)){	//找到原始数据
-		if($content[0]->page_num == $page){
+		if(($content[0]->page_num == $page) && ($content[0]->posts == $content_r['posts'])){
 			return $content[0]->contentId;
 		}else{
 			$content_obj->content(
@@ -249,7 +251,8 @@ function save_content($content_r,$page){
 				$content_r['channel_cn'], 
 				$content_r['url'], 
 				$content_r['dir'], 
-				$content_r['time']
+				$content_r['time'],
+				$content_r['posts']
 			);
 			$content_obj->contentId = $content[0]->contentId;			
 		}
@@ -261,7 +264,8 @@ function save_content($content_r,$page){
 			$content_r['channel_cn'], 
 			$content_r['url'], 
 			$content_r['dir'], 
-			$content_r['time']
+			$content_r['time'],
+			$content_r['posts']
 		);	
 	}
 	$content_id = $content_obj->Save();
@@ -270,6 +274,42 @@ function save_content($content_r,$page){
 		return $content_id;
 	}
 	
+	return false;
+}
+//取得楼主发帖数;
+function get_posts($dir, $author_name, $first_second){
+	$posts = 0;
+	if(file_exists($dir)){
+		if($content_gz_cache = gzfile($dir)){                      
+			$content = implode('', $content_gz_cache);
+			if($first_second == 1){
+				$content = get_mid_content($content, '<TABLE id="firstAuthor"', '<div id="adsp_content_banner_2"');				
+				$top_name = get_mid_content($content, '&idwriter=0&key=0 target=_blank>', '</a>');				
+				//print_r($content);
+				if($top_name == $author_name){
+					$posts++;
+				}
+				$content_cut_tmp = explode('</a>', $content, 2);				
+				$content = $content_cut_tmp[1];
+				$list_name = get_mid_content_array($content, 'vwriter=', '&idwriter');
+				//print_r($list_name);
+				foreach($list_name as $the_name){
+					if($the_name[0]==1 && $the_name[1] == $author_name){
+						$posts++;
+					}
+				}
+			}else if($first_second == 2){
+				$content = get_mid_content($content, '<div id="pContentDiv"', '<div id="cttPageDiv1"');
+				$list_name = get_mid_content_array($content, ' target=_blank>', '</a>');
+				foreach($list_name as $the_name){
+					if($the_name[0]==1 && $the_name[1] == $author_name){
+						$posts++;
+					}
+				}
+			}
+			return $posts;
+		}
+	}
 	return false;
 }
 
@@ -289,15 +329,23 @@ if(isset($up_info_out) && $up_info_out){
 	$content_r['url']        = $pg_out['url'];
 	$content_r['dir']        = $pg_out['dir'];
 	$content_r['time']       = date('Y-m-d H:i:s');
+	$posts = get_posts($content_r['dir'], $up_info_out['author_name'], $up_info_out['type']);
+	
+	$content_out = false;
+
+	$content_r['posts'] = $posts;
 	$content_out = save_content($content_r, $page);
 	//var_dump($content_out);
-	
-	if($content_out && $content_out>0){
+	//print_r($content_r);
+
+	//echo $content_out;
+	if($content_out>0){
 		//$content['cid'] = $content_out;
 		//$content['pid'] = $page;
 		//echo json_encode($content);
 		echo $page;
 	}
+	
 }
 
 

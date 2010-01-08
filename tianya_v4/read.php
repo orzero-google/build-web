@@ -67,6 +67,20 @@ function get_sql_info($tid){
 		return $out;
 	}
 }
+//取得帖子页面楼主发帖数
+function get_sql_posts($tid){
+	$content_obj = new content();
+	$content_r = $content_obj->GetList(
+		array(
+			array('info_id', '=', $tid)
+		)
+	);
+	$out = array();
+	foreach($content_r as $content){
+		$out[$content->page_num] = $content->posts;
+	}	
+	return $out;
+}
 
 if($run['get_parameter']){
 	$run['content'] = get_sql_content($tid, $pid);
@@ -93,5 +107,8 @@ if($run['blog_list']){
 	echo get_header($run['info'], $run['blog_list'], $tid);
 	//print_r($run['blog_list']);
 	echo get_body($run['blog_list'],$run['info']);
-	echo get_footer($run['page'], $tid, $pid);
+	$posts_list = get_sql_posts($tid);
+	//print_r($posts_list);
+	echo get_footer($run['page'], $tid, $pid, $posts_list);
+	
 }
