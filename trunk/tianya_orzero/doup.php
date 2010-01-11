@@ -15,7 +15,7 @@ foreach(array('_GET','_POST') as $_request) {
 	foreach($$_request as $_key => $_value) {
 		if ($_key{0} != '_') {
 			if (IS_GPC) {
-				$_value = s_array($_value);
+				//$_value = s_array($_value);
 			}
 			$$_key = $_value;
 		}
@@ -295,7 +295,7 @@ function get_posts($dir, $author_name, $first_second){
 				$content_cut_tmp = explode('</a>', $content, 2);				
 				$content = $content_cut_tmp[1];
 				$list_name = get_mid_content_array($content, 'vwriter=', '&idwriter');
-				print_r($content);
+				//print_r($list_name);
 				foreach($list_name as $the_name){
 					if($the_name[0]==1 && $the_name[1] == $author_name){
 						$posts++;
