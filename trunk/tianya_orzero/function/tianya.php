@@ -529,9 +529,15 @@ $ft = '
 		<tr><th class="dh" style="font-size:12px;text-align:center;">导航功能<a href="'.$s_url.'" target="_blank" title="或零网络"><span style="font-size:12px;">[原帖]</span></a><br /><span style="font-size:12px;color:#A4A4A4;">(总'.$page_count.'页)</span></th></tr>
 		<tr>
 			<td class="dh" style="font-size:12px;text-align:center;padding-left:1px;padding-top:9px;padding-right:1px;padding-bottom:9px;">
-				<span title="打开前一页" class="prev">&lt;前页</span>&nbsp;<span title="当前页" class="current">[第'.$pid.'页]</span>&nbsp;<span title="打开后一页" class="next">后页&gt;</span>
+				<span title="打开前一页" class="prev">&lt;前页</span>&nbsp;<span title="当前页" class="current">['.$pid.'页]</span>&nbsp;<span title="打开后一页" class="next">后页&gt;</span>
 			</td>
 		</tr>
+		<tr><td class="new">
+		<span style="float:left;" class="ui-icon ui-icon-heart"></span>
+		<a title="整理新帖子" target="_blank" href="http://read.orzero.com/">
+			<span style="text-align:center;font-size:14px;text-decoration:underline;color:#666666;">整理新帖</span>
+		</a>
+		</td></tr>
 	</thead>
 </table>
 </div>
