@@ -1,31 +1,35 @@
 content：
 0、自增id
 1、标题
-2、作者
-3、作者id
-4、分类id
-5、区域id
-6、关键id
-7、配置id
-8、描述
+8、描述	
+
+3、作者id（姓名、邮箱、手机）
+4、分类id （层、值）
+5、区域id	（层、值）
+6、关键词id	（值）
+7、配置id		（类型、key、value（扩展））
+	
 9、内容(MD5散列目录.压缩文件)
 10、状态id
-11、当前层
-12、上级id（内部ref）
-13、插入时间
 
-状态:定义文档状态(status：1自己、2指定、3排除、0所有、4删除)
+12、上级id（内部ref）
+13、url_ref
+14、插入时间
+
+状态:定义文档状态(status：1自己、2指定、3排除、0所有、4删除、5锁定)
 status：
 0、自增id
 1、status
-2、type（useid,groupid,）
+2、type（0useid,1groupid,）
 3、value
 
-配置:定义文档属性(pdf,word,text...)
+配置:
+key定义文档属性(pdf,word,text...)
 config：
 0、自增id
-1、key
-2、value
+1、type （0dir、1content）
+2、key
+3、value
 
 区域:层	0国家,1州(省/市),2县
 region：
