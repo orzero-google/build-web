@@ -19,20 +19,45 @@ content：
 12、上级id（内部ref）
 13、url_ref
 14、插入时间
-
+	CREATE TABLE `contents` (
+	`contentsid` int(11) NOT NULL auto_increment,
+	`title` VARCHAR(255) NOT NULL,
+	`desc` VARCHAR(255) NOT NULL,
+	`nickname` VARCHAR(255) NOT NULL,
+	`user_id` INT NOT NULL,
+	`cate_id` INT NOT NULL,
+	`area_id` INT NOT NULL,
+	`keys_id` BIGINT NOT NULL,
+	`conf_id` INT NOT NULL,
+	`content` VARCHAR(255) NOT NULL,
+	`mode_id` TINYINT NOT NULL,
+	`perm_id` TINYINT NOT NULL,
+	`ref_id` BIGINT NOT NULL,
+	`url` VARCHAR(255) NOT NULL,
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`contentsid`)) ENGINE=MyISAM;
+	
+	
 状态:定义文档状态(status：1自己、2指定、3排除、0所有)
 permissions：
 0、自增id
 1、status
 2、type（0useid,1groupid(out),2groupid(slef)）
 3、value (array)
+	CREATE TABLE `permissions` (
+	`permissionsid` int(11) NOT NULL auto_increment,
+	`status` TINYINT NOT NULL,
+	`type` TINYINT NOT NULL,
+	`value` TEXT NOT NULL, PRIMARY KEY  (`permissionsid`)) ENGINE=MyISAM;
 
 
-status：
+modes：
 自增id
 status 0,1,2,3,4,5
 value 草稿,发布,回收站,关闭,删除
-
+	CREATE TABLE `modes` (
+	`modesid` int(11) NOT NULL auto_increment,
+	`status` TINYINT NOT NULL,
+	`value` VARCHAR(255) NOT NULL, PRIMARY KEY  (`modesid`)) ENGINE=MyISAM;
 
 
 配置:
@@ -42,24 +67,42 @@ config：
 1、type （0dir、1content）
 2、key
 3、value
+	CREATE TABLE `configs` (
+	`configsid` int(11) NOT NULL auto_increment,
+	`type` INT NOT NULL,
+	`key` VARCHAR(255) NOT NULL,
+	`value` TEXT NOT NULL, PRIMARY KEY  (`configsid`)) ENGINE=MyISAM;
+	
 
 区域:层	0国家,1州(省/市),2县
-region：
+areas：
 0、自增id
 1、层
 2、值
+	CREATE TABLE `areas` (
+	`areasid` int(11) NOT NULL auto_increment,
+	`layer` INT NOT NULL,
+	`value` VARCHAR(255) NOT NULL, PRIMARY KEY  (`areasid`)) ENGINE=MyISAM;
+	
 
 分类:层	 展示类别区分
-category：
+categorys：
 0、自增id
 1、层
 2、值
+	CREATE TABLE `categorys` (
+	`categorysid` int(11) NOT NULL auto_increment,
+	`level` INT NOT NULL,
+	`value` VARCHAR(255) NOT NULL, PRIMARY KEY  (`categorysid`)) ENGINE=MyISAM;
+	
 
 关键词:
 keywords：
 0、自增id
 2、值
-
+	CREATE TABLE `keywords` (
+	`keywordsid` int(11) NOT NULL auto_increment,
+	`value` TEXT NOT NULL, PRIMARY KEY  (`keywordsid`)) ENGINE=MyISAM;
 
 
 
