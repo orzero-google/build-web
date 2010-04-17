@@ -1,27 +1,39 @@
 content：
 0、自增id
 1、标题
-8、描述	
+8、描述
 
-3、作者id（姓名、邮箱、手机）
+3、作者id（邮箱、手机）
+4、作者名
 4、分类id （层、值）
 5、区域id	（层、值）
 6、关键词id	（值）
 7、配置id		（类型、key、value（扩展））
+
 	
 9、内容(MD5散列目录.压缩文件)
+
 10、状态id
+11、权限id
 
 12、上级id（内部ref）
 13、url_ref
 14、插入时间
 
-状态:定义文档状态(status：1自己、2指定、3排除、0所有、4删除、5锁定)
-status：
+状态:定义文档状态(status：1自己、2指定、3排除、0所有)
+permissions：
 0、自增id
 1、status
-2、type（0useid,1groupid,）
-3、value
+2、type（0useid,1groupid(out),2groupid(slef)）
+3、value (array)
+
+
+status：
+自增id
+status 0,1,2,3,4,5
+value 草稿,发布,回收站,关闭,删除
+
+
 
 配置:
 key定义文档属性(pdf,word,text...)
