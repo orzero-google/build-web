@@ -1,0 +1,156 @@
+@CHARSET "UTF-8";
+html{
+	color: #111;
+	background: #fff
+}
+body, div, dl, dt, dd, ul, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, blockquot{
+	margin-top: 0pt;
+	margin-right: 0pt;
+	margin-bottom: 0pt;
+	margin-left: 0pt;
+	padding-top: 0pt;
+	padding-right: 0pt;
+	padding-bottom: 0pt;
+	padding-left: 0pt;
+}
+h1, h2, h3, h4, h5, h6{
+	font-size: 100%;
+	font-weight: 400;
+}
+h1 {
+color:#494949;
+display:block;
+font-size:25px;
+font-weight:700;
+line-height:1.1em;
+margin:0;
+padding:5px 0 5px;
+text-align:center;
+}
+
+h2{
+	font-family: normal Arial,Helvetica,sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 14px;
+	font-size-adjust: none;
+	font-stretch: normal;
+	-x-system-font: none;
+	color: #0080FF;
+	margin-top: 0pt;
+	margin-right: 0pt;
+	margin-bottom: 12px;
+	margin-left: 0pt;
+	line-height: 150%;
+}
+
+a{
+	cursor: pointer;
+}
+
+a:visited{
+	color: #666699;
+	text-decoration: none;
+}
+a:link{
+	color: #336699;
+	text-decoration: none;
+}
+a:hover{
+	color: #ffffff;
+	text-decoration: none;
+	background-color: #003399;
+	background-image: none;
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-position: 0% 0%;
+}
+
+body, td, th {
+font-family:Arial,Helvetica,sans-serif;
+font-size:12px;
+font-size-adjust:none;
+font-style:normal;
+font-variant:normal;
+font-weight:normal;
+line-height:162%;
+}
+
+.tagCol {
+	width: 630px;
+}
+	
+td{
+	width: 10%;
+	font-size: 14px;
+	
+}
+.tagCol td b{
+	font-weight: normal;
+	color: #aaaaaa;
+}
+
+.greyinput {
+color:#CCCCCC;
+}
+
+.rr {
+float:right;
+}
+
+.grid-16-8 .article{
+float: left;
+width: 630px;
+}
+
+html, div, map, dt, isindex, form {
+display:block;
+}
+.ul {
+border-bottom-width: 1px;
+border-bottom-style: dashed;
+border-bottom-color: #dddddd;
+line-height: 100%;
+clear: both;
+}
+.info {
+	color: #A4A4A4;
+	float: right;
+}
+
+.paginator {
+-x-system-font:none;
+color:#AAAAAA;
+font-family:normal Arial,Helvetica,sans-serif;
+font-size:14px;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:normal;
+font-weight:normal;
+line-height:150%;
+text-align:center;
+}
+.prev {
+margin-right:20px;
+}
+
+.paginator .thispage {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:#83BF73 none repeat scroll 0 0;
+color:#FFFFFF;
+}
+
+.paginator a, .thispage, .break {
+margin:2px;
+padding:0 4px;
+}
+.paginator .prev {
+margin-right:6px;
+}
+.paginator .next {
+margin-left:6px;
+}

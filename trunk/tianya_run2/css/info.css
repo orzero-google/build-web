@@ -1,0 +1,125 @@
+
+.inputtext {
+	background-color:-moz-field;
+	border:1px solid #BDC7D8;
+	color:-moz-fieldtext;
+	cursor:text;
+	font-family:Tahoma,Verdana,sans-serif,simsun;
+	font-size:16px;
+
+	height:30px;
+	letter-spacing:normal;
+	line-height:normal !important;
+	padding:5px 4px;
+	text-align:start;
+	text-indent:0;
+	text-rendering:optimizelegibility;
+	text-shadow:none;
+	text-transform:none;
+	vertical-align:middle;
+	word-spacing:normal;
+	
+	-moz-box-sizing:border-box;
+	white-space:pre;
+	
+	display:inline;
+}
+
+
+.input-submit {
+	-moz-appearance:button;
+	-moz-binding:none;
+	-moz-box-sizing:border-box;
+	-moz-user-select:none;
+	
+	font-size-adjust:-moz-use-system-font;
+	font-stretch:-moz-use-system-font;
+	font-style:-moz-use-system-font;
+	font-variant:-moz-use-system-font;
+	font-weight:-moz-use-system-font;
+	font-family:-moz-use-system-font;	
+	line-height:normal !important;
+
+	background-color:#005EAC;
+	
+	border:2px outset buttonface;
+	color:#FFFFFF;
+	cursor:pointer;
+	font-size:16px;	
+	padding:3px 14px;
+	margin-left:10px;
+	vertical-align:middle;
+	text-align:center;
+	text-indent:0;
+	text-rendering:optimizelegibility;
+	text-shadow:none;
+	text-transform:none;
+	white-space:pre;
+	word-spacing:normal;
+
+	display:inline;
+}
+.td-submit {
+	-moz-appearance:button;
+	-moz-binding:none;
+	-moz-box-sizing:border-box;
+	-moz-user-select:none;
+	
+	font-size-adjust:-moz-use-system-font;
+	font-stretch:-moz-use-system-font;
+	font-style:-moz-use-system-font;
+	font-variant:-moz-use-system-font;
+	font-weight:-moz-use-system-font;
+	font-family:-moz-use-system-font;	
+	line-height:normal !important;
+
+	background-color:green;
+	filter: alpha(opacity=70);
+	-moz-opacity:0.8;
+	opacity: 0.8;
+	
+	border:2px outset buttonface;
+	color:#FFFFFF;
+	cursor:pointer;
+	font-size:16px;	
+	padding:3px 14px;
+	margin-left:10px;
+	vertical-align:middle;
+	text-align:center;
+	text-indent:0;
+	text-rendering:optimizelegibility;
+	text-shadow:none;
+	text-transform:none;
+	white-space:pre;
+	word-spacing:normal;
+
+}
+
+.form{
+	display:block;	
+	vertical-align:middle;
+	text-align:center;
+	color:#333333;
+	font-family:Tahoma,Verdana,sans-serif,simsun;
+	font-size:16px;
+	margin-top:20px;
+}
+
+.description{
+		display:block;	
+		text-align:center;
+		color:#777777;
+		margin-top:40px;
+}
+
+.logo{	
+	display:block;	
+	float:top;
+	text-align:center;
+	cursor:pointer;
+	margin-top:40px;
+}
+
+td{
+	text-align:center;
+}

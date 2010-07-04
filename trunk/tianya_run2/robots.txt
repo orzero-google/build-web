@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /index.php*
+Allow: /list.php*
+Allow: /read.php*
+Allow: /list/*
+Allow: /read/*
+
+Sitemap : http://read.orzero.com/sitemap.php?do=showsitemap&sm=sitemap.xml.gz
