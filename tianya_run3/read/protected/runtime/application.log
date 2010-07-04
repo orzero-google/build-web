@@ -1,0 +1,66 @@
+2010/07/04 14:17:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "user".' in D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php:324
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('user')
+#1 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#2 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#3 {main} REQUEST_URI=/index.php?r=user
+2010/07/04 14:17:54 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "User".' in D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php:324
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('User')
+#1 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#2 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#3 {main} REQUEST_URI=/index.php?r=User
+2010/07/04 14:18:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "User".' in D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php:324
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('User')
+#1 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#2 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#3 {main} REQUEST_URI=/index.php?r=User
+2010/07/04 14:27:39 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "user".' in D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php:324
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('user')
+#1 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#2 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#3 {main} REQUEST_URI=/index.php?r=user
+2010/07/04 14:49:23 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php:153
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php(115): CAccessControlFilter->accessDenied(Object(CWebUser), 'You are not aut...')
+#1 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(999): CFilter->filter(Object(CFilterChain))
+#3 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilterChain.php(126): CInlineFilter->filter(Object(CFilterChain))
+#5 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(283): CFilterChain->run()
+#6 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('admin')
+#8 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('user/admin')
+#9 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#10 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#11 {main} REQUEST_URI=/index.php?r=user/admin
+2010/07/04 14:49:43 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php:153
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php(115): CAccessControlFilter->accessDenied(Object(CWebUser), 'You are not aut...')
+#1 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(999): CFilter->filter(Object(CFilterChain))
+#3 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilterChain.php(126): CInlineFilter->filter(Object(CFilterChain))
+#5 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(283): CFilterChain->run()
+#6 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('admin')
+#8 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('user/admin')
+#9 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#10 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#11 {main} REQUEST_URI=/index.php?r=user/admin
+2010/07/04 14:51:12 [error] [exception.CHttpException.403] exception 'CHttpException' with message 'You are not authorized to perform this action.' in D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php:153
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\auth\CAccessControlFilter.php(115): CAccessControlFilter->accessDenied(Object(CWebUser), 'You are not aut...')
+#1 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilter.php(39): CAccessControlFilter->preFilter(Object(CFilterChain))
+#2 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(999): CFilter->filter(Object(CFilterChain))
+#3 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CInlineFilter.php(59): CController->filterAccessControl(Object(CFilterChain))
+#4 D:\tianya_run\trunk\tianya_run3\framework\web\filters\CFilterChain.php(126): CInlineFilter->filter(Object(CFilterChain))
+#5 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(283): CFilterChain->run()
+#6 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#7 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('admin')
+#8 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('user/admin')
+#9 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#10 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#11 {main} REQUEST_URI=/index.php?r=user/admin

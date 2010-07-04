@@ -43,6 +43,6 @@ $set = array();
 $set['show_log'] = false;
 
 //程序根目录
-$set['root'] = '/data0/htdocs/read_orzero_com';
+$set['root'] = 'D:/tianya_run/trunk/tianya_run2/';
 $set['include_config'] = true;
 $set['tianya_data'] = 'data/tianya';
