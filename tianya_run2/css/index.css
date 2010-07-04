@@ -1,0 +1,79 @@
+﻿@CHARSET "UTF-8";
+html{
+	color: #111;
+	background: #fff
+}
+body, div, dl, dt, dd, ul, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, blockquot{
+	margin-top: 0pt;
+	margin-right: 0pt;
+	margin-bottom: 0pt;
+	margin-left: 0pt;
+	padding-top: 0pt;
+	padding-right: 0pt;
+	padding-bottom: 0pt;
+	padding-left: 0pt;
+}
+h1, h2, h3, h4, h5, h6{
+	font-size: 100%;
+	font-weight: 400;
+}
+
+h2{
+	font-family: normal Arial,Helvetica,sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 14px;
+	font-size-adjust: none;
+	font-stretch: normal;
+	-x-system-font: none;
+	color: #006600;
+	margin-top: 0pt;
+	margin-right: 0pt;
+	margin-bottom: 12px;
+	margin-left: 0pt;
+	line-height: 150%;
+}
+
+a{
+	cursor: pointer;
+}
+
+a:visited{
+	color: #666699;
+	text-decoration: none;
+}
+
+a:hover{
+	color: #ffffff;
+	text-decoration: none;
+	background-color: #003399;
+	background-image: none;
+	background-repeat: repeat;
+	background-attachment: scroll;
+	background-position: 0% 0%;
+}
+/*
+body, td, th{
+	font-family: Arial,Helvetica,sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 12px;
+	font-size-adjust: none;
+	font-stretch: normal;
+	-x-system-font: none;
+	line-height: 162%;
+}
+*/
+.tagCol td{
+	width: 20%;
+	font-size: 14px;
+}
+.tagCol td b{
+	font-weight: normal;
+	color: #aaaaaa;
+}
+
+
+
