@@ -100,4 +100,12 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}
+	
+  public function actionSnoopy()
+  {
+    //$page = Yii::app()->snoopy->fetch('http://www.baidu.com');
+    echo '<pre>';    print_r(Yii::app()->snoopy);
+    echo $page.'xxxxxxxxxxx';
+    //$this->redirect(Yii::app()->homeUrl);
+  }
 }
