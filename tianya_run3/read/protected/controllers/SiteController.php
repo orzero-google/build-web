@@ -103,9 +103,9 @@ class SiteController extends Controller
 	
   public function actionSnoopy()
   {
-    //$page = Yii::app()->snoopy->fetch('http://www.baidu.com');
-    echo '<pre>';    print_r(Yii::app()->snoopy);
-    echo $page.'xxxxxxxxxxx';
-    //$this->redirect(Yii::app()->homeUrl);
+    $model=new Snoopy;
+    $model->fetch('http://www.baidu.com');
+    echo $model->results;
   }
+
 }
