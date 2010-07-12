@@ -189,7 +189,7 @@ class get_url_cache{
       $fp=gzopen($filename,"r");
       $content_old = gzread($fp,strlen($this->content));
       gzclose($fp);
-      if($content_old == $this->content){            
+      if(strcmp($content_old, $this->content) === 0){            
         if($this->_show_log) echo 'The content Unchanged'.'<br />';    
         $this->size = filesize($filename);
         $this->time = filemtime($filename);                                        
