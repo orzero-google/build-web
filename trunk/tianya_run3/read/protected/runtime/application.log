@@ -149,3 +149,11 @@ Stack trace:
 #8 G:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
 #9 G:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
 #10 {main} REQUEST_URI=/index.php?r=site/snoopy
+2010/07/12 12:13:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\tianya_run\trunk\tianya_run3\framework\web\CController.php:439
+Stack trace:
+#0 D:\tianya_run\trunk\tianya_run3\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#2 D:\tianya_run\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#3 D:\tianya_run\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#4 D:\tianya_run\trunk\tianya_run3\read\index.php(12): CApplication->run()
+#5 {main} REQUEST_URI=/index.php?r=snoopy

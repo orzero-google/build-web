@@ -282,7 +282,7 @@ class get_url_cache{
     }
     if($get_state){
       $this->content = $snoopy->results;
-      $this->time = time();
+      $this->time = microtime();
       $this->size = strlen($this->content);
       if($this->_show_log) echo 'Get Page size: ' .$this->size.'<br /><br />';        
       return true;
