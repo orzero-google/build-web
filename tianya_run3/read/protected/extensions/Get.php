@@ -11,6 +11,7 @@
  */
 
 include_once 'Snoopy.php';
+include_once 'Command.php';
 
 class Get{
 	//属性
@@ -52,33 +53,6 @@ class Get{
 
 	}
 
-	//检查目标是否正确的网址
-	protected function is_url($url){
-		$url = substr($url,-1) == "/" ? substr($url,0,-1) : $url;
-		if ( !$url || $url=="" ) return false;
-		if ( !( $parts = @parse_url( $url ) ) ) return false;
-		else {
-			if (!isset($parts['scheme'])) return false;
-			if ( $parts['scheme'] != "http" && $parts['scheme'] != "https" && $parts['scheme'] != "ftp" ) return false;
-			else if (!isset($parts['host'])) return false;
-			if ( !preg_match( "/^[0-9a-z]([-.]?[0-9a-z])*.[a-z]{2,4}$/i", $parts['host'], $regs ) ) return false;
-			else if (isset($parts['user']))
-			if ( !preg_match( "/^([0-9a-z-]|[_])*$/i", $parts['user'], $regs ) ) return false;
-			else if (isset($parts['pass']))
-			if ( !preg_match( "/^([0-9a-z-]|[_])*$/i", $parts['pass'], $regs ) ) return false;
-			else if (isset($parts['path']))
-			if ( !preg_match( "/^[0-9a-z\/_.@~-]*$/i", $parts['path'], $regs ) ) return false;
-			else if (isset($parts['query']))
-			if ( !preg_match( "/^[0-9a-z?&=#,]*$/i", $parts['query'], $regs ) ) return false;
-		}
-		return true;
-	}
-	//递归创建目录  
-	protected function mkdirs($pathname, $mode = 0755) {
-		is_dir(dirname($pathname)) || mkdirs(dirname($pathname), $mode);
-		return is_dir($pathname) || @mkdir($pathname, $mode);
-	}
-
 	//采集
 	public function setUrl($url)
 	{
@@ -99,25 +73,27 @@ class Get{
 		return false;
 	}
 
-	//设置目标文件,如果目录不存在先创建目录,同时保持内容
+	//设置目标文件,如果目录不存在先创建目录,同时保存内容
 	public function setFile($file)
 	{
 		if ($this->fp) {
-
-
-		}
-
-		$dir = dirname($file);
-		if(mkdirs($dir)){
-			if ($this->fp=gzopen($file,"w9")) {
-				if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
-					$this->size = $len;
-					$this->file = $file;
-					return true;
+			if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
+				$this->size = $len;
+				$this->file = $file;
+				return true;
+			}
+		} else {
+			$dir = dirname($file);
+			if(mkdirs($dir)){
+				if ($this->fp=gzopen($file,"w9")) {
+					if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
+						$this->size = $len;
+						$this->file = $file;
+						return true;
+					}
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -138,9 +114,6 @@ class Get{
 	public function getSize(){
 		return $this->size;
 	}
-
-
-
 	 
 	// 获取缓存内容
 	function getFile()
@@ -156,29 +129,20 @@ class Get{
 		return false;
 	}
 
-	//删除缓存文件,递归删除目录
-	function delFile(){
-		$file = $this->file;
-		if(@unlink($file)){
-			$dir = dirname($file);
-			while ($dir != $file):
-				@rmdir($dir);
-				$file = $dir;
-				$dir = dirname($file);
-			endwhile;
-			return true;
+	// 关闭文件
+	function closeFile()
+	{
+		if($this->file != ''){
+			gzclose($this->fp);
+			unset($this->fp);
 		}
-
-		return false;
 	}
-
+	
 
 	//析构函数
 	public function __destruct()
 	{
-		if($this->file != ''){
-			gzclose($this->file);
-		}
+		closeFile();
 	}
 
 }
