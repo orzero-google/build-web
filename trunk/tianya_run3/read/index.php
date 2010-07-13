@@ -14,10 +14,10 @@ require_once($yii);
 
 Yii::createWebApplication($config)->run();
 
-Yii::import('application.extensions.*');
-require_once('Snoopy.class.php');
+//Yii::import('application.extensions.*');
+//require_once('Snoopy.class.php');
 
-$pg = new Snoopy();
+//$pg = new Snoopy();
 //echo '<pre>';
 //var_export($pg);
 //echo '</pre>';

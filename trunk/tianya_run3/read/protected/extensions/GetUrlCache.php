@@ -16,7 +16,7 @@
 //instanceof 测试是否派生或实例与某个类
 //__call, __get() and __set():方法呼叫和属性访问
 
-include_once 'Snoopy.class.php';
+include_once 'Snoopy.php';
 
 class get_url_cache{
   //属性
