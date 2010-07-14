@@ -67,7 +67,13 @@ return array(
 			),
 		),
 	),
-
+	'modules'=>array(
+   		'gii'=>array(
+			'class'=>'system.gii.GiiModule',
+			'password'=>'123456',
+			//'ipFilters'=>array('192.168.1.101'),
+		),
+	),
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
 	'params'=>array(

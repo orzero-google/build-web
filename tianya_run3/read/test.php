@@ -66,4 +66,9 @@ return is_dir($pathname) || @mkdir($pathname, $mode);
       //echo $len = gzwrite($fp, '123456789');
       
 //mkdirs(dirname($filename));
-delFile($filename);
+//delFile($filename);
+
+$p = file('http://www.tianya.cn');
+$ps = implode("\n\r",$p);
+echo $ps;
+
