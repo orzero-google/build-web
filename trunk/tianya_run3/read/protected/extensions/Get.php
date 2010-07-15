@@ -22,7 +22,8 @@ class Get{
 	protected $snoopy;
 	protected $content = '';
 	protected $size    = 0;
-
+	
+	private $fp;
 	private $_show_log = false;      //是否显示日志
 	//protected     能在当前类和继承类中访问
 	//private       只能在当前类中被调用
@@ -36,12 +37,12 @@ class Get{
 	{
 		//$this->url    = $url;
 		//$this->file   = $file;
-		//$this->submit = $submit;
-
+		//$this->submit = $submit;		
+		$this->snoopy = new Snoopy();
+		
 		$this->setSubmit($submit);
 
-		if($this->setFile($file)){
-			$this->snoopy = new Snoopy();
+		if($this->setFile($file)){			
 			$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 			$snoopy->referer = "http://www.google.com/";
 			$snoopy->rawheaders["Pragma"] = "no-cache";
@@ -59,12 +60,12 @@ class Get{
 		if(is_url($url)){
 			$this->url = $url;
 			if(!empty($this->submit)){
-				$get_state = $snoopy->submit($this->url,$this->submit);
+				$get_state = $this->snoopy->submit($this->url,$this->submit);
 			}else{
-				$get_state = $snoopy->fetch($this->url);
+				$get_state = $this->snoopy->fetch($this->url);
 			}
 			if($get_state){
-				$this->content = $snoopy->results;
+				$this->content = $this->snoopy->results;
 				$this->size = strlen($this->content);
 				return true;
 			}
@@ -76,6 +77,14 @@ class Get{
 	//设置目标文件,如果目录不存在先创建目录,同时保存内容
 	public function setFile($file)
 	{
+		if(empty($file)){
+			return false;
+		}else{
+			//更新了文件保存地址
+			if($file !== $this->file){
+				$this->closeFile();
+			}
+		}
 		if ($this->fp) {
 			if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
 				$this->size = $len;
@@ -142,7 +151,7 @@ class Get{
 	//析构函数
 	public function __destruct()
 	{
-		closeFile();
+		$this->closeFile();
 	}
 
 }
