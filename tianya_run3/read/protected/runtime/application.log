@@ -300,3 +300,247 @@ REQUEST_URI=/index.php?r=snoopy
 in E:\build-web\trunk\tianya_run3\read\protected\views\snoopy\index.php (6)
 in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (20)
 in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 02:12:27 [error] [php] json_encode() expects exactly 1 parameter, 2 given (E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php:20)
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#1 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): SnoopyController->runAction()
+#2 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): SnoopyController->runActionWithFilters()
+#3 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): SnoopyController->run()
+#4 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController()
+#5 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#6 E:\build-web\trunk\tianya_run3\read\index.php(15): CWebApplication->run()
+REQUEST_URI=/index.php?r=snoopy&_=1279159947656&ajax=fuck%20u
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (20)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:01:22 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:01:22 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct('admin', 'admin')
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:01:42 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:01:42 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:29:41 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:29:41 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:30:42 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:30:42 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:34:12 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:34:12 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:50:11 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:50:11 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:52:47 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:52:47 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:54:28 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:54:28 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:54:29 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:54:29 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:54:53 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:54:53 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:54:55 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (17)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:54:55 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(17): CActiveRecord->__construct()
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 03:58:23 [error] [system.db.CDbCommand] Error in querying SQL: SHOW COLUMNS FROM `Snoopy`
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (15)
+in E:\build-web\trunk\tianya_run3\read\index.php (15)
+2010/07/15 03:58:23 [error] [exception.CDbException] exception 'CDbException' with message 'The table "Snoopy" for active record class "Snoopy" cannot be found in the database.' in E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php:1976
+Stack trace:
+#0 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(342): CActiveRecordMetaData->__construct(Object(Snoopy))
+#1 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(356): CActiveRecord::model('Snoopy')
+#2 E:\build-web\trunk\tianya_run3\framework\db\ar\CActiveRecord.php(59): CActiveRecord->getMetaData()
+#3 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(15): CActiveRecord->__construct('admin', 'admin')
+#4 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): CController->run('')
+#9 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController('snoopy')
+#10 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#11 E:\build-web\trunk\tianya_run3\read\index.php(15): CApplication->run()
+#12 {main} REQUEST_URI=/index.php?r=snoopy
+2010/07/15 06:43:01 [error] [php] include_once(Command.php) [<a href='function.include-once'>function.include-once</a>]: failed to open stream: No such file or directory (E:\build-web\trunk\tianya_run3\read\protected\extensions\Get.php:14)
+Stack trace:
+#0 unknown(0): autoload()
+#1 E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php(15): spl_autoload_call()
+#2 E:\build-web\trunk\tianya_run3\framework\web\actions\CInlineAction.php(32): SnoopyController->actionIndex()
+#3 E:\build-web\trunk\tianya_run3\framework\web\CController.php(300): CInlineAction->run()
+#4 E:\build-web\trunk\tianya_run3\framework\web\CController.php(278): SnoopyController->runAction()
+#5 E:\build-web\trunk\tianya_run3\framework\web\CController.php(257): SnoopyController->runActionWithFilters()
+#6 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(320): SnoopyController->run()
+#7 E:\build-web\trunk\tianya_run3\framework\web\CWebApplication.php(120): CWebApplication->runController()
+#8 E:\build-web\trunk\tianya_run3\framework\base\CApplication.php(135): CWebApplication->processRequest()
+#9 E:\build-web\trunk\tianya_run3\read\index.php(15): CWebApplication->run()
+REQUEST_URI=/index.php?r=snoopy
+in E:\build-web\trunk\tianya_run3\read\protected\extensions\Get.php (14)
+in E:\build-web\trunk\tianya_run3\read\protected\extensions\Get.php (14)
+in E:\build-web\trunk\tianya_run3\read\protected\controllers\SnoopyController.php (15)
