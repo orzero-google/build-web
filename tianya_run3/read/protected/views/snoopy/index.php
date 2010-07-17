@@ -7,6 +7,7 @@
 	'click',
 	'index.php?r=snoopy',
 	array( // The ajaxOptions (jQuery stuff)
+		'type' => 'post',
 		'dataType' => 'json', // Page will output json to parse
 		'success' => 'js:success', // javascript function to call on success
 		'data' => 'js:\'ajax=\'+$(\'#url\').val()', // The $_GET data (parameters) to pass
