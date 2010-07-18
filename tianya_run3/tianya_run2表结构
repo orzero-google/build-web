@@ -1,0 +1,127 @@
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `info`
+--
+
+CREATE TABLE IF NOT EXISTS `info` (	
+  `infoid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,																													//首页url
+  `type` tinyint(4) NOT NULL,																														//1:get,2:posts
+  `channel_en` varchar(255) NOT NULL,																										//英文频道名
+  `channel_cn` varchar(255) NOT NULL,																										//中文频道名
+  `title` varchar(255) NOT NULL,																												//标题
+  `author_id` int(11) NOT NULL,																													//用户id
+  `author_name` varchar(255) NOT NULL,																									//用户名
+  `pid_list` text NOT NULL,																															//提交列表
+  `count` smallint(6) NOT NULL,																													//总页数
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			//时间戳
+  PRIMARY KEY (`infoid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=155 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `pg`
+--
+
+CREATE TABLE IF NOT EXISTS `pg` (
+  `pgid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,																													//首页url
+  `url` varchar(255) NOT NULL,																													//当前url
+  `dir` varchar(255) NOT NULL,																													//存储文件
+  `type` tinyint(4) NOT NULL,																														//1:get,2:posts
+  `form_vars` varchar(255) NOT NULL,																										//提交参数
+  `fid` int(11) NOT NULL,																																//关联info
+  `tid` int(11) NOT NULL,																																//页号
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			//时间戳
+  `page_size` int(11) NOT NULL,																													//源码大小
+  `cache_size` int(11) NOT NULL,																												//缓存大小
+  `state` tinyint(4) NOT NULL,																													//1:固定,0：动态
+  PRIMARY KEY (`pgid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21350 ;
+
+-- --------------------------------------------------------
+
+
+
+
+--
+-- 表的结构 `content`
+--
+
+CREATE TABLE IF NOT EXISTS `content` (
+  `contentid` int(11) NOT NULL AUTO_INCREMENT,
+  `info_id` int(11) NOT NULL,																														//关联info
+  `pg_id` int(11) NOT NULL,																															//关联pg
+  `page_num` mediumint(9) NOT NULL,																											//页数
+  `channel_cn` varchar(255) NOT NULL,																										//中文频道名
+  `url` varchar(255) NOT NULL,																													//当前url
+  `dir` varchar(255) NOT NULL,																													//缓存文件
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			//时间戳
+  `posts` smallint(6) NOT NULL,																													//楼主发帖数
+  PRIMARY KEY (`contentid`)																											
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21345 ;
+
+-- --------------------------------------------------------
+
+
+cache:		//缓存
+id
+pid						//页码
+type					//1:get,2:post
+furl					//首页url
+turl					//当前url(post:NULL)
+file					//存储位置
+size					//缓存大小
+status				//存储状态(1:固定;0：变化)
+posts					//楼主发帖
+time          //时间戳
+CREATE TABLE `cache` (
+	`cacheid` int(11) NOT NULL auto_increment,
+	`pid` INT NOT NULL,
+	`type` TINYINT NOT NULL,
+	`furl` VARCHAR(1023) NOT NULL,
+	`turl` VARCHAR(1023) NOT NULL,
+	`file` VARCHAR(1023) NOT NULL,
+	`size` INT NOT NULL,
+	`status` TINYINT NOT NULL,
+	`posts` SMALLINT NOT NULL,
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`cacheid`)) ENGINE=MyISAM;
+
+
+page:		//信息,文章信息
+id
+furl					//首页url(关联)
+title					//标题
+channel_en		//英文频道名
+channel_cn    //中文频道名
+author_id     //用户id
+author_name   //用户名
+pcount        //总页数
+plist         //页码列表
+time          //时间戳
+	CREATE TABLE `page` (
+	`pageid` int(11) NOT NULL auto_increment,
+	`furl` VARCHAR(1023) NOT NULL,
+	`title` VARCHAR(255) NOT NULL,
+	`channel_en` VARCHAR(255) NOT NULL,
+	`channel_cn` VARCHAR(255) NOT NULL,
+	`author_id` INT NOT NULL,
+	`author_name` VARCHAR(255) NOT NULL,
+	`pcount` MEDIUMINT NOT NULL,
+	`plist` TEXT NOT NULL,
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`pageid`)) ENGINE=MyISAM;
+	
+	
+      $info_page['chrType'] = get_mid_content($info_js, 'var chrType = "', '";');
+			$info_page['intAuthorId'] = get_mid_content($info_js, 'var intAuthorId = "', '";');
+			$info_page['chrAuthorName'] = get_mid_content($info_js, 'var chrAuthorName = "', '";');
+			$info_page['chrTitle'] = strip_tags(get_mid_content($info_js, 'var chrTitle = "', '";'));
+			$info_page['chrItem'] = get_mid_content($info_js, 'var chrItem = \'', '\';');
+			$info_page['intItem'] = get_mid_content($info_js, 'var intItem = \'', '\';');
+			$info_page['intArticleId'] = get_mid_content($info_js, 'var intArticleId = "', '";');
+			$info_page['firstAuthor'] = get_mid_content($info_js, 'var firstAuthor = \'', '\';');	
+
+http://www.tianya.cn/techforum/content/169/567548.shtml
