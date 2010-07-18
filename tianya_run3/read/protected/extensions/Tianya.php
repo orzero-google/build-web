@@ -15,6 +15,8 @@ class Tianya{
 				$post['rs_strTitle_aa'] = strip_tags(get_mid_content($post['url_area'], '<input type="hidden" name="rs_strTitle_aa" value="', '">'));
 				$post['intLogo'] = intval(get_mid_content($post['url_area'], '<input type="hidden" name="intLogo" value="', '">'));
 				$post['apn'] = get_mid_content($post['url_area'], '<input type="hidden" name="apn" value="', '">');
+				$post['link_r'] = explode(',', $post['apn']);
+				$post['link_c'] = count($post['link_r']);
 				unset($post['url_area']);
 				$this->post = $post;
 				return $post;
@@ -23,6 +25,7 @@ class Tianya{
 			$get['type'] = 'get';
 			$get['link'] = get_mid_content($get['url_area'], '<input type=\'hidden\' name=\'idArticleslist\' value=\'', ',\'>');
 			$get['link_r'] = explode(',', $get['link']);
+			$get['link_c'] = count($get['link_r']);
 			unset($get['link']);
 			unset($get['url_area']);
 			$this->get = $get;
@@ -33,6 +36,7 @@ class Tianya{
 	}
 
 	function get_info($page_content, $type){
+		$info_page['channel_cn'] = get_mid_content($page_content, 'target=_top>', '</a>');
 		if($type = 'get'){
 			$info_js = get_mid_content($page_content, 
 		utf82gbk('<!-- 天涯百宝箱 -->
@@ -60,7 +64,7 @@ class Tianya{
 			$info_page['chrItem'] = get_mid_content($info_js, 'var chrItem = \'', '\';');
 			$info_page['intItem'] = get_mid_content($info_js, 'var intItem = \'', '\';');
 			$info_page['intArticleId'] = get_mid_content($info_js, 'var intArticleId = "', '";');
-			$info_page['firstAuthor'] = get_mid_content($info_js, 'var firstAuthor = \'', '\';');		
+			$info_page['firstAuthor'] = get_mid_content($info_js, 'var firstAuthor = \'', '\';');
 		}else{
 			return false;
 		}
