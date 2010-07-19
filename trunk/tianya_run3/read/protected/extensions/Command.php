@@ -68,3 +68,4 @@ function utf82gbk($str){
 function gbk2utf8($str){
 	return iconv("GBK", "UTF-8//IGNORE", $str);
 }
+
