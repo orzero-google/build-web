@@ -27,7 +27,13 @@ class SnoopyController extends Controller
 			$the_nav  = $tianya->get_link($the_page);		//取得导航,$post,$get
 			if($the_nav){
 				$the_info = $tianya->get_info($the_page,$the_nav['type']);		//取得文章信息
-				//echo json_encode(gbk2utf8($info['chrTitle']));
+				$the_pageid = $tianya->get_the_pageid($url);
+
+				if($the_nav['link_r'][0] !== $the_pageid){
+					$url = str_replace($the_pageid, $the_nav['link_r'][0], $url);
+				}
+				
+				//入库文章信息
 				$page_old = $page->find('furl=:furl', array(':furl' => $url));
 				if($page_old->furl === $url){//以前采集过,则更新
 					$page_old->title = gbk2utf8($the_info['chrTitle']);
@@ -50,7 +56,19 @@ class SnoopyController extends Controller
 					$page_new->plist = serialize($the_nav['link_r']);
 					$st = $page_new->save(false);
 				}
-				json_encode(print_r($st));
+				
+				//入库文章内容
+				$cache->pid = $the_nav['link_c'];
+				$cache->type = $the_nav['type'];
+				$cache->furl = $url;
+				$cache->type = $the_nav['type'];
+				$cache->type = $the_nav['type'];
+				$cache->type = $the_nav['type'];
+				$cache->type = $the_nav['type'];
+				$cache->type = $the_nav['type'];
+				$cache->type = $the_nav['type'];
+				
+				//json_encode(print_r($st));
 			}else{
 	        	echo json_encode('不是天涯的网址,或者页数不超过1页，不予收录');
 			}

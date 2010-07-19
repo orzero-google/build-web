@@ -71,4 +71,10 @@ class Tianya{
 		
 		return $info_page;		
 	}
+	
+	function get_the_pageid($url){
+		$start_point = strrpos($url, '/');
+		$cut_str     = substr($url, $start_point+1, -6);
+		return intval($cut_str);
+	}
 }
