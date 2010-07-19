@@ -18,13 +18,14 @@ class SnoopyController extends Controller
 		//$pg      = new Pg();
 		//$content = new Content();
 		$page  = new Page();
-		$cache = new Cache();
+
 	
 		if (isset($_REQUEST['ajax']) && $url=$_REQUEST['ajax'])
 		{
 			$get->setUrl($url);
 			$the_page = $get->getContent();
 			$the_nav  = $tianya->get_link($the_page);		//取得导航,$post,$get
+			
 			if($the_nav){
 				$the_info = $tianya->get_info($the_page,$the_nav['type']);		//取得文章信息
 				$the_pageid = $tianya->get_the_pageid($url);
@@ -32,7 +33,7 @@ class SnoopyController extends Controller
 				if($the_nav['link_r'][0] !== $the_pageid){
 					$url = str_replace($the_pageid, $the_nav['link_r'][0], $url);
 				}
-				
+								
 				//入库文章信息
 				$page_old = $page->find('furl=:furl', array(':furl' => $url));
 				if($page_old->furl === $url){//以前采集过,则更新
@@ -57,16 +58,20 @@ class SnoopyController extends Controller
 					$st = $page_new->save(false);
 				}
 				
-				//入库文章内容
-				$cache->pid = $the_nav['link_c'];
-				$cache->type = $the_nav['type'];
-				$cache->furl = $url;
-				$cache->type = $the_nav['type'];
-				$cache->type = $the_nav['type'];
-				$cache->type = $the_nav['type'];
-				$cache->type = $the_nav['type'];
-				$cache->type = $the_nav['type'];
-				$cache->type = $the_nav['type'];
+				$_ajax['pid']       = 1;					    //页码
+				$_ajax['pcount']    = $the_nav['link_c'];       //页数
+				$_ajax['list']      = $the_nav['link_r'];		//页序号列表
+				$_ajax['furl']      = $url;						//首页
+				$_ajax['turl']      = $url;					    //当前页	
+				$_ajax['type']      = $the_nav['type'];	        //当前页类型
+				$_ajax['channel_en']	= empty($page_old->channel_en) ? $page_new->channel_en : $page_old->channel_en;
+				$_ajax['channel_cn']	= empty($page_old->channel_cn) ? $page_new->channel_cn : $page_old->channel_cn;
+				$_ajax['author_name']	= empty($page_old->author_name) ? $page_new->author_name : $page_old->author_name;
+				$_ajax['title']	        = empty($page_old->title) ? $page_new->title : $page_old->title;
+				
+				//json_encode(print_r($_ajax));
+
+				//json_encode(print_r($dataProvider));				
 				
 				//json_encode(print_r($st));
 			}else{
@@ -77,8 +82,22 @@ class SnoopyController extends Controller
 			
 	        Yii::app()->end(); // Not necessarily required, but it can't hurt
 		}else{			
-			$this->render('index',array('model'=>$model));
+			$this->render('index',array('model'=>$page_old));
 		}
 	}
-
+	
+	public function actionGet()
+	{
+		$cache = new Cache();
+		
+		//入库文章内容
+		$cache->pid  = $pid;
+		$cache->type = $type;
+		$cache->furl = $furl;
+		$cache->turl = $turl;
+		$cache->file = '/data/'.$channel.'/'.md5($furl).'/'.$pnum.'.php';
+		$cache->size = 0;
+		$cache->status = ($pid >= $pcount) ? 0 : 1;
+		$cache->posts = 0;
+	}
 }
