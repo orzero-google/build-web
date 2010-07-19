@@ -18,11 +18,30 @@
 		'id' => 'surl',
 	)
 );
+
 ?>
 	</div>
 </div>
 <div id="info"></div>
-<?php echo CHtml::script(
+<tr>
+	<div class="gridtile">
+	作者
+	</div>
+</tr>
+<tr>
+	<div class="gridtile">
+	作者
+	</div>
+</tr>
+<td>
+	<div class="gridtile">
+	作者
+	</div>
+</td>
+
+
+<?php 
+echo CHtml::script(
 'function success(data){
 	$("#info").html(String(data));
 	return $("#surl")[0].disabled = false;
@@ -33,4 +52,14 @@ function geturl(){
 function beforeSend(){
 	return $("#surl")[0].disabled = true;
 }'
-); ?>
+); 
+echo CHtml::css(
+'div.gridtile  {
+#float:left;
+margin:2px;
+width:10em;
+border:2px solid #C3D9FF;
+}'
+); 
+
+?>
