@@ -69,7 +69,7 @@ class SnoopyController extends Controller
 				$_ajax['author_name']	= empty($page_old->author_name) ? $page_new->author_name : $page_old->author_name;
 				$_ajax['title']	        = empty($page_old->title) ? $page_new->title : $page_old->title;
 				
-				//json_encode(print_r($_ajax));
+				echo json_encode($_ajax);
 
 				//json_encode(print_r($dataProvider));				
 				
@@ -86,7 +86,7 @@ class SnoopyController extends Controller
 		}
 	}
 	
-	public function actionGet()
+	public function actionSave()
 	{
 		$cache = new Cache();
 		
@@ -100,4 +100,5 @@ class SnoopyController extends Controller
 		$cache->status = ($pid >= $pcount) ? 0 : 1;
 		$cache->posts = 0;
 	}
+	
 }
