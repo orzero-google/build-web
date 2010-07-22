@@ -1,11 +1,11 @@
-var $ajax; //ajax返回数据
+var $fx_ajax; //ajax返回数据
 function showinfo(data){
 	if(data.length){
 		alert(data);
 		$("#surl")[0].disabled = false;
 		return false;
 	}
-	$ajax = data;		//更新全局变量
+	$fx_ajax = data;		//更新全局变量
 	
 	//$("#msg").html(data);
 	//alert(data.list);
@@ -37,5 +37,6 @@ function mkurl($list, $pid, $type){
 }
 //整理功能
 function collation(){
-	//alert($ajax.list[3]);
+	//alert($fx_ajax.list[3]);
+	
 }
