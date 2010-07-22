@@ -72,10 +72,10 @@ id
 pid						//页码
 type					//1:get,2:post
 furl					//首页url
-turl					//当前url(post:NULL)
+turl					//当前url(post:提交参数)
 file					//存储位置
 size					//缓存大小
-status				//存储状态(1:固定;0：变化)
+status				//存储状态(1:固定;0:变化;3:已经取得posts)
 posts					//楼主发帖
 time          //时间戳
 CREATE TABLE `cache` (
@@ -99,6 +99,7 @@ channel_en		//英文频道名
 channel_cn    //中文频道名
 author_id     //用户id
 author_name   //用户名
+tpid					//整理到的页号
 pcount        //总页数
 plist         //页码列表
 time          //时间戳
@@ -110,6 +111,7 @@ time          //时间戳
 	`channel_cn` VARCHAR(255) NOT NULL,
 	`author_id` INT NOT NULL,
 	`author_name` VARCHAR(255) NOT NULL,
+	`tpid` MEDIUMINT NOT NULL,
 	`pcount` MEDIUMINT NOT NULL,
 	`plist` TEXT NOT NULL,
 	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`pageid`)) ENGINE=MyISAM;
@@ -124,3 +126,4 @@ time          //时间戳
 			$info_page['intArticleId'] = get_mid_content($info_js, 'var intArticleId = "', '";');
 			$info_page['firstAuthor'] = get_mid_content($info_js, 'var firstAuthor = \'', '\';');	
 
+http://www.tianya.cn/techforum/content/169/567548.shtml
