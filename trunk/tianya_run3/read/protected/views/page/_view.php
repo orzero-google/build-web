@@ -29,6 +29,10 @@
 	<br />
 
 	<?php /*
+	<b><?php echo CHtml::encode($data->getAttributeLabel('tpid')); ?>:</b>
+	<?php echo CHtml::encode($data->tpid); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('pcount')); ?>:</b>
 	<?php echo CHtml::encode($data->pcount); ?>
 	<br />

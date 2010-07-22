@@ -2,7 +2,6 @@
 
 class SnoopyController extends Controller
 {
-
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
@@ -53,12 +52,14 @@ class SnoopyController extends Controller
 					$page_new->channel_cn = gbk2utf8($the_info['channel_cn']);
 					$page_new->author_id = empty($the_info['intAuthorId']) ? 0 : $the_info['intAuthorId'];
 					$page_new->author_name = gbk2utf8($the_info['chrAuthorName']);
+					$page_new->tpid = 1;
 					$page_new->pcount = $the_nav['link_c'];
 					$page_new->plist = serialize($the_nav['link_r']);
 					$st = $page_new->save(false);
 				}
 				
-				$_ajax['pid']       = 1;					    //页码
+				$_ajax['pid']       = empty($page_old->tpid) ? $page_new->tpid : $page_old->tpid; //页码
+				$_ajax['pcount']       = empty($page_old->pcount) ? $page_new->pcount : $page_old->pcount; //总页数
 				$_ajax['pcount']    = $the_nav['link_c'];       //页数
 				$_ajax['list']      = $the_nav['link_r'];		//页序号列表
 				$_ajax['furl']      = $url;						//首页
@@ -88,17 +89,32 @@ class SnoopyController extends Controller
 	
 	public function actionSave()
 	{
-		$cache = new Cache();
+		$cache  = new Cache();
+		$get    = new Get();
+		$tianya = new Tianya();
+		
+		//取参数
+		$pid        = $_POST['pid'];
+		$type       = $_POST['type'];
+		$furl       = $_POST['furl'];
+		$turl       = $_POST['turl'];
+		$channel_en = $_POST['channel_en'];
+		$pcount     = $_POST['pcount'];
+		
+		
+		echo $pid;
+		
 		
 		//入库文章内容
 		$cache->pid  = $pid;
 		$cache->type = $type;
 		$cache->furl = $furl;
 		$cache->turl = $turl;
-		$cache->file = '/data/'.$channel.'/'.md5($furl).'/'.$pnum.'.php';
+		$cache->file = '/data/'.$channel_en.'/'.md5($furl).'/'.$pid.'.php';
 		$cache->size = 0;
-		$cache->status = ($pid >= $pcount) ? 0 : 1;
-		$cache->posts = 0;
+		$cache->status = ($pid === $pcount) ? 0 : 1;
+		$cache->posts  = 0;
+		$cache->time   = time();
 	}
 	
 }

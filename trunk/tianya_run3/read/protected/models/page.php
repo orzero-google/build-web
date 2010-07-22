@@ -11,6 +11,7 @@ class Page extends CActiveRecord
 	 * @var string $channel_cn
 	 * @var integer $author_id
 	 * @var string $author_name
+	 * @var integer $tpid
 	 * @var integer $pcount
 	 * @var string $plist
 	 * @var string $time
@@ -41,13 +42,13 @@ class Page extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('furl, title, channel_en, channel_cn, author_id, author_name, pcount, plist, time', 'required'),
-			array('author_id, pcount', 'numerical', 'integerOnly'=>true),
+			array('furl, title, channel_en, channel_cn, author_id, author_name, tpid, pcount, plist, time', 'required'),
+			array('author_id, tpid, pcount', 'numerical', 'integerOnly'=>true),
 			array('furl', 'length', 'max'=>1023),
 			array('title, channel_en, channel_cn, author_name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('pageid, furl, title, channel_en, channel_cn, author_id, author_name, pcount, plist, time', 'safe', 'on'=>'search'),
+			array('pageid, furl, title, channel_en, channel_cn, author_id, author_name, tpid, pcount, plist, time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -75,6 +76,7 @@ class Page extends CActiveRecord
 			'channel_cn' => 'Channel Cn',
 			'author_id' => 'Author',
 			'author_name' => 'Author Name',
+			'tpid' => 'Tpid',
 			'pcount' => 'Pcount',
 			'plist' => 'Plist',
 			'time' => 'Time',
@@ -105,6 +107,8 @@ class Page extends CActiveRecord
 		$criteria->compare('author_id',$this->author_id);
 
 		$criteria->compare('author_name',$this->author_name,true);
+
+		$criteria->compare('tpid',$this->tpid);
 
 		$criteria->compare('pcount',$this->pcount);
 

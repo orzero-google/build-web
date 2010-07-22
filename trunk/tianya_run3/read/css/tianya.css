@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+div.gridtile{
+	float:left;
+	margin:4px;
+	border:1px solid #C3D9FF;
+	color:#6688CC;
+	display:block;
+	height:19px;
+	padding:2px 4px 0 4px;
+	text-decoration:none;
+	font-family:arial,sans-serif;
+	text-align:center;
+	font-size:14px;
+	#font-weight:bold;
+	clear:both;
+}
+span.title{
+	color:green;
+}
