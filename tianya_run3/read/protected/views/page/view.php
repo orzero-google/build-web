@@ -25,6 +25,7 @@ $this->menu=array(
 		'channel_cn',
 		'author_id',
 		'author_name',
+		'tpid',
 		'pcount',
 		'plist',
 		'time',

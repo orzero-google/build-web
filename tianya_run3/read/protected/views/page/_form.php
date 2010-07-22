@@ -46,6 +46,12 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'tpid'); ?>
+		<?php echo $form->textField($model,'tpid'); ?>
+		<?php echo $form->error($model,'tpid'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'pcount'); ?>
 		<?php echo $form->textField($model,'pcount'); ?>
 		<?php echo $form->error($model,'pcount'); ?>

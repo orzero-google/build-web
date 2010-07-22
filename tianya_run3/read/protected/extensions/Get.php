@@ -39,17 +39,14 @@ class Get{
 		//$this->file   = $file;
 		//$this->submit = $submit;		
 		$this->snoopy = new Snoopy();
+		$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+		$snoopy->referer = "http://www.google.com/";
+		$snoopy->rawheaders["Pragma"] = "no-cache";
 		
 		$this->setSubmit($submit);
 
 		if($this->setFile($file)){			
-			$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
-			$snoopy->referer = "http://www.google.com/";
-			$snoopy->rawheaders["Pragma"] = "no-cache";
-		}
-
-		if($this->setUrl($url)){
-			$this->setFile($file);
+			$this->setUrl($url);
 		}
 
 	}

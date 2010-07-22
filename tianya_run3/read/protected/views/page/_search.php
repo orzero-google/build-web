@@ -41,6 +41,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'tpid'); ?>
+		<?php echo $form->textField($model,'tpid'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'pcount'); ?>
 		<?php echo $form->textField($model,'pcount'); ?>
 	</div>
