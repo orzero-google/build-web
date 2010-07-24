@@ -41,14 +41,7 @@ class Get{
 		$this->snoopy = new Snoopy();
 		$snoopy->agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 		$snoopy->referer = "http://www.google.com/";
-		$snoopy->rawheaders["Pragma"] = "no-cache";
-		
-		$this->setSubmit($submit);
-
-		if($this->setFile($file)){			
-			$this->setUrl($url);
-		}
-
+		$snoopy->rawheaders["Pragma"] = "no-cache";		
 	}
 
 	//采集
@@ -88,7 +81,7 @@ class Get{
 				$this->file = $file;
 				return true;
 			}
-		} else {
+		} else {					//步骤一
 			$dir = dirname($file);
 			if(mkdirs($dir)){
 				if ($this->fp=gzopen($file,"w9")) {

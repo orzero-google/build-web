@@ -77,4 +77,30 @@ class Tianya{
 		$cut_str     = substr($url, $start_point+1, -6);
 		return intval($cut_str);
 	}
+	
+	/**
+	 * 构造新页面的链接
+	 * @param $type
+	 * @param $furl
+	 * @param $list		如果是post,包含:apn, intLogo 0, rs_permission 1, rs_strTitle_aa
+	 * @param $pid
+	 * @return $new_url
+	 */
+	function mk_url($type, $furl, $list, $pid){
+		if($type == 'get'){
+			$old_pageid = $this->get_the_pageid($furl);
+			$new_pageid = $list[$pid+1];
+			$new_url = str_replace($old_pageid, $new_pageid, $furl);
+			if(!empty($new_url))
+				return $new_url;
+		}else if($type == 'post'){
+			$post['apn'] = implode(',', $list);
+			$post['intLogo'] = 0;
+			$post['pID'] = $pid;
+			$post['rs_permission'] = 1;
+			return $post;
+		}
+		
+		return false;
+	}	
 }

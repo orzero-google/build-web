@@ -72,7 +72,7 @@ id
 pid						//页码
 type					//1:get,2:post
 furl					//首页url
-turl					//当前url(post:提交参数)
+turl					//当前url(post:提交参数:apn)
 file					//存储位置
 size					//缓存大小
 status				//存储状态(1:固定; 0:变化; 3:已经取得posts)
