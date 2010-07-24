@@ -1,4 +1,71 @@
-var $fx_ajax; //ajax返回数据
+var $fx_ajax = ''; //ajax返回数据
+
+if($fx_ajax != ''){
+$.ajax({
+	type: "post",
+	url: 'index.php?r=snoopy/save',
+	dataType: "json",
+	cache: false,
+	timeout: 24000,
+	data: 'pid=' + $fx_ajax['pid']
+	       + '&type=' + $fx_ajax['type']
+	       + '&furl=' + $fx_ajax['furl']
+	       + '&list=' + $fx_ajax['list']
+	       + '&channel_en=' + $fx_ajax['channel_en']
+	       + '&pcount=' + $fx_ajax['pcount'],
+	beforeSend: function(XMLHttpRequest){
+		$("#gurl")[0].disabled = true;
+	},
+	success: function(data, textStatus){
+
+/*		
+		//编码引起有隐含字符附加在data前
+		if(binfo=="FF"){
+			var source_data = data.toSource();
+			//alert(source_data);
+			var end = source_data.lastIndexOf('"');
+			var start = source_data.indexOf('FEFF') + 4;
+			//start = 19;
+			if((start != -1) && (end != -1)){
+			//if(end != -1){
+				//var str_data = source_data.slice(start, end).replace(/\\/g, '').replace(/\"/g, '');
+				//var json_data = $.toJSON(str_data);
+				//var page_id = $.evalJSON(str_data).pid;
+				var page_id = source_data.slice(start, end);
+			}				
+		//if(number_data == page)
+		//alert(str_data.replace(/\\/g, ''));
+		//alert(str_data);
+		//alert(json_data);
+		//alert(page_id);
+		//alert(the_link +'_'+ count_link);
+		}else{
+			var page_id = data;
+		}
+		if(the_link == count_link){
+			suc();
+			return;
+		}
+		if(page_id == page){
+			$("#link_list").attr('value', page);	//成功,计数器+1
+			if(the_link < count_link && run == 1){
+				run_start();
+			}
+		}else{
+			err();
+			//alert(the_link +'_'+ count_link);
+		}
+*/
+	},
+	complete: function(XMLHttpRequest, textStatus){
+		//$("#link_list").attr('status', 'start');
+	},
+	error: function(){
+		//err();
+	}
+}); 
+}
+
 function showinfo(data){
 	if(data.length){
 		alert(data);
