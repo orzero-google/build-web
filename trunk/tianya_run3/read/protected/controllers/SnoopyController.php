@@ -33,7 +33,7 @@ class SnoopyController extends Controller
 					$url = str_replace($the_pageid, $the_nav['link_r'][0], $url);
 				}
 								
-				//入库文章信息
+				//入库文章信息,根据furl去重,有则更新,没有则插入
 				$page_old = $page->find('furl=:furl', array(':furl' => $url));
 				if($page_old->furl === $url){//以前采集过,则更新
 					$page_old->title = gbk2utf8($the_info['chrTitle']);
@@ -89,20 +89,41 @@ class SnoopyController extends Controller
 	
 	public function actionSave()
 	{
-		$cache  = new Cache();
-		$get    = new Get();
+		$cache  = new Cache();		
 		$tianya = new Tianya();
+		$get    = new Get();
 		
 		//取参数
 		$pid        = $_POST['pid'];
 		$type       = $_POST['type'];
 		$furl       = $_POST['furl'];
-		$turl       = $_POST['turl'];
+		$list       = $_POST['list'];
 		$channel_en = $_POST['channel_en'];
 		$pcount     = $_POST['pcount'];
 		
+		if(!empty($channel_en))
+			$file = '/data/'.$channel_en.'/'.md5($furl).'/'.$pid.'.php';
 		
-		echo $pid;
+		$url_post = $tianya->mk_url($type, $furl, $list, $pid);
+		$size = 0;
+		
+		if($type == 'get'){
+			$turl = $url_post;
+			if($get->setFile($file)){			
+				if($get->setUrl($url)){
+					$size = $get->getSize();
+				}
+			}
+		}else if($type == 'post'){
+			$turl = serialize($url_post);
+			if($get->setFile($file)){			
+				if($get->setUrl($url)){
+					$size = $get->getSize();
+				}
+			}
+		}
+		
+				
 		
 		
 		//入库文章内容
@@ -110,8 +131,8 @@ class SnoopyController extends Controller
 		$cache->type = $type;
 		$cache->furl = $furl;
 		$cache->turl = $turl;
-		$cache->file = '/data/'.$channel_en.'/'.md5($furl).'/'.$pid.'.php';
-		$cache->size = 0;
+		$cache->file = $file;
+		$cache->size = $size;
 		$cache->status = ($pid === $pcount) ? 0 : 1;
 		$cache->posts  = 0;
 		$cache->time   = time();
