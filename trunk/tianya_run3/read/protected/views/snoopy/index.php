@@ -25,7 +25,7 @@ echo CHtml::button(
 		'name' => 'gurl',
 		'id' => 'gurl',
 		'style' => 'display:none;',
-		'onclick' =>'collation()',
+		'onclick' =>'collation();',
 	)
 );
 
