@@ -102,17 +102,19 @@ class SnoopyController extends Controller
 		$pcount     = $_POST['pcount'];
 		
 		if(!empty($channel_en))
-			$file = '/data/'.$channel_en.'/'.md5($furl).'/'.$pid.'.php';
+			$file = './data/'.$channel_en.'/'.md5($furl).'/'.$pid.'.php';
 		else
 			return false;
 			
 		$url_post = $tianya->mk_url($type, $furl, $list, $pid);
 		$size = 0;
 		
+		
 		if($type == 'get'){
 			$turl = $url_post;
-			if($get->setFile($file)){			
-				if($get->setUrl($url)){
+			if($get->setFile($file,false)){
+				if($get->setUrl($turl)){
+					$get->setFile($file);
 					$size = $get->getSize();
 				}
 			}
@@ -120,14 +122,15 @@ class SnoopyController extends Controller
 			$turl = serialize($url_post);
 			if($get->setSubmit($url_post)){
 				if($get->setFile($file)){
-					if($get->setUrl($url)){
+					if($get->setUrl($furl)){
 						$size = $get->getSize();
 					}
 				}
 			}
 		}
 		
-		echo $get->getContent();
+		var_dump($get->getFile());
+		//echo $size;
 		
 		
 		//入库文章内容

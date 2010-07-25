@@ -15,13 +15,14 @@ include_once 'Command.php';
 
 class Get{
 	//属性
-	public  $url    = '';
-	public  $file   = '';                  //地址/文件名.php
-	public  $submit = array();
+	public  $url;
+	public  $file;                  //地址/文件名.php
+	public  $submit;
 
 	protected $snoopy;
 	protected $content = '';
 	protected $size    = 0;
+	protected $compress_type = 'bz';
 	
 	private $fp;
 	private $_show_log = false;      //是否显示日志
@@ -66,7 +67,7 @@ class Get{
 	}
 
 	//设置目标文件,如果目录不存在先创建目录,同时保存内容
-	public function setFile($file)
+	public function setFile($file,$if_save=true)
 	{
 		if(empty($file)){
 			return false;
@@ -77,7 +78,10 @@ class Get{
 			}
 		}
 		if ($this->fp) {
-			if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
+			$this->compress_type=='bz' && $len = bzwrite($this->fp, $this->content);
+			$this->compress_type=='gz' && $len = gzwrite($this->fp, $this->content);
+			if($len  === (strlen($this->content))){
+				//echo $len;
 				$this->size = $len;
 				$this->file = $file;
 				return true;
@@ -85,8 +89,14 @@ class Get{
 		} else {					//步骤一
 			$dir = dirname($file);
 			if(mkdirs($dir)){
-				if ($this->fp=gzopen($file,"w9")) {
-					if(($len = gzwrite($fp, $this->content)) === (strlen($this->content))){
+				$this->compress_type=='bz' && $this->fp=bzopen($file,"w");
+				$this->compress_type=='gz' && $this->fp=gzopen($file,"w9");
+				//var_dump(empty($this->fp));
+				if ($this->fp) {
+					if($if_save == false) return true;
+					$this->compress_type=='bz' && $len = bzwrite($this->fp, $this->content);
+					$this->compress_type=='gz' && $len = gzwrite($this->fp, $this->content);
+					if($len === (strlen($this->content))){
 						$this->size = $len;
 						$this->file = $file;
 						return true;
@@ -120,9 +130,25 @@ class Get{
 	{
 		$filename=$this->file;
 		if(file_exists($filename)){
-			if($content_gz_cache = gzfile($filename)){
-				$this->content = implode('', $content_gz_cache);
-				$this->size = filesize($filename);
+			$this->size = filesize($filename);
+			
+			if($this->compress_type=='gz' && $gz = gzopen($filename, 'r')){
+				$decompressed_file = '';				
+				while (!gzeof($gz)) {
+				   $decompressed_file = gzgets($gz, 4096);
+				}
+				$this->content = $decompressed_file;
+				gzclose($gz);
+				return true;
+			}
+			
+			if($this->compress_type=='bz' && $bz = bzopen($filename, "r")){
+				$decompressed_file = '';
+				while (!feof($bz)) {
+				  $decompressed_file .= bzread($bz, 4096);
+				}
+				$this->content = $decompressed_file;
+				bzclose($bz);
 				return true;
 			}
 		}
@@ -132,8 +158,10 @@ class Get{
 	// 关闭文件
 	function closeFile()
 	{
-		if($this->file != ''){
-			gzclose($this->fp);
+		if($this->file && !empty($this->fp)){
+			$this->compress_type=='bz' && bzclose($this->fp);
+			$this->compress_type=='gz' && gzclose($this->fp);
+			$this->file = '';
 			unset($this->fp);
 		}
 	}
