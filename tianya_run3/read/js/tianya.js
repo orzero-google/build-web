@@ -1,22 +1,15 @@
 var $fx_ajax = ''; //ajax返回数据
-
-if($fx_ajax != ''){
-$.ajax({
+$.ajaxSetup({
 	type: "post",
 	url: 'index.php?r=snoopy/save',
 	dataType: "json",
 	cache: false,
-	timeout: 24000,
-	data: 'pid=' + $fx_ajax['pid']
-	       + '&type=' + $fx_ajax['type']
-	       + '&furl=' + $fx_ajax['furl']
-	       + '&list=' + $fx_ajax['list']
-	       + '&channel_en=' + $fx_ajax['channel_en']
-	       + '&pcount=' + $fx_ajax['pcount'],
+	timeout: 60000,
 	beforeSend: function(XMLHttpRequest){
 		$("#gurl")[0].disabled = true;
 	},
 	success: function(data, textStatus){
+		disable_gurl(false);
 
 /*		
 		//编码引起有隐含字符附加在data前
@@ -61,9 +54,23 @@ $.ajax({
 		//$("#link_list").attr('status', 'start');
 	},
 	error: function(){
-		//err();
+		disable_gurl(false);
 	}
-}); 
+});
+
+function run_ajax(){
+	if($fx_ajax != ''){
+		$.ajax({
+		
+			data: 'pid=' + $fx_ajax['pid']
+			       + '&type=' + $fx_ajax['type']
+			       + '&furl=' + $fx_ajax['furl']
+			       + '&list=' + $fx_ajax['list']
+			       + '&channel_en=' + $fx_ajax['channel_en']
+			       + '&pcount=' + $fx_ajax['pcount'],
+		
+		}); 
+	}
 }
 
 function showinfo(data){
@@ -98,6 +105,10 @@ function error(){
 	$("#surl")[0].disabled = false;
 }
 
+function disable_gurl(bool){
+	$("#gurl")[0].disabled = bool;
+}
+
 //构造链接
 function mkurl($list, $pid, $type){
 	
@@ -105,5 +116,5 @@ function mkurl($list, $pid, $type){
 //整理功能
 function collation(){
 	//alert($fx_ajax.list[3]);
-	
+	run_ajax();
 }

@@ -88,8 +88,9 @@ class Tianya{
 	 */
 	function mk_url($type, $furl, $list, $pid){
 		if($type == 'get'){
+			$list_r = explode(',', $list);
 			$old_pageid = $this->get_the_pageid($furl);
-			$new_pageid = $list[$pid+1];
+			$new_pageid = $list_r[$pid-1];
 			$new_url = str_replace($old_pageid, $new_pageid, $furl);
 			if(!empty($new_url))
 				return $new_url;
