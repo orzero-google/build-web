@@ -8,10 +8,12 @@ $.ajaxSetup({
 	beforeSend: function(XMLHttpRequest){
 		$("#gurl")[0].disabled = true;
 	},
+	success: next,
+	/*
 	success: function(data, textStatus){
 		disable_gurl(false);
 
-/*		
+		
 		//编码引起有隐含字符附加在data前
 		if(binfo=="FF"){
 			var source_data = data.toSource();
@@ -48,8 +50,9 @@ $.ajaxSetup({
 			err();
 			//alert(the_link +'_'+ count_link);
 		}
-*/
+
 	},
+*/
 	complete: function(XMLHttpRequest, textStatus){
 		//$("#link_list").attr('status', 'start');
 	},
@@ -117,4 +120,14 @@ function mkurl($list, $pid, $type){
 function collation(){
 	//alert($fx_ajax.list[3]);
 	run_ajax();
+}
+//进入下一页整理
+function next(){
+	//alert('goods');
+	$fx_ajax['pid']++;
+	if($fx_ajax['pid'] <= $fx_ajax['pcount']){
+		run_ajax();
+	}else{
+		disable_gurl(false);
+	}
 }

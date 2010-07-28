@@ -129,7 +129,8 @@ class SnoopyController extends Controller
 			}
 		}
 		
-		var_dump($get->getFile());
+		echo json_encode($pid);
+		//echo json_encode($get->getFile());
 		//echo $size;
 		
 		
