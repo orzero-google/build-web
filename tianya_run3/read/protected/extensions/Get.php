@@ -22,7 +22,7 @@ class Get{
 	protected $snoopy;
 	protected $content = '';
 	protected $size    = 0;
-	protected $compress_type = 'bz';
+	protected $compress_type = 'gz';
 	
 	private $fp;
 	private $_show_log = false;      //是否显示日志
