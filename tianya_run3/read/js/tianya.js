@@ -7,6 +7,7 @@ $.ajaxSetup({
 	timeout: 60000,
 	beforeSend: function(XMLHttpRequest){
 		$("#gurl")[0].disabled = true;
+		setTimeout(function(){},1000);
 	},
 	success: next,
 	/*
@@ -55,9 +56,11 @@ $.ajaxSetup({
 */
 	complete: function(XMLHttpRequest, textStatus){
 		//$("#link_list").attr('status', 'start');
+		setTimeout(function(){},1000);
 	},
 	error: function(){
 		disable_gurl(false);
+		setTimeout(function(){},1000);
 	}
 });
 
@@ -66,11 +69,11 @@ function run_ajax(){
 		$.ajax({
 		
 			data: 'pid=' + $fx_ajax['pid']
+			       + '&pcount=' + $fx_ajax['pcount']
 			       + '&type=' + $fx_ajax['type']
 			       + '&furl=' + $fx_ajax['furl']
-			       + '&list=' + $fx_ajax['list']
 			       + '&channel_en=' + $fx_ajax['channel_en']
-			       + '&pcount=' + $fx_ajax['pcount'],
+			       + '&list=' + $fx_ajax['list'],
 		
 		}); 
 	}
@@ -122,8 +125,14 @@ function collation(){
 	run_ajax();
 }
 //进入下一页整理
-function next(){
-	//alert('goods');
+function next(data){
+	if(data != $fx_ajax['pid']){
+		disable_gurl(false);
+		return false;
+	}
+	
+	$("#pid").html('<span class="title">当前页: </span>' + data);
+	setTimeout(function(){},1000);
 	$fx_ajax['pid']++;
 	if($fx_ajax['pid'] <= $fx_ajax['pcount']){
 		run_ajax();
