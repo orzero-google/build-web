@@ -17,3 +17,17 @@ div.gridtile{
 span.title{
 	color:green;
 }
+.progressout{
+background:none repeat scroll 0 0 #EEEEEE;
+clear:both;
+border:1px solid #C3D9FF;
+height:19px;
+height:1em;
+margin:4px;
+}
+.progressin{
+background:none repeat scroll 0 0 #B0C9E1;
+float:left;
+height:1em;	
+}
+

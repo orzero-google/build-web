@@ -40,7 +40,14 @@ echo CHtml::button(
 	<div class="gridtile" id="author_name"></div>	
 	<div class="gridtile" id="pcount"></div>
 	<div class="gridtile" id="pid"></div>
+	<div class="progressout" style="width:600px;">
+		<div class="progressin" style="width:80px;"></div>
+	</div>
+	<div class="progressout" style="width:600px;">
+		<div class="progressin" style="width:80px;"></div>
+	</div>
 </div>
+
 
 <?php 
 echo CHtml::scriptFile('/js/tianya.js'); 

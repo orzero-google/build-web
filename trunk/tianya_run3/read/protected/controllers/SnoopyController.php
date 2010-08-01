@@ -59,7 +59,7 @@ class SnoopyController extends Controller
 				}
 				
 				$_ajax['pid']       = empty($page_old->tpid) ? $page_new->tpid : $page_old->tpid; //页码
-				$_ajax['pcount']       = empty($page_old->pcount) ? $page_new->pcount : $page_old->pcount; //总页数
+				//$_ajax['pcount']       = empty($page_old->pcount) ? $page_new->pcount : $page_old->pcount; //总页数
 				$_ajax['pcount']    = $the_nav['link_c'];       //页数
 				$_ajax['list']      = $the_nav['link_r'];		//页序号列表
 				$_ajax['furl']      = $url;						//首页
@@ -94,7 +94,7 @@ class SnoopyController extends Controller
 		$get    = new Get();
 		
 		//取参数
-		$pid        = $_POST['pid'];
+		$pid        = $_POST['pid'];		
 		$type       = $_POST['type'];
 		$furl       = $_POST['furl'];
 		$list       = $_POST['list'];
@@ -106,44 +106,65 @@ class SnoopyController extends Controller
 		else
 			return false;
 			
-		$url_post = $tianya->mk_url($type, $furl, $list, $pid);
+		$url_post = $tianya->mk_url($_POST['type'], $furl, $list, $pid);
 		$size = 0;
 		
 		
 		if($type == 'get'){
 			$turl = $url_post;
-			if($get->setFile($file,false)){
+			if($get->setFile($file,false)){		//创建文件
 				if($get->setUrl($turl)){
-					$get->setFile($file);
+					$get->setFile($file);		//采集目标
 					$size = $get->getSize();
 				}
 			}
 		}else if($type == 'post'){
 			$turl = serialize($url_post);
 			if($get->setSubmit($url_post)){
-				if($get->setFile($file)){
+				if($get->setFile($file,false)){		//创建文件
 					if($get->setUrl($furl)){
+						$get->setFile($file);		//采集目标
 						$size = $get->getSize();
 					}
 				}
 			}
 		}
 		
-		echo json_encode($pid);
-		//echo json_encode($get->getFile());
-		//echo $size;
-		
-		
 		//入库文章内容
 		$cache->pid  = $pid;
-		$cache->type = $type;
+		if($type == 'get'){
+			$cache->type = 1;
+		}else if($type == 'post'){
+			$cache->type = 2;
+		}else{
+			$cache->type = 0;
+		}
 		$cache->furl = $furl;
 		$cache->turl = $turl;
 		$cache->file = $file;
 		$cache->size = $size;
 		$cache->status = ($pid === $pcount) ? 0 : 1;
 		$cache->posts  = 0;
-		$cache->time   = time();
+		//$cache->time   = time();
+		
+		$old_cache = $cache->find('furl=:furl and pid=:pid', array(':furl' => $furl, ':pid' => $pid));
+		if(!empty($old_cache)){
+			$st = $old_cache->save(false);
+		}else{
+			$st = $cache->save(false);
+		}
+		if($st && $size>0){
+			//更新信息表的采集到的页面
+			$page  = new Page();
+			$page_old = $page->find('furl=:furl', array(':furl' => $furl));
+			if(($page_old->tpid+1) == $pid){
+				$page_old->tpid = $pid;
+				$page_old->save();
+				echo json_encode($pid);
+			}else if($page_old->tpid == $pid){
+				echo json_encode($pid);
+			}
+		}
 	}
 	
 }
