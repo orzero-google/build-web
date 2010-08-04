@@ -1,5 +1,9 @@
 <?php
 
+echo 8 % 10;
+die();
+
+
 $filename = './big/s/b/t.txt';
 
 function create_dir($path)

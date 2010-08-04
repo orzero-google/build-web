@@ -37,15 +37,17 @@ echo CHtml::button(
 	<div class="gridtile" id="furl"></div>
 	<div class="gridtile" id="channel_cn"></div>
 	<div class="gridtile" id="title"></div>
-	<div class="gridtile" id="author_name"></div>	
-	<div class="gridtile" id="pcount"></div>
-	<div class="gridtile" id="pid"></div>
-	<div class="progressout" style="width:600px;">
-		<div class="progressin" style="width:80px;"></div>
+	<div class="gridtile" id="author_name"></div>
+	<div class="gridtile">
+		<span id="pcount"></span>
+		<span id="pid"></span>
+		<span id="cpcount"></span>	
 	</div>
-	<div class="progressout" style="width:600px;">
-		<div class="progressin" style="width:80px;"></div>
+	<div class="gridtile">		
+		<span id="runtimes"></span>		
+		<span id="cpptime"></span>
 	</div>
+	<div id="progress"></div>
 </div>
 
 
