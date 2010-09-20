@@ -20,6 +20,20 @@ CREATE TABLE IF NOT EXISTS `info` (
   PRIMARY KEY (`infoid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=155 ;
 
+CREATE TABLE IF NOT EXISTS `info` (	
+  `infoid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,																												
+  `type` tinyint(4) NOT NULL,																														
+  `channel_en` varchar(255) NOT NULL,																										
+  `channel_cn` varchar(255) NOT NULL,																							
+  `title` varchar(255) NOT NULL,																							
+  `author_id` int(11) NOT NULL,																								
+  `author_name` varchar(255) NOT NULL,																						
+  `pid_list` text NOT NULL,																														
+  `count` smallint(6) NOT NULL,																										
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`infoid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 -- --------------------------------------------------------
 
 --
@@ -42,6 +56,21 @@ CREATE TABLE IF NOT EXISTS `pg` (
   PRIMARY KEY (`pgid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21350 ;
 
+CREATE TABLE IF NOT EXISTS `pg` (
+  `pgid` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,																					
+  `url` varchar(255) NOT NULL,																								
+  `dir` varchar(255) NOT NULL,																										
+  `type` tinyint(4) NOT NULL,																										
+  `form_vars` varchar(255) NOT NULL,																							
+  `fid` int(11) NOT NULL,																													
+  `tid` int(11) NOT NULL,																											
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	
+  `page_size` int(11) NOT NULL,																										
+  `cache_size` int(11) NOT NULL,																										
+  `state` tinyint(4) NOT NULL,																										
+  PRIMARY KEY (`pgid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 -- --------------------------------------------------------
 
 
@@ -63,6 +92,19 @@ CREATE TABLE IF NOT EXISTS `content` (
   `posts` smallint(6) NOT NULL,																													//楼主发帖数
   PRIMARY KEY (`contentid`)																											
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21345 ;
+
+CREATE TABLE IF NOT EXISTS `content` (
+  `contentid` int(11) NOT NULL AUTO_INCREMENT,
+  `info_id` int(11) NOT NULL,																										
+  `pg_id` int(11) NOT NULL,																													
+  `page_num` mediumint(9) NOT NULL,																						
+  `channel_cn` varchar(255) NOT NULL,																							
+  `url` varchar(255) NOT NULL,																										
+  `dir` varchar(255) NOT NULL,																											
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			
+  `posts` smallint(6) NOT NULL,																									
+  PRIMARY KEY (`contentid`)																											
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -88,7 +130,7 @@ CREATE TABLE `cache` (
 	`size` INT NOT NULL,
 	`status` TINYINT NOT NULL,
 	`posts` SMALLINT NOT NULL,
-	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`cacheid`)) ENGINE=MyISAM;
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`cacheid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 page:		//信息,文章信息
@@ -114,7 +156,7 @@ time          //时间戳
 	`tpid` MEDIUMINT NOT NULL,
 	`pcount` MEDIUMINT NOT NULL,
 	`plist` TEXT NOT NULL,
-	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`pageid`)) ENGINE=MyISAM;
+	`time` TIMESTAMP NOT NULL, PRIMARY KEY  (`pageid`)) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 	
 	
       $info_page['chrType'] = get_mid_content($info_js, 'var chrType = "', '";');
