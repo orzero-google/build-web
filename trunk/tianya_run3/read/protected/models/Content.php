@@ -29,7 +29,7 @@ class Content extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Content';
+		return 'content';
 	}
 
 	/**
