@@ -31,7 +31,7 @@ class Info extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Info';
+		return 'info';
 	}
 
 	/**

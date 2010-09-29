@@ -30,7 +30,7 @@ class Cache extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Cache';
+		return 'cache';
 	}
 
 	/**

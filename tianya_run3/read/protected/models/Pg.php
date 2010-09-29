@@ -32,7 +32,7 @@ class Pg extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Pg';
+		return 'pg';
 	}
 
 	/**
