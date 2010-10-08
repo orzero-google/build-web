@@ -24,7 +24,7 @@ class SnoopyController extends Controller
 			$get->setUrl($url);
 			$the_page = $get->getContent();
 			$the_nav  = $tianya->get_link($the_page);		//取得导航,$post,$get
-			
+			//print_r($the_page);die();
 			if($the_nav){
 				$the_info = $tianya->get_info($the_page,$the_nav['type']);		//取得文章信息
 				$the_pageid = $tianya->get_the_pageid($url);

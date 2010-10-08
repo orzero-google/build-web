@@ -95,7 +95,8 @@ class Tianya{
 			if(!empty($new_url))
 				return $new_url;
 		}else if($type == 'post'){
-			$post['apn'] = implode(',', $list);
+			//$post['apn'] = implode(',', $list);
+			$post['apn'] = $list;
 			$post['intLogo'] = 0;
 			$post['pID'] = $pid;
 			$post['rs_permission'] = 1;
