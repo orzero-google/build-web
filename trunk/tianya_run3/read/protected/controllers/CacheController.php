@@ -54,6 +54,7 @@ class CacheController extends Controller
 	 */
 	public function actionView()
 	{
+		print_r($this->loadModel());
 		$this->render('view',array(
 			'model'=>$this->loadModel(),
 		));
