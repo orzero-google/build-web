@@ -1,0 +1,33 @@
+新版本采集做成接口型。
+
+接口定义：
+用类封装,cache层作为数据池用
+$_cache['list'] 维护key表
+
+
+采集：
+1、取得网址内容 
+string orzero::collection::get_page($url, $form=array());
+2、缓存内容     
+boolean orzero::collection::set_cache($key, $val);
+3、取得缓存			
+boolean orzero::collection::get_cache($key);
+
+
+展示：
+1、取得内容
+string orzero::view::get_cache($key);
+
+更新：
+1、提交内容
+string orzero::update::set_cache($form_name);
+
+模板：
+1、html编辑器
+string orzero::template::html_edit($id, $name, $css_name, $js_function);
+2、文本框
+string orzero::template::input_text($id, $name, $css_name, $js_function);
+3、按钮
+string orzero::template::input_button($id, $name, $css_name, $js_function);
+4、form整合
+string orzero::template::form($id, $name, $css_name, $js_function);
