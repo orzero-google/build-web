@@ -162,9 +162,10 @@ function array2xml($array, $name='array', $standalone=TRUE, $beginning=TRUE) {
  
   return $output;
 }
-function O2_array2xml($array)
+
+$_xml = '';
+function O2_array2xml($array, &$_xml)
 {
-	global $_xml;
 	global $_tkey;
 	$_start = '<';
 	$_end   = '>';
@@ -178,7 +179,7 @@ function O2_array2xml($array)
 				//echo $_tkey.$k.'|';
 				//print_r($v);
 				//多子项处理
-				O2_array2xml(array($_tkey => $v));
+				O2_array2xml(array($_tkey => $v), &$_xml);
 				//$this->_tkey = '';
 				continue;
 			} else {
@@ -187,7 +188,7 @@ function O2_array2xml($array)
 					
 					$_tkey = $k;
 					//echo $k.'|';					
-					O2_array2xml($v);
+					O2_array2xml($v, &$_xml);
 					continue;
 				}
 				//print_r($v);
@@ -206,15 +207,12 @@ function O2_array2xml($array)
 					$_xml .= $_blank.'/'.$_end.$_lf;
 				} else {
 					$_xml .= $_end.$_lf;
-					O2_array2xml($v);
+					O2_array2xml($v, &$_xml);
 					$_xml .= $_start.'/'.$k.$_end.$_lf;
 				}
 			}
 		}
-	} else {
-		//$_xml .= $_start.$_tkey.$_end.trim($array);
-	}
-	
+	} 
 }
 
 $xml = simplexml_load_string($xml_template);
@@ -227,7 +225,7 @@ $a = ToArray($xml);
 //unset($a[response][outputs][item][1]);
 print_r($a);
 
-O2_array2xml(array($xml->getName() => $a));
+O2_array2xml(array($xml->getName() => $a), &$_xml);
 print_r($_xml);
 
 //$xml_new = simplexml_load_string($_xml);
