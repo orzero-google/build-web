@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -21,7 +21,7 @@
  * {@link url} to be the URL that can serve the tree view data upon request.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CTreeView.php 1839 2010-02-26 04:08:14Z qiang.xue $
+ * @version $Id: CTreeView.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.widgets
  * @since 1.0
  */
@@ -176,7 +176,7 @@ class CTreeView extends CWidget
 
 	/**
 	 * Generates tree view nodes in HTML from the data array.
-	 * @param array the data for the tree view (see {@link data} for possible data structure).
+	 * @param array $data the data for the tree view (see {@link data} for possible data structure).
 	 * @return string the generated HTML for the tree view
 	 */
 	public static function saveDataAsHtml($data)
@@ -219,7 +219,7 @@ class CTreeView extends CWidget
 	 * This method is typically used in dynamic tree view loading
 	 * when the server code needs to send to the client the dynamic
 	 * tree view data.
-	 * @param array the data for the tree view (see {@link data} for possible data structure).
+	 * @param array $data the data for the tree view (see {@link data} for possible data structure).
 	 * @return string the JSON representation of the data
 	 */
 	public static function saveDataAsJson($data)

@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -20,7 +20,7 @@
  * specifies how many files to be kept.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CFileLogRoute.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CFileLogRoute.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.logging
  * @since 1.0
  */
@@ -64,7 +64,7 @@ class CFileLogRoute extends CLogRoute
 	}
 
 	/**
-	 * @param string directory for storing log files.
+	 * @param string $value directory for storing log files.
 	 * @throws CException if the path is invalid
 	 */
 	public function setLogPath($value)
@@ -84,7 +84,7 @@ class CFileLogRoute extends CLogRoute
 	}
 
 	/**
-	 * @param string log file name
+	 * @param string $value log file name
 	 */
 	public function setLogFile($value)
 	{
@@ -100,7 +100,7 @@ class CFileLogRoute extends CLogRoute
 	}
 
 	/**
-	 * @param integer maximum log file size in kilo-bytes (KB).
+	 * @param integer $value maximum log file size in kilo-bytes (KB).
 	 */
 	public function setMaxFileSize($value)
 	{
@@ -117,7 +117,7 @@ class CFileLogRoute extends CLogRoute
 	}
 
 	/**
-	 * @param integer number of files used for rotation.
+	 * @param integer $value number of files used for rotation.
 	 */
 	public function setMaxLogFiles($value)
 	{
@@ -127,15 +127,19 @@ class CFileLogRoute extends CLogRoute
 
 	/**
 	 * Saves log messages in files.
-	 * @param array list of log messages
+	 * @param array $logs list of log messages
 	 */
 	protected function processLogs($logs)
 	{
 		$logFile=$this->getLogPath().DIRECTORY_SEPARATOR.$this->getLogFile();
 		if(@filesize($logFile)>$this->getMaxFileSize()*1024)
 			$this->rotateFiles();
+		$fp=@fopen($logFile,'a');
+		@flock($fp,LOCK_EX);
 		foreach($logs as $log)
-			error_log($this->formatLogMessage($log[0],$log[1],$log[2],$log[3]),3,$logFile);
+			@fwrite($fp,$this->formatLogMessage($log[0],$log[1],$log[2],$log[3]));
+		@flock($fp,LOCK_UN);
+		@fclose($fp);
 	}
 
 	/**
@@ -150,13 +154,14 @@ class CFileLogRoute extends CLogRoute
 			$rotateFile=$file.'.'.$i;
 			if(is_file($rotateFile))
 			{
+				// suppress errors because it's possible multiple processes enter into this section
 				if($i===$max)
-					unlink($rotateFile);
+					@unlink($rotateFile);
 				else
-					rename($rotateFile,$file.'.'.($i+1));
+					@rename($rotateFile,$file.'.'.($i+1));
 			}
 		}
 		if(is_file($file))
-			rename($file,$file.'.1');
+			@rename($file,$file.'.1'); // suppress errors because it's possible multiple processes enter into this section
 	}
 }

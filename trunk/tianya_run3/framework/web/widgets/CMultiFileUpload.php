@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -16,16 +16,12 @@
  * files. Note, you have to set the enclosing form's 'enctype' attribute to be 'multipart/form-data'.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMultiFileUpload.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CMultiFileUpload.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.widgets
  * @since 1.0
  */
-class CMultiFileUpload extends CWidget
+class CMultiFileUpload extends CInputWidget
 {
-	/**
-	 * @var string the input name.
-	 */
-	public $name;
 	/**
 	 * @var string the file types that are allowed (e.g. "gif|jpg"). Note, the server side still
 	 * needs to check if the uploaded files have allowed types.
@@ -52,9 +48,10 @@ class CMultiFileUpload extends CWidget
 	 */
 	public $duplicate;
 	/**
-	 * @var array additional HTML attributes that will be rendered in the file upload tag.
+	 * @var string the message template for displaying the uploaded file name
+	 * @since 1.1.3
 	 */
-	public $htmlOptions=array();
+	public $file;
 
 
 	/**
@@ -64,25 +61,14 @@ class CMultiFileUpload extends CWidget
 	 */
 	public function run()
 	{
-		if($this->name!==null)
-			$name=$this->name;
-		else if(isset($this->htmlOptions['name']))
-			$name=$this->htmlOptions['name'];
-		else
-			throw new CException(Yii::t('yii','CMultiFileUpload.name is required.'));
+		list($name,$id)=$this->resolveNameID();
 		if(substr($name,-2)!=='[]')
 			$name.='[]';
-		if(($id=$this->getId(false))===null)
-		{
-			if(isset($this->htmlOptions['id']))
-				$id=$this->htmlOptions['id'];
-			else
-				$id=CHtml::getIdByName($name);
-		}
-		$this->htmlOptions['id']=$id;
-
+		if(isset($this->htmlOptions['id']))
+			$id=$this->htmlOptions['id'];
+		else
+			$this->htmlOptions['id']=$id;
 		$this->registerClientScript();
-
 		echo CHtml::fileField($name,'',$this->htmlOptions);
 	}
 
@@ -99,7 +85,7 @@ class CMultiFileUpload extends CWidget
 		if($this->max>0)
 			$mfOptions['max']=$this->max;
 		$messages=array();
-		foreach(array('remove','denied','selected','duplicate') as $messageName)
+		foreach(array('remove','denied','selected','duplicate','file') as $messageName)
 		{
 			if($this->$messageName!==null)
 				$messages[$messageName]=$this->$messageName;

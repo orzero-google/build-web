@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -23,7 +23,7 @@
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMarkdown.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CMarkdown.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.widgets
  * @since 1.0
  */
@@ -47,7 +47,7 @@ class CMarkdown extends COutputProcessor
 	 * Processes the captured output.
      * This method converts the content in markdown syntax to HTML code.
      * If {@link purifyOutput} is true, the HTML code will also be purified.
-	 * @param string the captured output to be processed
+	 * @param string $output the captured output to be processed
 	 * @see convert
 	 */
 	public function processOutput($output)
@@ -64,7 +64,7 @@ class CMarkdown extends COutputProcessor
 	/**
 	 * Converts the content in markdown syntax to HTML code.
 	 * This method uses {@link CMarkdownParser} to do the conversion.
-	 * @param string the content to be converted
+	 * @param string $output the content to be converted
 	 * @return string the converted content
 	 */
 	public function transform($output)
@@ -85,7 +85,7 @@ class CMarkdown extends COutputProcessor
 
 	/**
 	 * Registers the needed CSS file.
-	 * @param string the CSS URL. If null, a default CSS URL will be used.
+	 * @param string $url the CSS URL. If null, a default CSS URL will be used.
 	 * @since 1.0.2
 	 */
 	public static function registerCssFile($url=null)

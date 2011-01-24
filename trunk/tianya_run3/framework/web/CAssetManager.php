@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -24,7 +24,7 @@
  * the {@link setBasePath basePath}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CAssetManager.php 1948 2010-03-22 19:26:01Z qiang.xue $
+ * @version $Id: CAssetManager.php 2846 2011-01-13 08:33:10Z keyboard.idol@gmail.com $
  * @package system.web
  * @since 1.0
  */
@@ -34,6 +34,31 @@ class CAssetManager extends CApplicationComponent
 	 * Default web accessible base path for storing private files
 	 */
 	const DEFAULT_BASEPATH='assets';
+	/**
+	 * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
+	 * asset files are copied to public folders. Using symbolic links has the benefit that the published
+	 * assets will always be consistent with the source assets. This is especially useful during development.
+	 *
+	 * However, there are special requirements for hosting environments in order to use symbolic links.
+	 * In particular, symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
+	 * The latter requires PHP 5.3 or greater.
+	 *
+	 * Moreover, some Web servers need to be properly configured so that the linked assets are accessible
+	 * to Web users. For example, for Apache Web server, the following configuration directive should be added
+	 * for the Web folder:
+	 * <pre>
+	 * Options FollowSymLinks
+	 * </pre>
+	 *
+	 * @since 1.1.5
+	 */
+	public $linkAssets=false;
+	/**
+	 * @var array list of directories and files which should be excluded from the publishing process.
+	 * Defaults to exclude '.svn' files only. This option has no effect if {@link linkAssets} is enabled.	 
+	 * @since 1.1.6
+	 **/
+	public $excludeFiles=array('.svn');
 	/**
 	 * @var string base web accessible path for storing private files
 	 */
@@ -48,30 +73,21 @@ class CAssetManager extends CApplicationComponent
 	private $_published=array();
 
 	/**
-	 * Initializes the application component.
-	 * This method is required by IApplicationComponent and is invoked by application.
-	 */
-	public function init()
-	{
-		parent::init();
-		$request=Yii::app()->getRequest();
-		if($this->getBasePath()===null)
-			$this->setBasePath(dirname($request->getScriptFile()).DIRECTORY_SEPARATOR.self::DEFAULT_BASEPATH);
-		if($this->getBaseUrl()===null)
-			$this->setBaseUrl($request->getBaseUrl().'/'.self::DEFAULT_BASEPATH);
-	}
-
-	/**
-	 * @return string the root directory storing the published asset files
+	 * @return string the root directory storing the published asset files. Defaults to 'WebRoot/assets'.
 	 */
 	public function getBasePath()
 	{
+		if($this->_basePath===null)
+		{
+			$request=Yii::app()->getRequest();
+			$this->setBasePath(dirname($request->getScriptFile()).DIRECTORY_SEPARATOR.self::DEFAULT_BASEPATH);
+		}
 		return $this->_basePath;
 	}
 
 	/**
 	 * Sets the root directory storing published asset files.
-	 * @param string the root directory storing published asset files
+	 * @param string $value the root directory storing published asset files
 	 * @throws CException if the base path is invalid
 	 */
 	public function setBasePath($value)
@@ -85,15 +101,20 @@ class CAssetManager extends CApplicationComponent
 
 	/**
 	 * @return string the base url that the published asset files can be accessed.
-	 * Note, the ending slashes are stripped off.
+	 * Note, the ending slashes are stripped off. Defaults to '/AppBaseUrl/assets'.
 	 */
 	public function getBaseUrl()
 	{
+		if($this->_baseUrl===null)
+		{
+			$request=Yii::app()->getRequest();
+			$this->setBaseUrl($request->getBaseUrl().'/'.self::DEFAULT_BASEPATH);
+		}
 		return $this->_baseUrl;
 	}
 
 	/**
-	 * @param string the base url that the published asset files can be accessed
+	 * @param string $value the base url that the published asset files can be accessed
 	 */
 	public function setBaseUrl($value)
 	{
@@ -111,16 +132,16 @@ class CAssetManager extends CApplicationComponent
 	 * be published recursively. Note, in this case the method only checks the
 	 * existence of the target directory to avoid repetitive copying.</li>
 	 * </ul>
-	 * @param string the asset (file or directory) to be published
-	 * @param boolean whether the published directory should be named as the hashed basename.
+	 * @param string $path the asset (file or directory) to be published
+	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
 	 * If false, the name will be the hashed dirname of the path being published.
 	 * Defaults to false. Set true if the path being published is shared among
 	 * different extensions.
-	 * @param integer level of recursive copying when the asset is a directory.
+	 * @param integer $level level of recursive copying when the asset is a directory.
 	 * Level -1 means publishing all subdirectories and files;
 	 * Level 0 means publishing only the files DIRECTLY under the directory;
 	 * level N means copying those directories that are within N levels.
-	 * @param boolean whether we should copy the asset file or directory even if it is already published before.
+	 * @param boolean $forceCopy whether we should copy the asset file or directory even if it is already published before.
 	 * This parameter is set true mainly during development stage when the original
 	 * assets are being constantly changed. The consequence is that the performance
 	 * is degraded, which is not a concern during development, however.
@@ -141,7 +162,19 @@ class CAssetManager extends CApplicationComponent
 				$dstDir=$this->getBasePath().DIRECTORY_SEPARATOR.$dir;
 				$dstFile=$dstDir.DIRECTORY_SEPARATOR.$fileName;
 
-				if(@filemtime($dstFile)<@filemtime($src) || $forceCopy)
+				if($this->linkAssets)
+				{
+					if(!is_file($dstFile))
+					{
+						if(!is_dir($dstDir))
+						{
+							mkdir($dstDir);
+							@chmod($dstDir,0777);
+						}
+						symlink($src,$dstFile);
+					}
+				}
+				else if(@filemtime($dstFile)<@filemtime($src) || $forceCopy)
 				{
 					if(!is_dir($dstDir))
 					{
@@ -158,8 +191,13 @@ class CAssetManager extends CApplicationComponent
 				$dir=$this->hash($hashByName ? basename($src) : $src);
 				$dstDir=$this->getBasePath().DIRECTORY_SEPARATOR.$dir;
 
-				if(!is_dir($dstDir) || $forceCopy)
-					CFileHelper::copyDirectory($src,$dstDir,array('exclude'=>array('.svn'),'level'=>$level));
+				if($this->linkAssets)
+				{
+					if(!is_dir($dstDir))
+						symlink($src,$dstDir);
+				}
+				else if(!is_dir($dstDir) || $forceCopy)
+					CFileHelper::copyDirectory($src,$dstDir,array('exclude'=>$this->excludeFiles,'level'=>$level));
 
 				return $this->_published[$path]=$this->getBaseUrl().'/'.$dir;
 			}
@@ -172,8 +210,8 @@ class CAssetManager extends CApplicationComponent
 	 * Returns the published path of a file path.
 	 * This method does not perform any publishing. It merely tells you
 	 * if the file or directory is published, where it will go.
-	 * @param string directory or file path being published
-	 * @param boolean whether the published directory should be named as the hashed basename.
+	 * @param string $path directory or file path being published
+	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
 	 * If false, the name will be the hashed dirname of the path being published.
 	 * Defaults to false. Set true if the path being published is shared among
 	 * different extensions.
@@ -197,8 +235,8 @@ class CAssetManager extends CApplicationComponent
 	 * Returns the URL of a published file path.
 	 * This method does not perform any publishing. It merely tells you
 	 * if the file path is published, what the URL will be to access it.
-	 * @param string directory or file path being published
-	 * @param boolean whether the published directory should be named as the hashed basename.
+	 * @param string $path directory or file path being published
+	 * @param boolean $hashByName whether the published directory should be named as the hashed basename.
 	 * If false, the name will be the hashed dirname of the path being published.
 	 * Defaults to false. Set true if the path being published is shared among
 	 * different extensions.
@@ -222,7 +260,7 @@ class CAssetManager extends CApplicationComponent
 	/**
 	 * Generate a CRC32 hash for the directory path. Collisions are higher
 	 * than MD5 but generates a much smaller hash string.
-	 * @param string string to be hashed.
+	 * @param string $path string to be hashed.
 	 * @return string hashed string.
 	 */
 	protected function hash($path)

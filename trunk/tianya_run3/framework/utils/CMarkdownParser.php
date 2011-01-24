@@ -4,11 +4,16 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
 require_once(Yii::getPathOfAlias('system.vendors.markdown.markdown').'.php');
+if(!class_exists('HTMLPurifier_Bootstrap',false))
+{
+	require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+	HTMLPurifier_Bootstrap::registerAutoload();
+}
 
 /**
  * CMarkdownParser is a wrapper of {@link http://michelf.com/projects/php-markdown/extra/ MarkdownExtra_Parser}.
@@ -37,7 +42,7 @@ require_once(Yii::getPathOfAlias('system.vendors.markdown.markdown').'.php');
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMarkdownParser.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CMarkdownParser.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.utils
  * @since 1.0
  */
@@ -48,6 +53,15 @@ class CMarkdownParser extends MarkdownExtra_Parser
 	 * the code block that is highlighted. Defaults to 'hl-code'.
 	 */
 	public $highlightCssClass='hl-code';
+	/**
+	 * @var mixed the options to be passed to {@link http://htmlpurifier.org HTML Purifier}.
+	 * This can be a HTMLPurifier_Config object,  an array of directives (Namespace.Directive => Value)
+	 * or the filename of an ini file.
+	 * This property is used only when {@link safeTransform} is invoked.
+	 * @see http://htmlpurifier.org/live/configdoc/plain.html
+	 * @since 1.1.4
+	 */
+	public $purifierOptions=null;
 
 	/**
 	 * Transforms the content and purifies the result.
@@ -55,14 +69,15 @@ class CMarkdownParser extends MarkdownExtra_Parser
 	 * markdown content into HTML content. It then
 	 * uses {@link CHtmlPurifier} to purify the HTML content
 	 * to avoid XSS attacks.
-	 * @param string the markdown content
+	 * @param string $content the markdown content
 	 * @return string the purified HTML content
 	 * @since 1.0.1
 	 */
 	public function safeTransform($content)
 	{
 		$content=$this->transform($content);
-		$purifier=new CHtmlPurifier;
+		$purifier=new HTMLPurifier($this->purifierOptions);
+		$purifier->config->set('Cache.SerializerPath',Yii::app()->getRuntimePath());
 		return $purifier->purify($content);
 	}
 
@@ -76,7 +91,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Callback function when a code block is matched.
-	 * @param array matches
+	 * @param array $matches matches
 	 * @return string the highlighted code block
 	 */
 	public function _doCodeBlocks_callback($matches)
@@ -90,7 +105,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Callback function when a fenced code block is matched.
-	 * @param array matches
+	 * @param array $matches matches
 	 * @return string the highlighted code block
 	 */
 	public function _doFencedCodeBlocks_callback($matches)
@@ -100,7 +115,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Highlights the code block.
-	 * @param string the code block
+	 * @param string $codeblock the code block
 	 * @return string the highlighted code block. Null if the code block does not need to highlighted
 	 */
 	protected function highlightCodeBlock($codeblock)
@@ -119,7 +134,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Returns the user-entered highlighting options.
-	 * @param string code block with highlighting options.
+	 * @param string $codeblock code block with highlighting options.
 	 * @return string the user-entered highlighting options. Null if no option is entered.
 	 */
 	protected function getHighlightTag($codeblock)
@@ -131,7 +146,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Creates a highlighter instance.
-	 * @param string the user-entered options
+	 * @param string $options the user-entered options
 	 * @return Text_Highlighter the highlighter instance
 	 */
 	protected function createHighLighter($options)
@@ -150,7 +165,7 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Generates the config for the highlighter.
-	 * @param string user-entered options
+	 * @param string $options user-entered options
 	 * @return array the highlighter config
 	 */
 	public function getHiglightConfig($options)
@@ -164,9 +179,9 @@ class CMarkdownParser extends MarkdownExtra_Parser
 
 	/**
 	 * Retrieves the specified configuration.
-	 * @param string the configuration name
-	 * @param string the user-entered options
-	 * @param mixed default value if the configuration is not present
+	 * @param string $name the configuration name
+	 * @param string $str the user-entered options
+	 * @param mixed $defaultValue default value if the configuration is not present
 	 * @return mixed the configuration value
 	 */
 	protected function getInlineOption($name, $str, $defaultValue)

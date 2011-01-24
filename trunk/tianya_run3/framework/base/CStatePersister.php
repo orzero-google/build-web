@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -36,7 +36,7 @@
  * page state persistent method based on cache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CStatePersister.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CStatePersister.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.base
  * @since 1.0
  */
@@ -100,7 +100,7 @@ class CStatePersister extends CApplicationComponent implements IStatePersister
 
 	/**
 	 * Saves application state in persistent storage.
-	 * @param mixed state data (must be serializable).
+	 * @param mixed $state state data (must be serializable).
 	 */
 	public function save($state)
 	{

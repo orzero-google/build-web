@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -24,7 +24,7 @@
  * CStarRating allows customization of its appearance. It also supports empty rating as well as read-only rating.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CStarRating.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CStarRating.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.widgets
  * @since 1.0
  */
@@ -35,11 +35,11 @@ class CStarRating extends CInputWidget
 	 */
 	public $starCount=5;
 	/**
-	 * @var mixed the minimum rating allowed. This can be either an integer or a double value. Defaults to 1.
+	 * @var mixed the minimum rating allowed. This can be either an integer or a float value. Defaults to 1.
 	 */
 	public $minRating=1;
 	/**
-	 * @var mixed the maximum rating allowed. This can be either an integer or a double value. Defaults to 1.
+	 * @var mixed the maximum rating allowed. This can be either an integer or a float value. Defaults to 1.
 	 */
 	public $maxRating=10;
 	/**
@@ -108,8 +108,6 @@ class CStarRating extends CInputWidget
 			$this->htmlOptions['id']=$id;
 		if(isset($this->htmlOptions['name']))
 			$name=$this->htmlOptions['name'];
-		else
-			$this->htmlOptions['name']=$name;
 
 		$this->registerClientScript($id);
 
@@ -120,7 +118,7 @@ class CStarRating extends CInputWidget
 
 	/**
 	 * Registers the necessary javascript and css scripts.
-	 * @param string the ID of the container
+	 * @param string $id the ID of the container
 	 */
 	public function registerClientScript($id)
 	{
@@ -137,7 +135,7 @@ class CStarRating extends CInputWidget
 
 	/**
 	 * Registers the needed CSS file.
-	 * @param string the CSS URL. If null, a default CSS URL will be used.
+	 * @param string $url the CSS URL. If null, a default CSS URL will be used.
 	 * @since 1.0.2
 	 */
 	public static function registerCssFile($url=null)
@@ -150,16 +148,21 @@ class CStarRating extends CInputWidget
 
 	/**
 	 * Renders the stars.
-	 * @param string the ID of the container
-	 * @param string the name of the input
+	 * @param string $id the ID of the container
+	 * @param string $name the name of the input
 	 */
 	protected function renderStars($id,$name)
 	{
 		$inputCount=(int)(($this->maxRating-$this->minRating)/$this->ratingStepSize+1);
 		$starSplit=(int)($inputCount/$this->starCount);
-		$attr=$this->attribute;
-		CHtml::resolveName($this->model,$attr);
-		$selection=$this->hasModel() ? $this->model->$attr : $this->value;
+		if($this->hasModel())
+		{
+			$attr=$this->attribute;
+			CHtml::resolveName($this->model,$attr);
+			$selection=$this->model->$attr;
+		}
+		else
+			$selection=$this->value;
 		$options=$starSplit>1 ? array('class'=>"{split:{$starSplit}}") : array();
 		for($value=$this->minRating, $i=0;$i<$inputCount; ++$i, $value+=$this->ratingStepSize)
 		{

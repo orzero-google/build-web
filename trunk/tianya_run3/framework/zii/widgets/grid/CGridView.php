@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -73,7 +73,7 @@ Yii::import('zii.widgets.grid.CCheckBoxColumn');
  * Please refer to {@link columns} for more details about how to configure this property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CGridView.php 130 2010-02-26 14:19:53Z qiang.xue $
+ * @version $Id: CGridView.php 2806 2011-01-03 16:35:16Z qiang.xue $
  * @package zii.widgets.grid
  * @since 1.1
  */
@@ -134,12 +134,13 @@ class CGridView extends CBaseListView
 	public $ajaxVar='ajax';
 	/**
 	 * @var string a javascript function that will be invoked before an AJAX update occurs.
-	 * The function signature is <code>function(id)</code> where 'id' refers to the ID of the grid view.
+	 * The function signature is <code>function(id,options)</code> where 'id' refers to the ID of the grid view,
+	 * 'options' the AJAX request options  (see jQuery.ajax api manual).
 	 */
 	public $beforeAjaxUpdate;
 	/**
 	 * @var string a javascript function that will be invoked after a successful AJAX response is received.
-	 * The function signature is <code>function(id, data)</code> where 'id' refers to the ID of the grid view
+	 * The function signature is <code>function(id, data)</code> where 'id' refers to the ID of the grid view,
 	 * 'data' the received ajax response data.
 	 */
 	public $afterAjaxUpdate;
@@ -240,8 +241,18 @@ class CGridView extends CBaseListView
 	 */
 	protected function initColumns()
 	{
-		if($this->columns===array() && $this->dataProvider instanceof CActiveDataProvider)
-			$this->columns=CActiveRecord::model($this->dataProvider->modelClass)->attributeNames();
+		if($this->columns===array())
+		{
+			if($this->dataProvider instanceof CActiveDataProvider)
+				$this->columns=$this->dataProvider->model->attributeNames();
+			else if($this->dataProvider instanceof IDataProvider)
+			{
+				// use the keys of the first row of data as the default columns
+				$data=$this->dataProvider->getData();
+				if(isset($data[0]) && is_array($data[0]))
+					$this->columns=array_keys($data[0]);
+			}
+		}
 		$id=$this->getId();
 		foreach($this->columns as $i=>$column)
 		{
@@ -269,7 +280,7 @@ class CGridView extends CBaseListView
 
 	/**
 	 * Creates a {@link CDataColumn} based on a shortcut column specification string.
-	 * @param string the column specification string
+	 * @param string $text the column specification string
 	 * @return CDataColumn the column instance
 	 */
 	protected function createDataColumn($text)
@@ -293,7 +304,7 @@ class CGridView extends CBaseListView
 		$id=$this->getId();
 
 		if($this->ajaxUpdate===false)
-			$ajaxUpdate=array();
+			$ajaxUpdate=false;
 		else
 			$ajaxUpdate=array_unique(preg_split('/\s*,\s*/',$this->ajaxUpdate.','.$id,-1,PREG_SPLIT_NO_EMPTY));
 		$options=array(
@@ -305,6 +316,8 @@ class CGridView extends CBaseListView
 			'tableClass'=>$this->itemsCssClass,
 			'selectableRows'=>$this->selectableRows,
 		);
+		if($this->enablePagination)
+			$options['pageVar']=$this->dataProvider->getPagination()->pageVar;
 		if($this->beforeAjaxUpdate!==null)
 			$options['beforeAjaxUpdate']=(strpos($this->beforeAjaxUpdate,'js:')!==0 ? 'js:' : '').$this->beforeAjaxUpdate;
 		if($this->afterAjaxUpdate!==null)
@@ -316,7 +329,7 @@ class CGridView extends CBaseListView
 		$cs=Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
 		$cs->registerCoreScript('bbq');
-		$cs->registerScriptFile($this->baseScriptUrl.'/jquery.yiigridview.js');
+		$cs->registerScriptFile($this->baseScriptUrl.'/jquery.yiigridview.js',CClientScript::POS_END);
 		$cs->registerScript(__CLASS__.'#'.$id,"jQuery('#$id').yiiGridView($options);");
 	}
 
@@ -430,7 +443,7 @@ class CGridView extends CBaseListView
 
 	/**
 	 * Renders a table body row.
-	 * @param integer the row number (zero-based).
+	 * @param integer $row the row number (zero-based).
 	 */
 	public function renderTableRow($row)
 	{
@@ -471,7 +484,7 @@ class CGridView extends CBaseListView
 	}
 
 	/**
-	 * @param CFormatter the formatter instance
+	 * @param CFormatter $value the formatter instance
 	 */
 	public function setFormatter($value)
 	{

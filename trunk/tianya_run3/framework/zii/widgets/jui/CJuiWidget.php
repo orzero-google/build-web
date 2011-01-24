@@ -5,7 +5,7 @@
  * @author Sebastian Thierer <sebathi@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -14,7 +14,7 @@
  *
  * @author Sebastian Thierer <sebathi@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CJuiWidget.php 166 2010-05-02 01:57:00Z qiang.xue $
+ * @version $Id: CJuiWidget.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets.jui
  * @since 1.1
  */
@@ -94,12 +94,11 @@ abstract class CJuiWidget extends CWidget
 	{
 		if($this->scriptUrl===null || $this->themeUrl===null)
 		{
-			$basePath=Yii::getPathOfAlias('zii.vendors.jui');
-			$baseUrl=Yii::app()->getAssetManager()->publish($basePath);
+			$cs=Yii::app()->getClientScript();
 			if($this->scriptUrl===null)
-				$this->scriptUrl=$baseUrl.'/js';
+				$this->scriptUrl=$cs->getCoreScriptUrl().'/jui/js';
 			if($this->themeUrl===null)
-				$this->themeUrl=$baseUrl.'/css';
+				$this->themeUrl=$cs->getCoreScriptUrl().'/jui/css';
 		}
 	}
 
@@ -131,8 +130,8 @@ abstract class CJuiWidget extends CWidget
 	/**
 	 * Registers a JavaScript file under {@link scriptUrl}.
 	 * Note that by default, the script file will be rendered at the end of a page to improve page loading speed.
-	 * @param string JavaScript file name
-	 * @param integer the position of the JavaScript file. Valid values include the following:
+	 * @param string $fileName JavaScript file name
+	 * @param integer $position the position of the JavaScript file. Valid values include the following:
 	 * <ul>
 	 * <li>CClientScript::POS_HEAD : the script is inserted in the head section right before the title element.</li>
 	 * <li>CClientScript::POS_BEGIN : the script is inserted at the beginning of the body section.</li>

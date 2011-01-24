@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -49,7 +49,7 @@
  * </ul>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CValidator.php 1838 2010-02-26 03:52:44Z qiang.xue $
+ * @version $Id: CValidator.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.validators
  * @since 1.0
  */
@@ -100,26 +100,32 @@ abstract class CValidator extends CComponent
 	 * Each array value refers to a scenario name with the same name as its array key.
 	 */
 	public $on;
+	/**
+	 * @var boolean whether attributes listed with this validator should be considered safe for massive assignment.
+	 * Defaults to true.
+	 * @since 1.1.4
+	 */
+	public $safe=true;
 
 	/**
 	 * Validates a single attribute.
 	 * This method should be overriden by child classes.
-	 * @param CModel the data object being validated
-	 * @param string the name of the attribute to be validated.
+	 * @param CModel $object the data object being validated
+	 * @param string $attribute the name of the attribute to be validated.
 	 */
 	abstract protected function validateAttribute($object,$attribute);
 
 
 	/**
 	 * Creates a validator object.
-	 * @param string the name or class of the validator
-	 * @param CModel the data object being validated that may contain the inline validation method
-	 * @param mixed list of attributes to be validated. This can be either an array of
+	 * @param string $name the name or class of the validator
+	 * @param CModel $object the data object being validated that may contain the inline validation method
+	 * @param mixed $attributes list of attributes to be validated. This can be either an array of
 	 * the attribute names or a string of comma-separated attribute names.
-	 * @param array initial values to be applied to the validator properties
+	 * @param array $params initial values to be applied to the validator properties
 	 * @return CValidator the validator
 	 */
-	public static function createValidator($name,$object,$attributes,$params)
+	public static function createValidator($name,$object,$attributes,$params=array())
 	{
 		if(is_string($attributes))
 			$attributes=preg_split('/[\s,]+/',$attributes,-1,PREG_SPLIT_NO_EMPTY);
@@ -140,6 +146,8 @@ abstract class CValidator extends CComponent
 			$validator->attributes=$attributes;
 			$validator->method=$name;
 			$validator->params=$params;
+			if(isset($params['skipOnError']))
+				$validator->skipOnError=$params['skipOnError'];
 		}
 		else
 		{
@@ -160,8 +168,8 @@ abstract class CValidator extends CComponent
 
 	/**
 	 * Validates the specified object.
-	 * @param CModel the data object being validated
-	 * @param array the list of attributes to be validated. Defaults to null,
+	 * @param CModel $object the data object being validated
+	 * @param array $attributes the list of attributes to be validated. Defaults to null,
 	 * meaning every attribute listed in {@link attributes} will be validated.
 	 */
 	public function validate($object,$attributes=null)
@@ -184,7 +192,7 @@ abstract class CValidator extends CComponent
 	 * <li>the validator's "on" property is empty</li>
 	 * <li>the validator's "on" property contains the specified scenario</li>
 	 * </ul>
-	 * @param string scenario name
+	 * @param string $scenario scenario name
 	 * @return boolean whether the validator applies to the specified scenario.
 	 * @since 1.0.2
 	 */
@@ -196,10 +204,10 @@ abstract class CValidator extends CComponent
 	/**
 	 * Adds an error about the specified attribute to the active record.
 	 * This is a helper method that performs message selection and internationalization.
-	 * @param CModel the data object being validated
-	 * @param string the attribute being validated
-	 * @param string the error message
-	 * @param array values for the placeholders in the error message
+	 * @param CModel $object the data object being validated
+	 * @param string $attribute the attribute being validated
+	 * @param string $message the error message
+	 * @param array $params values for the placeholders in the error message
 	 */
 	protected function addError($object,$attribute,$message,$params=array())
 	{
@@ -211,8 +219,8 @@ abstract class CValidator extends CComponent
 	 * Checks if the given value is empty.
 	 * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
 	 * Note that this method is different from PHP empty(). It will return false when the value is 0.
-	 * @param mixed the value to be checked
-	 * @param boolean whether to perform trimming before checking if the string is empty. Defaults to false.
+	 * @param mixed $value the value to be checked
+	 * @param boolean $trim whether to perform trimming before checking if the string is empty. Defaults to false.
 	 * @return boolean whether the value is empty
 	 * @since 1.0.9
 	 */

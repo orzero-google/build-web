@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,7 +12,7 @@
  * CCodeFile represents a code file being generated.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CCodeFile.php 2020 2010-04-06 04:48:53Z qiang.xue $
+ * @version $Id: CCodeFile.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.gii
  * @since 1.1.2
  */
@@ -42,8 +42,8 @@ class CCodeFile extends CComponent
 
 	/**
 	 * Constructor.
-	 * @param string the file path that the new code should be saved to.
-	 * @param string the newly generated code
+	 * @param string $path the file path that the new code should be saved to.
+	 * @param string $content the newly generated code
 	 */
 	public function __construct($path,$content)
 	{
@@ -65,22 +65,33 @@ class CCodeFile extends CComponent
 		$module=Yii::app()->controller->module;
 		if($this->content===null)  // a directory
 		{
-			if(!is_dir($this->path) && !@mkdir($this->path,$module->newDirMode,true))
+			if(!is_dir($this->path))
 			{
-				$this->error="Unable to create the directory '{$this->path}'.";
-				return false;
+				$oldmask=@umask(0);
+				$result=@mkdir($this->path,$module->newDirMode,true);
+				@umask($oldmask);
+				if(!$result)
+				{
+					$this->error="Unable to create the directory '{$this->path}'.";
+					return false;
+				}
 			}
-			else
-				return true;
+			return true;
 		}
 
 		if($this->operation===self::OP_NEW)
 		{
 			$dir=dirname($this->path);
-			if(!is_dir($dir) && !@mkdir($dir,$module->newDirMode,true))
+			if(!is_dir($dir))
 			{
-				$this->error="Unable to create the directory '$dir'.";
-				return false;
+				$oldmask=@umask(0);
+				$result=@mkdir($dir,$module->newDirMode,true);
+				@umask($oldmask);
+				if(!$result)
+				{
+					$this->error="Unable to create the directory '$dir'.";
+					return false;
+				}
 			}
 		}
 		if(@file_put_contents($this->path,$this->content)===false)
@@ -89,7 +100,11 @@ class CCodeFile extends CComponent
 			return false;
 		}
 		else
+		{
+			$oldmask=@umask(0);
 			@chmod($this->path,$module->newFileMode);
+			@umask($oldmask);
+		}
 		return true;
 	}
 

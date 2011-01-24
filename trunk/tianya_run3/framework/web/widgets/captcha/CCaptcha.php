@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -28,7 +28,7 @@
  * a verification code matching the code displayed in the CAPTCHA image.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CCaptcha.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CCaptcha.php 2826 2011-01-07 04:24:54Z alexander.makarow $
  * @package system.web.widgets.captcha
  * @since 1.0
  */
@@ -81,8 +81,13 @@ class CCaptcha extends CWidget
 	 */
 	public function run()
 	{
-		$this->renderImage();
-		$this->registerClientScript();
+	    if(self::checkRequirements())
+	    {
+			$this->renderImage();
+			$this->registerClientScript();
+	    }
+		else
+			throw new CException(Yii::t('yii','GD and FreeType PHP extensions are required.'));
 	}
 
 	/**
@@ -90,11 +95,10 @@ class CCaptcha extends CWidget
 	 */
 	protected function renderImage()
 	{
-		if(isset($this->imageOptions['id']))
-			$id=$this->imageOptions['id'];
-		else
-			$id=$this->imageOptions['id']=$this->getId();
-		$url=$this->getController()->createUrl($this->captchaAction);
+		if(!isset($this->imageOptions['id']))
+			$this->imageOptions['id']=$this->getId();
+
+		$url=$this->getController()->createUrl($this->captchaAction,array('v'=>uniqid()));
 		$alt=isset($this->imageOptions['alt'])?$this->imageOptions['alt']:'';
 		echo CHtml::image($url,$alt,$this->imageOptions);
 	}
@@ -115,7 +119,7 @@ class CCaptcha extends CWidget
 			$label=$this->buttonLabel===null?Yii::t('yii','Get a new code'):$this->buttonLabel;
 			$button=$this->buttonType==='button'?'ajaxButton':'ajaxLink';
 			$html=CHtml::$button($label,$url,array('success'=>'js:function(html){jQuery("#'.$id.'").attr("src",html)}'),$this->buttonOptions);
-			$js="jQuery('img#$id').after(\"".CJavaScript::quote($html).'");';
+			$js="jQuery('#$id').after(\"".CJavaScript::quote($html).'");';
 			$cs->registerScript('Yii.CCaptcha#'.$id,$js);
 		}
 
@@ -128,5 +132,21 @@ class CCaptcha extends CWidget
 				)).'});';
 			$cs->registerScript('Yii.CCaptcha#2'.$id,$js);
 		}
+	}
+
+	/**
+	 * Checks if GD with FreeType support is loadded.
+	 * @return boolean true if GD with FreeType support is loaded, otherwise false
+	 * @since 1.1.5
+	 */
+	public static function checkRequirements()
+	{
+		if (extension_loaded('gd'))
+		{
+			$gdinfo=gd_info();
+			if( $gdinfo['FreeType Support'])
+				return true;
+		}
+		return false;
 	}
 }

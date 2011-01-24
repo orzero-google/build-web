@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -76,23 +76,32 @@
  * a primitive type, CWsdlGenerator will look further to find the definition of 'Member'.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWsdlGenerator.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CWsdlGenerator.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.services
  * @since 1.0
  */
 class CWsdlGenerator extends CComponent
 {
+	/**
+	 * @var string the namespace to be used in the generated WSDL.
+	 * If not set, it defaults to the name of the class that WSDL is generated upon.
+	 */
+	public $namespace;
+	/**
+	 * @var string the name of the generated WSDL.
+	 * If not set, it defaults to "urn:{$className}wsdl".
+	 */
+	public $serviceName;
+
 	private $_operations;
 	private $_types;
 	private $_messages;
-	private $_namespace;
-	private $_serviceName;
 
 	/**
 	 * Generates the WSDL for the given class.
-	 * @param string class name
-	 * @param string Web service URL
-	 * @param string encoding of the WSDL. Defaults to 'UTF-8'.
+	 * @param string $className class name
+	 * @param string $serviceUrl Web service URL
+	 * @param string $encoding encoding of the WSDL. Defaults to 'UTF-8'.
 	 * @return string the generated WSDL
 	 */
 	public function generateWsdl($className, $serviceUrl, $encoding='UTF-8')
@@ -100,8 +109,10 @@ class CWsdlGenerator extends CComponent
 		$this->_operations=array();
 		$this->_types=array();
 		$this->_messages=array();
-		$this->_serviceName=$className;
-		$this->_namespace="urn:{$className}wsdl";
+		if($this->serviceName===null)
+			$this->serviceName=$className;
+		if($this->namespace===null)
+			$this->namespace="urn:{$className}wsdl";
 
 		$reflection=new ReflectionClass($className);
 		foreach($reflection->getMethods() as $method)
@@ -113,6 +124,9 @@ class CWsdlGenerator extends CComponent
 		return $this->buildDOM($serviceUrl,$encoding)->saveXML();
 	}
 
+	/*
+	 * @param ReflectionMethod $method method
+	 */
 	private function processMethod($method)
 	{
 		$comment=$method->getDocComment();
@@ -144,6 +158,9 @@ class CWsdlGenerator extends CComponent
 		$this->_operations[$methodName]=$doc;
 	}
 
+	/*
+	 * @param string $type PHP variable type
+	 */
 	private function processType($type)
 	{
 		static $typeMap=array(
@@ -196,12 +213,16 @@ class CWsdlGenerator extends CComponent
 		}
 	}
 
+	/*
+	 * @param string $serviceUrl Web service URL
+	 * @param string $encoding encoding of the WSDL. Defaults to 'UTF-8'.
+	 */
 	private function buildDOM($serviceUrl,$encoding)
 	{
 		$xml="<?xml version=\"1.0\" encoding=\"$encoding\"?>
-<definitions name=\"{$this->_serviceName}\" targetNamespace=\"{$this->_namespace}\"
+<definitions name=\"{$this->serviceName}\" targetNamespace=\"{$this->namespace}\"
      xmlns=\"http://schemas.xmlsoap.org/wsdl/\"
-     xmlns:tns=\"{$this->_namespace}\"
+     xmlns:tns=\"{$this->namespace}\"
      xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\"
      xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
 	 xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\"
@@ -219,13 +240,16 @@ class CWsdlGenerator extends CComponent
 		return $dom;
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 */
 	private function addTypes($dom)
 	{
 		if($this->_types===array())
 			return;
 		$types=$dom->createElement('wsdl:types');
 		$schema=$dom->createElement('xsd:schema');
-		$schema->setAttribute('targetNamespace',$this->_namespace);
+		$schema->setAttribute('targetNamespace',$this->namespace);
 		foreach($this->_types as $phpType=>$xmlType)
 		{
 			if(is_string($xmlType) && strrpos($xmlType,'Array')!==strlen($xmlType)-5)
@@ -267,6 +291,9 @@ class CWsdlGenerator extends CComponent
 		$dom->documentElement->appendChild($types);
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 */
 	private function addMessages($dom)
 	{
 		foreach($this->_messages as $name=>$message)
@@ -287,15 +314,23 @@ class CWsdlGenerator extends CComponent
 		}
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 */
 	private function addPortTypes($dom)
 	{
 		$portType=$dom->createElement('wsdl:portType');
-		$portType->setAttribute('name',$this->_serviceName.'PortType');
+		$portType->setAttribute('name',$this->serviceName.'PortType');
 		$dom->documentElement->appendChild($portType);
 		foreach($this->_operations as $name=>$doc)
 			$portType->appendChild($this->createPortElement($dom,$name,$doc));
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 * @param string $name method name
+	 * @param string $doc doc
+	 */
 	private function createPortElement($dom,$name,$doc)
 	{
 		$operation=$dom->createElement('wsdl:operation');
@@ -313,11 +348,14 @@ class CWsdlGenerator extends CComponent
 		return $operation;
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 */
 	private function addBindings($dom)
 	{
 		$binding=$dom->createElement('wsdl:binding');
-		$binding->setAttribute('name',$this->_serviceName.'Binding');
-		$binding->setAttribute('type','tns:'.$this->_serviceName.'PortType');
+		$binding->setAttribute('name',$this->serviceName.'Binding');
+		$binding->setAttribute('type','tns:'.$this->serviceName.'PortType');
 
 		$soapBinding=$dom->createElement('soap:binding');
 		$soapBinding->setAttribute('style','rpc');
@@ -330,12 +368,16 @@ class CWsdlGenerator extends CComponent
 			$binding->appendChild($this->createOperationElement($dom,$name));
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 * @param string $name method name
+	 */
 	private function createOperationElement($dom,$name)
 	{
 		$operation=$dom->createElement('wsdl:operation');
 		$operation->setAttribute('name', $name);
 		$soapOperation = $dom->createElement('soap:operation');
-		$soapOperation->setAttribute('soapAction', $this->_namespace.'#'.$name);
+		$soapOperation->setAttribute('soapAction', $this->namespace.'#'.$name);
 		$soapOperation->setAttribute('style','rpc');
 
 		$input = $dom->createElement('wsdl:input');
@@ -343,7 +385,7 @@ class CWsdlGenerator extends CComponent
 
 		$soapBody = $dom->createElement('soap:body');
 		$soapBody->setAttribute('use', 'encoded');
-		$soapBody->setAttribute('namespace', $this->_namespace);
+		$soapBody->setAttribute('namespace', $this->namespace);
 		$soapBody->setAttribute('encodingStyle', 'http://schemas.xmlsoap.org/soap/encoding/');
 		$input->appendChild($soapBody);
 		$output->appendChild(clone $soapBody);
@@ -355,14 +397,18 @@ class CWsdlGenerator extends CComponent
 		return $operation;
 	}
 
+	/*
+	 * @param DOMDocument $dom Represents an entire HTML or XML document; serves as the root of the document tree
+	 * @param string $serviceUrl Web service URL
+	 */
 	private function addService($dom,$serviceUrl)
 	{
 		$service=$dom->createElement('wsdl:service');
-		$service->setAttribute('name', $this->_serviceName.'Service');
+		$service->setAttribute('name', $this->serviceName.'Service');
 
 		$port=$dom->createElement('wsdl:port');
-		$port->setAttribute('name', $this->_serviceName.'Port');
-		$port->setAttribute('binding', 'tns:'.$this->_serviceName.'Binding');
+		$port->setAttribute('name', $this->serviceName.'Port');
+		$port->setAttribute('binding', 'tns:'.$this->serviceName.'Binding');
 
 		$soapAddress=$dom->createElement('soap:address');
 		$soapAddress->setAttribute('location',$serviceUrl);

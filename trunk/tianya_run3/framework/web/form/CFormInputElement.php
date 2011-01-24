@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -35,7 +35,7 @@
  * generating the input or initial values of the widget properties.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CFormInputElement.php 1896 2010-03-13 14:11:24Z qiang.xue $
+ * @version $Id: CFormInputElement.php 2804 2011-01-03 13:28:17Z mdomba $
  * @package system.web.form
  * @since 1.1
  */
@@ -61,7 +61,7 @@ class CFormInputElement extends CFormElement
 	/**
 	 * @var string the type of this input. This can be a widget class name, a path alias of a widget class name,
 	 * or a input type alias (text, hidden, password, textarea, file, radio, checkbox, listbox, dropdownlist, checkboxlist, or radiolist).
-	 * If a widget class, it must extend from {@link CInputWidget}.
+	 * If a widget class, it must extend from {@link CInputWidget} or (@link CJuiInputWidget).
 	 */
 	public $type;
 	/**
@@ -108,7 +108,7 @@ class CFormInputElement extends CFormElement
 	}
 
 	/**
-	 * @param boolean whether this input is required.
+	 * @param boolean $value whether this input is required.
 	 */
 	public function setRequired($value)
 	{
@@ -128,7 +128,7 @@ class CFormInputElement extends CFormElement
 	}
 
 	/**
-	 * @param string the label for this input
+	 * @param string $value the label for this input
 	 */
 	public function setLabel($value)
 	{
@@ -150,7 +150,7 @@ class CFormInputElement extends CFormElement
 			'{label}'=>$this->renderLabel(),
 			'{input}'=>$this->renderInput(),
 			'{hint}'=>$this->renderHint(),
-			'{error}'=>$this->renderError(),
+			'{error}'=>$this->getParent()->showErrorSummary ? '' : $this->renderError(),
 		);
 		return strtr($this->layout,$output);
 	}

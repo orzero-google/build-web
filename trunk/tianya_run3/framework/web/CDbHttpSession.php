@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -36,7 +36,7 @@
  * You may also create a DB index for the 'expire' column in the session table to further improve the performance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbHttpSession.php 1781 2010-02-01 20:37:46Z qiang.xue $
+ * @version $Id: CDbHttpSession.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web
  * @since 1.0
  */
@@ -81,8 +81,8 @@ class CDbHttpSession extends CHttpSession
 
 	/**
 	 * Creates the session DB table.
-	 * @param CDbConnection the database connection
-	 * @param string the name of the table to be created
+	 * @param CDbConnection $db the database connection
+	 * @param string $tableName the name of the table to be created
 	 */
 	protected function createSessionTable($db,$tableName)
 	{
@@ -122,8 +122,8 @@ CREATE TABLE $tableName
 	/**
 	 * Session open handler.
 	 * Do not call this method directly.
-	 * @param string session save path
-	 * @param string session name
+	 * @param string $savePath session save path
+	 * @param string $sessionName session name
 	 * @return boolean whether session is opened successfully
 	 */
 	public function openSession($savePath,$sessionName)
@@ -149,7 +149,7 @@ CREATE TABLE $tableName
 	/**
 	 * Session read handler.
 	 * Do not call this method directly.
-	 * @param string session ID
+	 * @param string $id session ID
 	 * @return string the session data
 	 */
 	public function readSession($id)
@@ -166,27 +166,39 @@ WHERE expire>$now AND id=:id
 	/**
 	 * Session write handler.
 	 * Do not call this method directly.
-	 * @param string session ID
-	 * @param string session data
+	 * @param string $id session ID
+	 * @param string $data session data
 	 * @return boolean whether session write is successful
 	 */
 	public function writeSession($id,$data)
 	{
-		$expire=time()+$this->getTimeout();
-		$db=$this->getDbConnection();
-		$sql="SELECT id FROM {$this->sessionTableName} WHERE id=:id";
-		if($db->createCommand($sql)->bindValue(':id',$id)->queryScalar()===false)
-			$sql="INSERT INTO {$this->sessionTableName} (id, data, expire) VALUES (:id, :data, $expire)";
-		else
-			$sql="UPDATE {$this->sessionTableName} SET expire=$expire, data=:data WHERE id=:id";
-		$db->createCommand($sql)->bindValue(':id',$id)->bindValue(':data',$data)->execute();
+		// exception must be caught in session write handler
+		// http://us.php.net/manual/en/function.session-set-save-handler.php
+		try
+		{
+			$expire=time()+$this->getTimeout();
+			$db=$this->getDbConnection();
+			$sql="SELECT id FROM {$this->sessionTableName} WHERE id=:id";
+			if($db->createCommand($sql)->bindValue(':id',$id)->queryScalar()===false)
+				$sql="INSERT INTO {$this->sessionTableName} (id, data, expire) VALUES (:id, :data, $expire)";
+			else
+				$sql="UPDATE {$this->sessionTableName} SET expire=$expire, data=:data WHERE id=:id";
+			$db->createCommand($sql)->bindValue(':id',$id)->bindValue(':data',$data)->execute();
+		}
+		catch(Exception $e)
+		{
+			if(YII_DEBUG)
+				echo $e->getMessage();
+			// it is too late to log an error message here
+			return false;
+		}
 		return true;
 	}
 
 	/**
 	 * Session destroy handler.
 	 * Do not call this method directly.
-	 * @param string session ID
+	 * @param string $id session ID
 	 * @return boolean whether session is destroyed successfully
 	 */
 	public function destroySession($id)
@@ -199,7 +211,7 @@ WHERE expire>$now AND id=:id
 	/**
 	 * Session GC (garbage collection) handler.
 	 * Do not call this method directly.
-	 * @param integer the number of seconds after which data will be seen as 'garbage' and cleaned up.
+	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
 	 * @return boolean whether session is GCed successfully
 	 */
 	public function gcSession($maxLifetime)

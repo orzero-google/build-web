@@ -11,8 +11,8 @@
  * <pre>
  * $dataProvider=new CActiveDataProvider('Post', array(
  *     'criteria'=>array(
- *         'condition'=>'status=1 AND tags LIKE :tags',
- *         'params'=>array(':tags'=>$_GET['tags']),
+ *         'condition'=>'status=1',
+ *         'order'=>'create_time DESC',
  *         'with'=>array('author'),
  *     ),
  *     'pagination'=>array(
@@ -23,7 +23,7 @@
  * </pre>
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CActiveDataProvider.php 1917 2010-03-15 15:07:33Z qiang.xue $
+ * @version $Id: CActiveDataProvider.php 2733 2010-12-09 12:38:10Z mdomba $
  * @package system.web
  * @since 1.1
  */
@@ -35,6 +35,13 @@ class CActiveDataProvider extends CDataProvider
 	 */
 	public $modelClass;
 	/**
+	 * @var CActiveRecord the AR finder instance (eg <code>Post::model()</code>).
+	 * This property can be set by passing the finder instance as the first parameter
+	 * to the constructor.
+	 * @since 1.1.3
+	 */
+	public $model;
+	/**
 	 * @var string the name of key attribute for {@link modelClass}. If not set,
 	 * it means the primary key of the corresponding database table will be used.
 	 */
@@ -44,19 +51,29 @@ class CActiveDataProvider extends CDataProvider
 
 	/**
 	 * Constructor.
-	 * @param string the model class. This will be assigned to the {@link modelClass} property.
-	 * @param array configuration (name=>value) to be applied to this data provider.
-	 * Any public properties of the data provider can be configured via this parameter
+	 * @param mixed $modelClass the model class (e.g. 'Post') or the model finder instance
+	 * (e.g. <code>Post::model()</code>, <code>Post::model()->published()</code>).
+	 * @param array $config configuration (name=>value) to be applied as the initial property values of this class.
 	 */
 	public function __construct($modelClass,$config=array())
 	{
-		$this->modelClass=$modelClass;
-		$this->setId($modelClass);
+		if(is_string($modelClass))
+		{
+			$this->modelClass=$modelClass;
+			$this->model=CActiveRecord::model($this->modelClass);
+		}
+		else if($modelClass instanceof CActiveRecord)
+		{
+			$this->modelClass=get_class($modelClass);
+			$this->model=$modelClass;
+		}
+		$this->setId($this->modelClass);
 		foreach($config as $key=>$value)
 			$this->$key=$value;
 	}
 
 	/**
+	 * Returns the query criteria.
 	 * @return CDbCriteria the query criteria
 	 */
 	public function getCriteria()
@@ -67,7 +84,8 @@ class CActiveDataProvider extends CDataProvider
 	}
 
 	/**
-	 * @param mixed the query criteria. This can be either a CDbCriteria object or an array
+	 * Sets the query criteria.
+	 * @param mixed $value the query criteria. This can be either a CDbCriteria object or an array
 	 * representing the query criteria.
 	 */
 	public function setCriteria($value)
@@ -76,6 +94,7 @@ class CActiveDataProvider extends CDataProvider
 	}
 
 	/**
+	 * Returns the sorting object.
 	 * @return CSort the sorting object. If this is false, it means the sorting is disabled.
 	 */
 	public function getSort()
@@ -92,15 +111,31 @@ class CActiveDataProvider extends CDataProvider
 	protected function fetchData()
 	{
 		$criteria=clone $this->getCriteria();
+		$baseCriteria=$this->model->getDbCriteria(false);
+
 		if(($pagination=$this->getPagination())!==false)
 		{
+			if($baseCriteria!==null)
+				$this->model->setDbCriteria(clone $baseCriteria);
 			$pagination->setItemCount($this->getTotalItemCount());
 			$pagination->applyLimit($criteria);
 		}
-		if(($sort=$this->getSort())!==false)
-			$sort->applyOrder($criteria);
 
-		return CActiveRecord::model($this->modelClass)->findAll($criteria);
+		if(($sort=$this->getSort())!==false)
+		{
+			if($baseCriteria!==null)
+			{
+				$c=clone $baseCriteria;
+				$c->mergeWith($criteria);
+				$this->model->setDbCriteria($c);
+			}
+			else
+				$this->model->setDbCriteria($criteria);
+			$sort->applyOrder($criteria);
+		}
+
+		$this->model->setDbCriteria($baseCriteria);
+		return $this->model->findAll($criteria);
 	}
 
 	/**
@@ -110,15 +145,10 @@ class CActiveDataProvider extends CDataProvider
 	protected function fetchKeys()
 	{
 		$keys=array();
-		if($this->keyAttribute===null)
+		foreach($this->getData() as $i=>$data)
 		{
-			foreach($this->getData() as $i=>$data)
-				$keys[$i]=$data->getPrimaryKey();
-		}
-		else
-		{
-			foreach($this->getData() as $i=>$data)
-				$keys[$i]=$data->{$this->keyAttribute};
+			$key=$this->keyAttribute===null ? $data->getPrimaryKey() : $data->{$this->keyAttribute};
+			$keys[$i]=is_array($key) ? implode(',',$key) : $key;
 		}
 		return $keys;
 	}
@@ -129,6 +159,6 @@ class CActiveDataProvider extends CDataProvider
 	 */
 	protected function calculateTotalItemCount()
 	{
-		return CActiveRecord::model($this->modelClass)->count($this->getCriteria());
+		return $this->model->count($this->getCriteria());
 	}
 }

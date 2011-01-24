@@ -4,7 +4,7 @@
  *
  * @author Sebastian Thierer <sebathi@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -38,11 +38,11 @@ Yii::import('zii.widgets.jui.CJuiWidget');
  * for possible options (name-value pairs).
  *
  * @author Sebastian Thierer <sebathi@gmail.com>
- * @version $Id: CJuiTabs.php 158 2010-03-26 20:34:24Z sebathi $
+ * @version $Id: CJuiTabs.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets.jui
  * @since 1.1
  */
-class CJuiTabs extends CJuiWidget
+class CJuiTabs extends CJuiWidget 
 {
 	/**
 	 * @var array list of tabs (tab title=>tab content).
@@ -82,7 +82,10 @@ class CJuiTabs extends CJuiWidget
 	public function run()
 	{
 		$id=$this->getId();
-		$this->htmlOptions['id']=$id;
+		if (isset($this->htmlOptions['id']))
+			$id = $this->htmlOptions['id'];
+		else
+			$this->htmlOptions['id']=$id;
 
 		echo CHtml::openTag($this->tagName,$this->htmlOptions)."\n";
 
@@ -94,15 +97,19 @@ class CJuiTabs extends CJuiWidget
 		{
 			$tabId = (is_array($content) && isset($content['id']))?$content['id']:$id.'_tab_'.$tabCount++;
 
-			if (!is_array($content)){
+			if (!is_array($content))
+			{
 				$tabsOut .= strtr($this->headerTemplate, array('{title}'=>$title, '{url}'=>'#'.$tabId))."\n";
 				$contentOut .= strtr($this->contentTemplate, array('{content}'=>$content,'{id}'=>$tabId))."\n";
-
-			}elseif (isset($content['content'])){
+			}
+			elseif (isset($content['content']))
+			{
 				$tabsOut .= strtr($this->headerTemplate, array('{title}'=>$title, '{url}'=>'#'.$tabId))."\n";
 				$contentOut .= strtr($this->contentTemplate, array('{content}'=>$content['content'],'{id}'=>$tabId))."\n";
 
-			}elseif (isset($content['ajax'])){
+			}
+			elseif (isset($content['ajax']))
+			{
 				$tabsOut .= strtr($this->headerTemplate,array('{title}'=>$title, '{url}'=>CHtml::normalizeUrl($content['ajax'])))."\n";
 			}
 		}
@@ -113,5 +120,16 @@ class CJuiTabs extends CJuiWidget
 
 		$options=empty($this->options) ? '' : CJavaScript::encode($this->options);
 		Yii::app()->getClientScript()->registerScript(__CLASS__.'#'.$id,"jQuery('#{$id}').tabs($options);");
+	}
+
+	/**
+	 * Registers the core script files.
+	 * This method overrides the parent implementation by registering the cookie plugin when cookie option is used.
+	 */
+	protected function registerCoreScripts()
+	{
+		parent::registerCoreScripts();
+		if(isset($this->options['cookie']))
+			Yii::app()->getClientScript()->registerCoreScript('cookie');
 	}
 }

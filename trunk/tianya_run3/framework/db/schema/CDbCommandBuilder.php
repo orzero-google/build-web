@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,7 +12,7 @@
  * CDbCommandBuilder provides basic methods to create query commands for tables.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbCommandBuilder.php 2074 2010-04-28 15:34:33Z qiang.xue $
+ * @version $Id: CDbCommandBuilder.php 2851 2011-01-13 21:52:16Z alexander.makarow $
  * @package system.db.schema
  * @since 1.0
  */
@@ -24,7 +24,7 @@ class CDbCommandBuilder extends CComponent
 	private $_connection;
 
 	/**
-	 * @param CDbSchema the schema for this command builder
+	 * @param CDbSchema $schema the schema for this command builder
 	 */
 	public function __construct($schema)
 	{
@@ -50,7 +50,7 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Returns the last insertion ID for the specified table.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
 	 * @return mixed last insertion id. Null is returned if no sequence name.
 	 */
 	public function getLastInsertID($table)
@@ -64,9 +64,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a SELECT command for a single table.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria the query criteria
-	 * @param string the alias name of the primary table. Defaults to 't'.
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param CDbCriteria $criteria the query criteria
+	 * @param string $alias the alias name of the primary table. Defaults to 't'.
 	 * @return CDbCommand query command.
 	 */
 	public function createFindCommand($table,$criteria,$alias='t')
@@ -76,6 +76,17 @@ class CDbCommandBuilder extends CComponent
 		if($criteria->alias!='')
 			$alias=$criteria->alias;
 		$alias=$this->_schema->quoteTableName($alias);
+
+		// issue 1432: need to expand * when SQL has JOIN
+		if($select==='*' && !empty($criteria->join))
+		{
+			$prefix=$alias.'.';
+			$select=array();
+			foreach($table->getColumnNames() as $name)
+				$select[]=$prefix.$this->_schema->quoteColumnName($name);
+			$select=implode(', ',$select);
+		}
+
 		$sql=($criteria->distinct ? 'SELECT DISTINCT':'SELECT')." {$select} FROM {$table->rawName} $alias";
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);
@@ -90,9 +101,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a COUNT(*) command for a single table.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria the query criteria
-	 * @param string the alias name of the primary table. Defaults to 't'.
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param CDbCriteria $criteria the query criteria
+	 * @param string $alias the alias name of the primary table. Defaults to 't'.
 	 * @return CDbCommand query command.
 	 */
 	public function createCountCommand($table,$criteria,$alias='t')
@@ -101,24 +112,43 @@ class CDbCommandBuilder extends CComponent
 		if($criteria->alias!='')
 			$alias=$criteria->alias;
 		$alias=$this->_schema->quoteTableName($alias);
-		if($criteria->distinct)
+
+		if(!empty($criteria->group) || !empty($criteria->having))
 		{
-			if(is_array($table->primaryKey))
-			{
-				$pk=array();
-				foreach($table->primaryKey as $key)
-					$pk[]=$alias.'.'.$key;
-				$pk=implode(', ',$pk);
-			}
-			else
-				$pk=$alias.'.'.$table->primaryKey;
-			$sql="SELECT COUNT(DISTINCT $pk)";
+			$select=is_array($criteria->select) ? implode(', ',$criteria->select) : $criteria->select;
+			if($criteria->alias!='')
+				$alias=$criteria->alias;
+			$sql=($criteria->distinct ? 'SELECT DISTINCT':'SELECT')." {$select} FROM {$table->rawName} $alias";
+			$sql=$this->applyJoin($sql,$criteria->join);
+			$sql=$this->applyCondition($sql,$criteria->condition);
+			$sql=$this->applyGroup($sql,$criteria->group);
+			$sql=$this->applyHaving($sql,$criteria->having);
+			$sql="SELECT COUNT(*) FROM ($sql) sq";
 		}
 		else
-			$sql="SELECT COUNT(*)";
-		$sql.=" FROM {$table->rawName} $alias";
-		$sql=$this->applyJoin($sql,$criteria->join);
-		$sql=$this->applyCondition($sql,$criteria->condition);
+		{
+			if(is_string($criteria->select) && stripos($criteria->select,'count')===0)
+				$sql="SELECT ".$criteria->select;
+			else if($criteria->distinct)
+			{
+				if(is_array($table->primaryKey))
+				{
+					$pk=array();
+					foreach($table->primaryKey as $key)
+						$pk[]=$alias.'.'.$key;
+					$pk=implode(', ',$pk);
+				}
+				else
+					$pk=$alias.'.'.$table->primaryKey;
+				$sql="SELECT COUNT(DISTINCT $pk)";
+			}
+			else
+				$sql="SELECT COUNT(*)";
+			$sql.=" FROM {$table->rawName} $alias";
+			$sql=$this->applyJoin($sql,$criteria->join);
+			$sql=$this->applyCondition($sql,$criteria->condition);
+		}
+
 		$command=$this->_connection->createCommand($sql);
 		$this->bindValues($command,$criteria->params);
 		return $command;
@@ -126,8 +156,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a DELETE command.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria the query criteria
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param CDbCriteria $criteria the query criteria
 	 * @return CDbCommand delete command.
 	 */
 	public function createDeleteCommand($table,$criteria)
@@ -147,8 +177,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates an INSERT command.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param array data to be inserted (column name=>column value). If a key is not a valid column name, the corresponding value will be ignored.
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $data data to be inserted (column name=>column value). If a key is not a valid column name, the corresponding value will be ignored.
 	 * @return CDbCommand insert command
 	 */
 	public function createInsertCommand($table,$data)
@@ -197,9 +227,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates an UPDATE command.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param array list of columns to be updated (name=>value)
-	 * @param CDbCriteria the query criteria
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $data list of columns to be updated (name=>value)
+	 * @param CDbCriteria $criteria the query criteria
 	 * @return CDbCommand update command.
 	 */
 	public function createUpdateCommand($table,$data,$criteria)
@@ -249,9 +279,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates an UPDATE command that increments/decrements certain columns.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria the query criteria
-	 * @param array counters to be updated (counter increments/decrements indexed by column names.)
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $counters counters to be updated (counter increments/decrements indexed by column names.)
+	 * @param CDbCriteria $criteria the query criteria
 	 * @return CDbCommand the created command
 	 * @throws CException if no counter is specified
 	 */
@@ -288,8 +318,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a command based on a given SQL statement.
-	 * @param string the explicitly specified SQL statement
-	 * @param array parameters that will be bound to the SQL statement
+	 * @param string $sql the explicitly specified SQL statement
+	 * @param array $params parameters that will be bound to the SQL statement
 	 * @return CDbCommand the created command
 	 */
 	public function createSqlCommand($sql,$params=array())
@@ -301,8 +331,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Alters the SQL to apply JOIN clause.
-	 * @param string the SQL statement to be altered
-	 * @param string the JOIN clause (starting with join type, such as INNER JOIN)
+	 * @param string $sql the SQL statement to be altered
+	 * @param string $join the JOIN clause (starting with join type, such as INNER JOIN)
 	 * @return string the altered SQL statement
 	 */
 	public function applyJoin($sql,$join)
@@ -315,8 +345,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Alters the SQL to apply WHERE clause.
-	 * @param string the SQL statement without WHERE clause
-	 * @param string the WHERE clause (without WHERE keyword)
+	 * @param string $sql the SQL statement without WHERE clause
+	 * @param string $condition the WHERE clause (without WHERE keyword)
 	 * @return string the altered SQL statement
 	 */
 	public function applyCondition($sql,$condition)
@@ -329,8 +359,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Alters the SQL to apply ORDER BY.
-	 * @param string SQL statement without ORDER BY.
-	 * @param string column ordering
+	 * @param string $sql SQL statement without ORDER BY.
+	 * @param string $orderBy column ordering
 	 * @return string modified SQL applied with ORDER BY.
 	 */
 	public function applyOrder($sql,$orderBy)
@@ -344,9 +374,9 @@ class CDbCommandBuilder extends CComponent
 	/**
 	 * Alters the SQL to apply LIMIT and OFFSET.
 	 * Default implementation is applicable for PostgreSQL, MySQL and SQLite.
-	 * @param string SQL query string without LIMIT and OFFSET.
-	 * @param integer maximum number of rows, -1 to ignore limit.
-	 * @param integer row offset, -1 to ignore offset.
+	 * @param string $sql SQL query string without LIMIT and OFFSET.
+	 * @param integer $limit maximum number of rows, -1 to ignore limit.
+	 * @param integer $offset row offset, -1 to ignore offset.
 	 * @return string SQL with LIMIT and OFFSET
 	 */
 	public function applyLimit($sql,$limit,$offset)
@@ -360,8 +390,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Alters the SQL to apply GROUP BY.
-	 * @param string SQL query string without GROUP BY.
-	 * @param string GROUP BY
+	 * @param string $sql SQL query string without GROUP BY.
+	 * @param string $group GROUP BY
 	 * @return string SQL with GROUP BY.
 	 */
 	public function applyGroup($sql,$group)
@@ -374,8 +404,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Alters the SQL to apply HAVING.
-	 * @param string SQL query string without HAVING
-	 * @param string HAVING
+	 * @param string $sql SQL query string without HAVING
+	 * @param string $having HAVING
 	 * @return string SQL with HAVING
 	 * @since 1.0.1
 	 */
@@ -389,8 +419,8 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Binds parameter values for an SQL command.
-	 * @param CDbCommand database command
-	 * @param array values for binding (integer-indexed array for question mark placeholders, string-indexed array for named placeholders)
+	 * @param CDbCommand $command database command
+	 * @param array $values values for binding (integer-indexed array for question mark placeholders, string-indexed array for named placeholders)
 	 */
 	public function bindValues($command, $values)
 	{
@@ -414,12 +444,11 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a query criteria.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param mixed query condition or criteria.
+	 * @param mixed $condition query condition or criteria.
 	 * If a string, it is treated as query condition (the WHERE clause);
 	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria} object;
 	 * Otherwise, it should be an instance of {@link CDbCriteria}.
-	 * @param array parameters to be bound to an SQL statement.
+	 * @param array $params parameters to be bound to an SQL statement.
 	 * This is only used when the first parameter is a string (query condition).
 	 * In other cases, please use {@link CDbCriteria::params} to set parameters.
 	 * @return CDbCriteria the created query criteria
@@ -442,16 +471,16 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a query criteria with the specified primary key.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param mixed primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
-	 * @param mixed query condition or criteria.
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param mixed $pk primary key value(s). Use array for multiple primary keys. For composite key, each key value must be an array (column name=>column value).
+	 * @param mixed $condition query condition or criteria.
 	 * If a string, it is treated as query condition;
 	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria};
 	 * Otherwise, it should be an instance of {@link CDbCriteria}.
-	 * @param array parameters to be bound to an SQL statement.
+	 * @param array $params parameters to be bound to an SQL statement.
 	 * This is only used when the second parameter is a string (query condition).
 	 * In other cases, please use {@link CDbCriteria::params} to set parameters.
-	 * @param string column prefix (ended with dot). If null, it will be the table name
+	 * @param string $prefix column prefix (ended with dot). If null, it will be the table name
 	 * @return CDbCriteria the created query criteria
 	 */
 	public function createPkCriteria($table,$pk,$condition='',$params=array(),$prefix=null)
@@ -475,9 +504,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Generates the expression for selecting rows of specified primary key values.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param array list of primary key values to be selected within
-	 * @param string column prefix (ended with dot). If null, it will be the table name
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $values list of primary key values to be selected within
+	 * @param string $prefix column prefix (ended with dot). If null, it will be the table name
 	 * @return string the expression for selection
 	 */
 	public function createPkCondition($table,$values,$prefix=null)
@@ -488,16 +517,16 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Creates a query criteria with the specified column values.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param array column values that should be matched in the query (name=>value)
-	 * @param mixed query condition or criteria.
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $columns column values that should be matched in the query (name=>value)
+	 * @param mixed $condition query condition or criteria.
 	 * If a string, it is treated as query condition;
 	 * If an array, it is treated as the initial values for constructing a {@link CDbCriteria};
 	 * Otherwise, it should be an instance of {@link CDbCriteria}.
-	 * @param array parameters to be bound to an SQL statement.
-	 * This is only used when the second parameter is a string (query condition).
+	 * @param array $params parameters to be bound to an SQL statement.
+	 * This is only used when the third parameter is a string (query condition).
 	 * In other cases, please use {@link CDbCriteria::params} to set parameters.
-	 * @param string column prefix (ended with dot). If null, it will be the table name
+	 * @param string $prefix column prefix (ended with dot). If null, it will be the table name
 	 * @return CDbCriteria the created query criteria
 	 */
 	public function createColumnCriteria($table,$columns,$condition='',$params=array(),$prefix=null)
@@ -554,11 +583,11 @@ class CDbCommandBuilder extends CComponent
 	 * Generates the expression for searching the specified keywords within a list of columns.
 	 * The search expression is generated using the 'LIKE' SQL syntax.
 	 * Every word in the keywords must be present and appear in at least one of the columns.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param array list of column names for potential search condition.
-	 * @param mixed search keywords. This can be either a string with space-separated keywords or an array of keywords.
-	 * @param string optional column prefix (with dot at the end). If null, the table name will be used as the prefix.
-	 * @param boolean whether the search is case-sensitive. Defaults to true. This parameter
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param array $columns list of column names for potential search condition.
+	 * @param mixed $keywords search keywords. This can be either a string with space-separated keywords or an array of keywords.
+	 * @param string $prefix optional column prefix (with dot at the end). If null, the table name will be used as the prefix.
+	 * @param boolean $caseSensitive whether the search is case-sensitive. Defaults to true. This parameter
 	 * has been available since version 1.0.4.
 	 * @return string SQL search condition matching on a set of columns. An empty string is returned
 	 * if either the column array or the keywords are empty.
@@ -581,6 +610,7 @@ class CDbCommandBuilder extends CComponent
 			$condition=array();
 			foreach($keywords as $keyword)
 			{
+				$keyword='%'.strtr($keyword,array('%'=>'\%', '_'=>'\_')).'%';
 				if($caseSensitive)
 					$condition[]=$prefix.$column->rawName.' LIKE '.$this->_connection->quoteValue('%'.$keyword.'%');
 				else
@@ -593,11 +623,11 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Generates the expression for selecting rows of specified primary key values.
-	 * @param mixed the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param mixed the column name(s). It can be either a string indicating a single column
+	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
+	 * @param mixed $columnName the column name(s). It can be either a string indicating a single column
 	 * or an array of column names. If the latter, it stands for a composite key.
-	 * @param array list of key values to be selected within
-	 * @param string column prefix (ended with dot). If null, it will be the table name
+	 * @param array $values list of key values to be selected within
+	 * @param string $prefix column prefix (ended with dot). If null, it will be the table name
 	 * @return string the expression for selection
 	 * @since 1.0.4
 	 */
@@ -673,9 +703,9 @@ class CDbCommandBuilder extends CComponent
 
 	/**
 	 * Generates the expression for selecting rows with specified composite key values.
-	 * @param CDbTableSchema the table schema
-	 * @param array list of primary key values to be selected within
-	 * @param string column prefix (ended with dot)
+	 * @param CDbTableSchema $table the table schema
+	 * @param array $values list of primary key values to be selected within
+	 * @param string $prefix column prefix (ended with dot)
 	 * @return string the expression for selection
 	 * @since 1.0.4
 	 */
@@ -693,7 +723,7 @@ class CDbCommandBuilder extends CComponent
 	/**
 	 * Checks if the parameter is a valid table schema.
 	 * If it is a string, the corresponding table schema will be retrieved.
-	 * @param mixed table schema ({@link CDbTableSchema}) or table name (string).
+	 * @param mixed $table table schema ({@link CDbTableSchema}) or table name (string).
 	 * If this refers to a valid table name, this parameter will be returned with the corresponding table schema.
 	 * @throws CDbException if the table name is not valid
 	 * @since 1.0.4

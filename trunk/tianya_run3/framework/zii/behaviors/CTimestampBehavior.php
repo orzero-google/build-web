@@ -4,7 +4,7 @@
  *
  * @author Jonah Turnquist <poppitypop@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
  
@@ -36,7 +36,7 @@
  * you may specify a custom value to use instead via {@link timestampExpression}
  * 
  * @author Jonah Turnquist <poppitypop@gmail.com>
- * @version $Id: CTimestampBehavior.php 99 2010-01-07 20:55:13Z qiang.xue $
+ * @version $Id: CTimestampBehavior.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.behaviors
  * @since 1.1
  */
@@ -80,7 +80,7 @@ class CTimestampBehavior extends CActiveRecordBehavior {
 	* Responds to {@link CModel::onBeforeSave} event.
 	* Sets the values of the creation or modified attributes as configured
 	* 
-	* @param CModelEvent event parameter
+	* @param CModelEvent $event event parameter
 	*/
 	public function beforeSave($event) {
 		if ($this->getOwner()->getIsNewRecord() && ($this->createAttribute !== null)) {
@@ -94,7 +94,7 @@ class CTimestampBehavior extends CActiveRecordBehavior {
 	/**
 	* Gets the approprate timestamp depending on the column type $attribute is
 	* 
-	* @param string $attribute
+	* @param string $attribute $attribute
 	* @return mixed timestamp (eg unix timestamp or a mysql function)
 	*/
 	protected function getTimestampByAttribute($attribute) {
@@ -108,7 +108,7 @@ class CTimestampBehavior extends CActiveRecordBehavior {
 	/**
 	* Returns the approprate timestamp depending on $columnType
 	* 
-	* @param string $columnType
+	* @param string $columnType $columnType
 	* @return mixed timestamp (eg unix timestamp or a mysql function)
 	*/
 	protected function getTimestampByColumnType($columnType) {

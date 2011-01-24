@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -21,7 +21,7 @@
  * requests, call {@link run}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWebService.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CWebService.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.services
  * @since 1.0
  */
@@ -82,9 +82,9 @@ class CWebService extends CComponent
 
 	/**
 	 * Constructor.
-	 * @param mixed the web service provider class name or object
-	 * @param string the URL for WSDL. This is required by {@link run()}.
-	 * @param string the URL for the Web service. This is required by {@link generateWsdl()} and {@link renderWsdl()}.
+	 * @param mixed $provider the web service provider class name or object
+	 * @param string $wsdlUrl the URL for WSDL. This is required by {@link run()}.
+	 * @param string $serviceUrl the URL for the Web service. This is required by {@link generateWsdl()} and {@link renderWsdl()}.
 	 */
 	public function __construct($provider,$wsdlUrl,$serviceUrl)
 	{
@@ -95,7 +95,7 @@ class CWebService extends CComponent
 
 	/**
 	 * The PHP error handler.
-	 * @param CErrorEvent the PHP error event
+	 * @param CErrorEvent $event the PHP error event
 	 */
 	public function handleError($event)
 	{
@@ -118,7 +118,7 @@ class CWebService extends CComponent
 	{
 		$wsdl=$this->generateWsdl();
 		header('Content-Type: text/xml;charset='.$this->encoding);
-		header('Content-Length: '.strlen($wsdl));
+		header('Content-Length: '.(function_exists('mb_strlen') ? mb_strlen($wsdl,'8bit') : strlen($wsdl)));
 		echo $wsdl;
 	}
 
@@ -245,7 +245,7 @@ class CWebService extends CComponent
  * CSoapObjectWrapper is a wrapper class internally used when SoapServer::setObject() is not defined.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWebService.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CWebService.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.services
  * @since 1.0.5
  */
@@ -258,7 +258,7 @@ class CSoapObjectWrapper
 
 	/**
 	 * Constructor.
-	 * @param object the service provider
+	 * @param object $object the service provider
 	 */
 	public function __construct($object)
 	{
@@ -268,8 +268,8 @@ class CSoapObjectWrapper
 	/**
 	 * PHP __call magic method.
 	 * This method calls the service provider to execute the actual logic.
-	 * @param string method name
-	 * @param array method arguments
+	 * @param string $name method name
+	 * @param array $arguments method arguments
 	 * @return mixed method return value
 	 */
 	public function __call($name,$arguments)
