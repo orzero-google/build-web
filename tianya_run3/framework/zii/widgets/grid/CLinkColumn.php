@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -18,7 +18,7 @@ Yii::import('zii.widgets.grid.CGridColumn');
  * In addition, if {@link imageUrl} is set, an image link will be rendered.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CLinkColumn.php 107 2010-01-13 16:04:23Z qiang.xue $
+ * @version $Id: CLinkColumn.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets.grid
  * @since 1.1
  */
@@ -74,8 +74,8 @@ class CLinkColumn extends CGridColumn
 	/**
 	 * Renders the data cell content.
 	 * This method renders a hyperlink in the data cell.
-	 * @param integer the row number (zero-based)
-	 * @param mixed the data associated with the row
+	 * @param integer $row the row number (zero-based)
+	 * @param mixed $data the data associated with the row
 	 */
 	protected function renderDataCellContent($row,$data)
 	{
@@ -88,8 +88,6 @@ class CLinkColumn extends CGridColumn
 		else
 			$label=$this->label;
 		$options=$this->linkHtmlOptions;
-		if(!isset($options['title']))
-			$options['title']=$label;
 		if(is_string($this->imageUrl))
 			echo CHtml::link(CHtml::image($this->imageUrl,$label),$url,$options);
 		else

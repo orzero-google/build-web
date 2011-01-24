@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -50,7 +50,7 @@ Yii::import('zii.widgets.CBaseListView');
  * By doing so, a list of hyperlinks that can sort the data will be displayed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CListView.php 123 2010-02-02 21:09:35Z qiang.xue $
+ * @version $Id: CListView.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets
  * @since 1.1
  */
@@ -77,7 +77,7 @@ class CListView extends CBaseListView
 	public $viewData=array();
 	/**
 	 * @var array list of sortable attribute names. In order for an attribute to be sortable, it must also
-	 * appear as as a sortable attribute the {@link IDataProvider::sort} property of {@link dataProvider}.
+	 * appear as a sortable attribute in the {@link IDataProvider::sort} property of {@link dataProvider}.
 	 * @see enableSorting
 	 */
 	public $sortableAttributes;
@@ -139,6 +139,11 @@ class CListView extends CBaseListView
 	 * CSS file. If this is set false, you are responsible to explicitly include the necessary CSS file in your page.
 	 */
 	public $cssFile;
+	/**
+	 * @var string the HTML tag name for the container of all data item display. Defaults to 'div'.
+	 * @since 1.1.4
+	 */
+	public $itemsTagName='div';
 
 	/**
 	 * Initializes the list view.
@@ -191,7 +196,7 @@ class CListView extends CBaseListView
 		$cs=Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
 		$cs->registerCoreScript('bbq');
-		$cs->registerScriptFile($this->baseScriptUrl.'/jquery.yiilistview.js');
+		$cs->registerScriptFile($this->baseScriptUrl.'/jquery.yiilistview.js',CClientScript::POS_END);
 		$cs->registerScript(__CLASS__.'#'.$id,"jQuery('#$id').yiiListView($options);");
 	}
 
@@ -200,7 +205,7 @@ class CListView extends CBaseListView
 	 */
 	public function renderItems()
 	{
-		echo CHtml::openTag('div',array('class'=>$this->itemsCssClass))."\n";
+		echo CHtml::openTag($this->itemsTagName,array('class'=>$this->itemsCssClass))."\n";
 		$data=$this->dataProvider->getData();
 		if(count($data)>0)
 		{
@@ -217,7 +222,7 @@ class CListView extends CBaseListView
 		}
 		else
 			$this->renderEmptyText();
-		echo CHtml::closeTag('div');
+		echo CHtml::closeTag($this->itemsTagName);
 	}
 
 	/**

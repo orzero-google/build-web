@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -15,7 +15,7 @@
  * The method name is like 'actionXYZ' where 'XYZ' stands for the action name.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CInlineAction.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CInlineAction.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.actions
  * @since 1.0
  */
@@ -28,7 +28,32 @@ class CInlineAction extends CAction
 	 */
 	public function run()
 	{
-		$method='action'.$this->getId();
-		$this->getController()->$method();
+		$controller=$this->getController();
+		$methodName='action'.$this->getId();
+		$method=new ReflectionMethod($controller,$methodName);
+		if(($n=$method->getNumberOfParameters())>0)
+		{
+			$params=array();
+			foreach($method->getParameters() as $i=>$param)
+			{
+				$name=$param->getName();
+				if(isset($_GET[$name]))
+				{
+					if($param->isArray())
+						$params[]=is_array($_GET[$name]) ? $_GET[$name] : array($_GET[$name]);
+					else if(!is_array($_GET[$name]))
+						$params[]=$_GET[$name];
+					else
+						throw new CHttpException(400,Yii::t('yii','Your request is invalid.'));
+				}
+				else if($param->isDefaultValueAvailable())
+					$params[]=$param->getDefaultValue();
+				else
+					throw new CHttpException(400,Yii::t('yii','Your request is invalid.'));
+			}
+			$method->invokeArgs($controller,$params);
+		}
+		else
+			$controller->$methodName();
 	}
 }

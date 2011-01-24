@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,7 +12,7 @@
  * CMysqlColumnSchema class describes the column meta data of a MySQL table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMysqlColumnSchema.php 2047 2010-04-13 01:52:10Z qiang.xue $
+ * @version $Id: CMysqlColumnSchema.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.db.schema.mysql
  * @since 1.0
  */
@@ -20,7 +20,7 @@ class CMysqlColumnSchema extends CDbColumnSchema
 {
 	/**
 	 * Extracts the PHP type from DB type.
-	 * @param string DB type
+	 * @param string $dbType DB type
 	 */
 	protected function extractType($dbType)
 	{
@@ -30,12 +30,17 @@ class CMysqlColumnSchema extends CDbColumnSchema
 			$this->type='double';
 		else if(strpos($dbType,'bool')!==false)
 			$this->type='boolean';
-		else if(strpos($dbType,'bigint')===false && (strpos($dbType,'int')!==false || strpos($dbType,'bit')!==false))
+		else if(strpos($dbType,'int')===0 && strpos($dbType,'unsigned')===false || preg_match('/(bit|tinyint|smallint|mediumint)/',$dbType))
 			$this->type='integer';
 		else
 			$this->type='string';
 	}
 
+	/*
+	 * Extracts the default value for the column.
+	 * The value is typecasted to correct PHP type.
+	 * @param mixed $defaultValue the default value obtained from metadata
+	 */
 	protected function extractDefault($defaultValue)
 	{
 		if($this->dbType==='timestamp' && $defaultValue==='CURRENT_TIMESTAMP')
@@ -46,7 +51,7 @@ class CMysqlColumnSchema extends CDbColumnSchema
 
 	/**
 	 * Extracts size, precision and scale information from column's DB type.
-	 * @param string the column's DB type
+	 * @param string $dbType the column's DB type
 	 */
 	protected function extractLimit($dbType)
 	{

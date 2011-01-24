@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -18,19 +18,26 @@
  * A concrete class must implement {@link loadMessages} or override {@link translateMessage}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMessageSource.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CMessageSource.php 2798 2011-01-01 19:29:03Z qiang.xue $
  * @package system.i18n
  * @since 1.0
  */
 abstract class CMessageSource extends CApplicationComponent
 {
+	/**
+	 * @var boolean whether to force message translation when the source and target languages are the same.
+	 * Defaults to false, meaning translation is only performed when source and target languages are different.
+	 * @since 1.1.4
+	 */
+	public $forceTranslation=false;
+
 	private $_language;
 	private $_messages=array();
 
 	/**
 	 * Loads the message translation for the specified language and category.
-	 * @param string the message category
-	 * @param string the target language
+	 * @param string $category the message category
+	 * @param string $language the target language
 	 * @return array the loaded messages
 	 */
 	abstract protected function loadMessages($category,$language);
@@ -45,7 +52,7 @@ abstract class CMessageSource extends CApplicationComponent
 	}
 
 	/**
-	 * @param string the language that the source messages are written in.
+	 * @param string $language the language that the source messages are written in.
 	 */
 	public function setLanguage($language)
 	{
@@ -63,9 +70,9 @@ abstract class CMessageSource extends CApplicationComponent
 	 * default handling. The {@link CMissingTranslationEvent::message}
 	 * property of the event parameter will be returned.
 	 *
-	 * @param string the message category
-	 * @param string the message to be translated
-	 * @param string the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
+	 * @param string $category the message category
+	 * @param string $message the message to be translated
+	 * @param string $language the target language. If null (default), the {@link CApplication::getLanguage application language} will be used.
 	 * This parameter has been available since version 1.0.3.
 	 * @return string the translated message (or the original message if translation is not needed)
 	 */
@@ -73,7 +80,7 @@ abstract class CMessageSource extends CApplicationComponent
 	{
 		if($language===null)
 			$language=Yii::app()->getLanguage();
-		if($language!==$this->getLanguage())
+		if($this->forceTranslation || $language!==$this->getLanguage())
 			return $this->translateMessage($category,$message,$language);
 		else
 			return $message;
@@ -83,9 +90,9 @@ abstract class CMessageSource extends CApplicationComponent
 	 * Translates the specified message.
 	 * If the message is not found, an {@link onMissingTranslation}
 	 * event will be raised.
-	 * @param string the category that the message belongs to
-	 * @param string the message to be translated
-	 * @param string the target language
+	 * @param string $category the category that the message belongs to
+	 * @param string $message the message to be translated
+	 * @param string $language the target language
 	 * @return string the translated message
 	 */
 	protected function translateMessage($category,$message,$language)
@@ -110,7 +117,7 @@ abstract class CMessageSource extends CApplicationComponent
 	 * Handlers may log this message or do some default handling.
 	 * The {@link CMissingTranslationEvent::message} property
 	 * will be returned by {@link translateMessage}.
-	 * @param CMissingTranslationEvent the event parameter
+	 * @param CMissingTranslationEvent $event the event parameter
 	 */
 	public function onMissingTranslation($event)
 	{
@@ -123,7 +130,7 @@ abstract class CMessageSource extends CApplicationComponent
  * CMissingTranslationEvent represents the parameter for the {@link CMessageSource::onMissingTranslation onMissingTranslation} event.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CMessageSource.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CMessageSource.php 2798 2011-01-01 19:29:03Z qiang.xue $
  * @package system.i18n
  * @since 1.0
  */
@@ -144,10 +151,10 @@ class CMissingTranslationEvent extends CEvent
 
 	/**
 	 * Constructor.
-	 * @param mixed sender of this event
-	 * @param string the category that the message belongs to
-	 * @param string the message to be translated
-	 * @param string the ID of the language that the message is to be translated to
+	 * @param mixed $sender sender of this event
+	 * @param string $category the category that the message belongs to
+	 * @param string $message the message to be translated
+	 * @param string $language the ID of the language that the message is to be translated to
 	 */
 	public function __construct($sender,$category,$message,$language)
 	{

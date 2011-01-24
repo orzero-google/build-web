@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -15,7 +15,7 @@
  * CFilterChain executes the filter list by {@link run()}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CFilterChain.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CFilterChain.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.filters
  * @since 1.0
  */
@@ -37,8 +37,8 @@ class CFilterChain extends CList
 
 	/**
 	 * Constructor.
-	 * @param CController the controller who executes the action.
-	 * @param CAction the action being filtered by this chain.
+	 * @param CController $controller the controller who executes the action.
+	 * @param CAction $action the action being filtered by this chain.
 	 */
 	public function __construct($controller,$action)
 	{
@@ -49,9 +49,9 @@ class CFilterChain extends CList
 	/**
 	 * CFilterChain factory method.
 	 * This method creates a CFilterChain instance.
-	 * @param CController the controller who executes the action.
-	 * @param CAction the action being filtered by this chain.
-	 * @param array list of filters to be applied to the action.
+	 * @param CController $controller the controller who executes the action.
+	 * @param CAction $action the action being filtered by this chain.
+	 * @param array $filters list of filters to be applied to the action.
 	 */
 	public static function create($controller,$action,$filters)
 	{
@@ -66,10 +66,10 @@ class CFilterChain extends CList
 				{
 					$matched=preg_match("/\b{$actionID}\b/i",substr($filter,$pos+1))>0;
 					if(($filter[$pos]==='+')===$matched)
-						$chain->add(CInlineFilter::create($controller,trim(substr($filter,0,$pos))));
+						$filter=CInlineFilter::create($controller,trim(substr($filter,0,$pos)));
 				}
 				else
-					$chain->add(CInlineFilter::create($controller,$filter));
+					$filter=CInlineFilter::create($controller,$filter);
 			}
 			else if(is_array($filter))  // array('path.to.class [+|- action1, action2]','param1'=>'value1',...)
 			{
@@ -86,10 +86,14 @@ class CFilterChain extends CList
 						continue;
 				}
 				$filter['class']=$filterClass;
-				$chain->add(Yii::createComponent($filter));
+				$filter=Yii::createComponent($filter);
 			}
-			else
+
+			if(is_object($filter))
+			{
+				$filter->init();
 				$chain->add($filter);
+			}
 		}
 		return $chain;
 	}
@@ -99,8 +103,8 @@ class CFilterChain extends CList
 	 * This method overrides the parent implementation by adding
 	 * additional check for the item to be added. In particular,
 	 * only objects implementing {@link IFilter} can be added to the list.
-	 * @param integer the specified position.
-	 * @param mixed new item
+	 * @param integer $index the specified position.
+	 * @param mixed $item new item
 	 * @throws CException If the index specified exceeds the bound or the list is read-only, or the item is not an {@link IFilter} instance.
 	 */
 	public function insertAt($index,$item)

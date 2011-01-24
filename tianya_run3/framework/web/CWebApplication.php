@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -22,6 +22,7 @@
  * <li>{@link themeManager}: manages themes.</li>
  * <li>{@link authManager}: manages role-based access control (RBAC).</li>
  * <li>{@link clientScript}: manages client scripts (javascripts and CSS).</li>
+ * <li>{@link widgetFactory}: creates widgets and supports widget skinning.</li>
  * </ul>
  *
  * User requests are resolved as controller-action pairs and additional parameters.
@@ -30,20 +31,20 @@
  * assume {@link defaultController} is requested (which defaults to 'site').
  *
  * Controller class files must reside under the directory {@link getControllerPath controllerPath}
- * (defaults to 'protected/controllers'). The file name is the same as the controller
- * name and the class name is the controller ID appended with 'Controller'.
+ * (defaults to 'protected/controllers'). The file name and the class name must be
+ * the same as the controller ID with the first letter in upper case and appended with 'Controller'.
  * For example, the controller 'article' is defined by the class 'ArticleController'
- * which is in the file 'protected/controller/article.php'.
+ * which is in the file 'protected/controllers/ArticleController.php'.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CWebApplication.php 1775 2010-02-01 20:02:44Z qiang.xue $
+ * @version $Id: CWebApplication.php 2833 2011-01-10 14:54:27Z qiang.xue $
  * @package system.web
  * @since 1.0
  */
 class CWebApplication extends CApplication
 {
 	/**
-	 * @return string the ID of the default controller. Defaults to 'site'.
+	 * @return string the route of the default controller, action or module. Defaults to 'site'.
 	 */
 	public $defaultController='site';
 	/**
@@ -148,6 +149,9 @@ class CWebApplication extends CApplication
 			'clientScript'=>array(
 				'class'=>'CClientScript',
 			),
+			'widgetFactory'=>array(
+				'class'=>'CWidgetFactory',
+			),
 		);
 
 		$this->setComponents($components);
@@ -235,7 +239,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the theme name
+	 * @param string $value the theme name
 	 */
 	public function setTheme($value)
 	{
@@ -244,9 +248,9 @@ class CWebApplication extends CApplication
 
 	/**
 	 * Creates a relative URL based on the given controller and action information.
-	 * @param string the URL route. This should be in the format of 'ControllerID/ActionID'.
-	 * @param array additional GET parameters (name=>value). Both the name and value will be URL-encoded.
-	 * @param string the token separating name-value pairs in the URL.
+	 * @param string $route the URL route. This should be in the format of 'ControllerID/ActionID'.
+	 * @param array $params additional GET parameters (name=>value). Both the name and value will be URL-encoded.
+	 * @param string $ampersand the token separating name-value pairs in the URL.
 	 * @return string the constructed URL
 	 */
 	public function createUrl($route,$params=array(),$ampersand='&')
@@ -256,21 +260,25 @@ class CWebApplication extends CApplication
 
 	/**
 	 * Creates an absolute URL based on the given controller and action information.
-	 * @param string the URL route. This should be in the format of 'ControllerID/ActionID'.
-	 * @param array additional GET parameters (name=>value). Both the name and value will be URL-encoded.
-	 * @param string schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
-	 * @param string the token separating name-value pairs in the URL.
+	 * @param string $route the URL route. This should be in the format of 'ControllerID/ActionID'.
+	 * @param array $params additional GET parameters (name=>value). Both the name and value will be URL-encoded.
+	 * @param string $schema schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
+	 * @param string $ampersand the token separating name-value pairs in the URL.
 	 * @return string the constructed URL
 	 */
 	public function createAbsoluteUrl($route,$params=array(),$schema='',$ampersand='&')
 	{
-		return $this->getRequest()->getHostInfo($schema).$this->createUrl($route,$params,$ampersand);
+		$url=$this->createUrl($route,$params,$ampersand);
+		if(strpos($url,'http')===0)
+			return $url;
+		else
+			return $this->getRequest()->getHostInfo($schema).$url;
 	}
 
 	/**
 	 * Returns the relative URL for the application.
 	 * This is a shortcut method to {@link CHttpRequest::getBaseUrl()}.
-	 * @param boolean whether to return an absolute URL. Defaults to false, meaning returning a relative one.
+	 * @param boolean $absolute whether to return an absolute URL. Defaults to false, meaning returning a relative one.
 	 * This parameter has been available since 1.0.2.
 	 * @return string the relative URL for the application
 	 * @see CHttpRequest::getBaseUrl()
@@ -297,7 +305,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the homepage URL
+	 * @param string $value the homepage URL
 	 */
 	public function setHomeUrl($value)
 	{
@@ -306,7 +314,7 @@ class CWebApplication extends CApplication
 
 	/**
 	 * Creates the controller and performs the specified action.
-	 * @param string the route of the current request. See {@link createController} for more details.
+	 * @param string $route the route of the current request. See {@link createController} for more details.
 	 * @throws CHttpException if the controller could not be created.
 	 */
 	public function runController($route)
@@ -340,8 +348,8 @@ class CWebApplication extends CApplication
 	 * the corresponding controller. For example, if the route is "admin/user/create",
 	 * then the controller will be created using the class file "protected/controllers/admin/UserController.php".</li>
 	 * </ol>
-	 * @param string the route of the request.
-	 * @param CWebModule the module that the new controller will belong to. Defaults to null, meaning the application
+	 * @param string $route the route of the request.
+	 * @param CWebModule $owner the module that the new controller will belong to. Defaults to null, meaning the application
 	 * instance is the owner.
 	 * @return array the controller instance and the action ID. Null if the controller class does not exist or the route is invalid.
 	 */
@@ -403,7 +411,7 @@ class CWebApplication extends CApplication
 
 	/**
 	 * Parses a path info into an action ID and GET variables.
-	 * @param string path info
+	 * @param string $pathInfo path info
 	 * @return string action ID
 	 * @since 1.0.3
 	 */
@@ -429,7 +437,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param CController the currently active controller
+	 * @param CController $value the currently active controller
 	 * @since 1.0.6
 	 */
 	public function setController($value)
@@ -449,7 +457,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the directory that contains the controller classes.
+	 * @param string $value the directory that contains the controller classes.
 	 * @throws CException if the directory is invalid
 	 */
 	public function setControllerPath($value)
@@ -471,7 +479,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the root directory of view files.
+	 * @param string $path the root directory of view files.
 	 * @throws CException if the directory does not exist.
 	 */
 	public function setViewPath($path)
@@ -493,7 +501,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the root directory of system view files.
+	 * @param string $path the root directory of system view files.
 	 * @throws CException if the directory does not exist.
 	 */
 	public function setSystemViewPath($path)
@@ -515,7 +523,7 @@ class CWebApplication extends CApplication
 	}
 
 	/**
-	 * @param string the root directory of layout files.
+	 * @param string $path the root directory of layout files.
 	 * @throws CException if the directory does not exist.
 	 */
 	public function setLayoutPath($path)
@@ -530,8 +538,8 @@ class CWebApplication extends CApplication
 	 * This method is invoked before the currently requested controller action and all its filters
 	 * are executed. You may override this method with logic that needs to be done
 	 * before all controller actions.
-	 * @param CController the controller
-	 * @param CAction the action
+	 * @param CController $controller the controller
+	 * @param CAction $action the action
 	 * @return boolean whether the action should be executed.
 	 * @since 1.0.4
 	 */
@@ -545,8 +553,8 @@ class CWebApplication extends CApplication
 	 * This method is invoked after the currently requested controller action and all its filters
 	 * are executed. You may override this method with logic that needs to be done
 	 * after all controller actions.
-	 * @param CController the controller
-	 * @param CAction the action
+	 * @param CController $controller the controller
+	 * @param CAction $action the action
 	 * @since 1.0.4
 	 */
 	public function afterControllerAction($controller,$action)
@@ -556,7 +564,7 @@ class CWebApplication extends CApplication
 	/**
 	 * Searches for a module by its ID.
 	 * This method is used internally. Do not call this method.
-	 * @param string module ID
+	 * @param string $id module ID
 	 * @return CWebModule the module that has the specified ID. Null if no module is found.
 	 * @since 1.0.3
 	 */

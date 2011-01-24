@@ -1,8 +1,8 @@
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
 /*<![CDATA[*/
 if(typeof(console)=='object')
 {
-	console.group("Ergebnisse der Leistungsmessung anhand des Aufrufstapels");
+	console.group("Ergebnis der Performance-Analyse anhand des Aufrufstapels");
 <?php
 foreach($data as $index=>$entry)
 {

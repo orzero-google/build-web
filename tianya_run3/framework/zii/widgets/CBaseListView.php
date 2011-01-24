@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -14,7 +14,7 @@
  * CBaseListView implements the common features needed by a view wiget for rendering multiple models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CBaseListView.php 118 2010-01-21 17:42:01Z qiang.xue $
+ * @version $Id: CBaseListView.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets
  * @since 1.1
  */
@@ -59,9 +59,15 @@ abstract class CBaseListView extends CWidget
 	 */
 	public $template="{summary}\n{items}\n{pager}";
 	/**
-	 * @var string the summary text template for the view. These tokens are recognized:
-	 * {start}, {end} and {count}. They will be replaced with the starting row number, ending row number
-	 * and total number of data records.
+	 * @var string the summary text template for the view. These tokens are recognized and will be replaced
+	 * with the corresponding values:
+	 * <ul>
+	 *   <li>{start}: the starting row number (1-based) currently being displayed</li>
+	 *   <li>{end}: the ending row number (1-based) currently being displayed</li>
+	 *   <li>{count}: the total number of rows</li>
+	 *   <li>{page}: the page number (1-based) current being displayed, available since version 1.1.3</li>
+	 *   <li>{pages}: the total number of pages, available since version 1.1.3</li>
+	 * </ul>
 	 */
 	public $summaryText;
 	/**
@@ -140,7 +146,7 @@ abstract class CBaseListView extends CWidget
 	 * Renders a section.
 	 * This method is invoked by {@link renderContent} for every placeholder found in {@link template}.
 	 * It should return the rendering result that would replace the placeholder.
-	 * @param array the matches, where $matches[0] represents the whole placeholder,
+	 * @param array $matches the matches, where $matches[0] represents the whole placeholder,
 	 * while $matches[1] contains the name of the matched placeholder.
 	 * @return string the rendering result of the section
 	 */
@@ -178,7 +184,7 @@ abstract class CBaseListView extends CWidget
 			'title'=>Yii::app()->getRequest()->getUrl(),
 		));
 		foreach($this->dataProvider->getKeys() as $key)
-			echo "<span>$key</span>";
+			echo "<span>".CHtml::encode($key)."</span>";
 		echo "</div>\n";
 	}
 
@@ -196,11 +202,20 @@ abstract class CBaseListView extends CWidget
 			if(($summaryText=$this->summaryText)===null)
 				$summaryText=Yii::t('zii','Displaying {start}-{end} of {count} result(s).');
 			$pagination=$this->dataProvider->getPagination();
+			$total=$this->dataProvider->getTotalItemCount();
 			$start=$pagination->currentPage*$pagination->pageSize+1;
+			$end=$start+$count-1;
+			if($end>$total)
+			{
+				$end=$total;
+				$start=$end-$count+1;
+			}
 			echo strtr($summaryText,array(
 				'{start}'=>$start,
-				'{end}'=>$start+$count-1,
-				'{count}'=>$this->dataProvider->getTotalItemCount(),
+				'{end}'=>$end,
+				'{count}'=>$total,
+				'{page}'=>$pagination->currentPage+1,
+				'{pages}'=>$pagination->pageCount,
 			));
 		}
 		else
@@ -217,6 +232,9 @@ abstract class CBaseListView extends CWidget
 	 */
 	public function renderPager()
 	{
+		if(!$this->enablePagination)
+			return;
+
 		$pager=array();
 		$class='CLinkPager';
 		if(is_string($this->pager))
@@ -230,22 +248,16 @@ abstract class CBaseListView extends CWidget
 				unset($pager['class']);
 			}
 		}
-
-		if($this->enablePagination && $class==='CLinkPager')
-		{
-			if(!isset($pager['cssFile']))
-				CLinkPager::registerCssFile();
-			else if($pager['cssFile']!==false)
-				CLinkPager::registerCssFile($pager['cssFile']);
-		}
-
-		if($this->dataProvider->getItemCount()<=0 || !$this->enablePagination)
-			return;
-
 		$pager['pages']=$this->dataProvider->getPagination();
-		echo '<div class="'.$this->pagerCssClass.'">';
-		$this->widget($class,$pager);
-		echo '</div>';
+
+		if($pager['pages']->getPageCount()>1)
+		{
+			echo '<div class="'.$this->pagerCssClass.'">';
+			$this->widget($class,$pager);
+			echo '</div>';
+		}
+		else
+			$this->widget($class,$pager);
 	}
 
 	/**

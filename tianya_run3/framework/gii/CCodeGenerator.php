@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -19,7 +19,7 @@
  * code files are successfully generated.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CCodeGenerator.php 2023 2010-04-07 00:41:20Z qiang.xue $
+ * @version $Id: CCodeGenerator.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.gii
  * @since 1.1.2
  */
@@ -131,7 +131,7 @@ class CCodeGenerator extends CController
 	}
 
 	/**
-	 * @param string the view path of the generator.
+	 * @param string $value the view path of the generator.
 	 */
 	public function setViewPath($value)
 	{

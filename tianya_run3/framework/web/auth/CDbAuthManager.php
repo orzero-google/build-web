@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -17,7 +17,7 @@
  * {@link itemChildTable} and {@link assignmentTable}.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbAuthManager.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CDbAuthManager.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.web.auth
  * @since 1.0
  */
@@ -49,16 +49,6 @@ class CDbAuthManager extends CAuthManager
 	private $_usingSqlite;
 
 	/**
-	 * Destructor.
-	 * Disconnect the db connection.
-	 */
-	public function __destruct()
-	{
-		if($this->db!==null)
-			$this->db->setActive(false);
-	}
-
-	/**
 	 * Initializes the application component.
 	 * This method overrides the parent implementation by establishing the database connection.
 	 */
@@ -72,97 +62,60 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Performs access check for the specified user.
-	 * @param string the name of the operation that need access check
-	 * @param mixed the user ID. This should can be either an integer and a string representing
+	 * @param string $itemName the name of the operation that need access check
+	 * @param mixed $userId the user ID. This should can be either an integer and a string representing
 	 * the unique identifier of a user. See {@link IWebUser::getId}.
-	 * @param array name-value pairs that would be passed to biz rules associated
+	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
 	public function checkAccess($itemName,$userId,$params=array())
 	{
-		if(!empty($this->defaultRoles) && $this->checkDefaultRoles($itemName,$params))
-			return true;
-
-		$sql="SELECT name, type, description, t1.bizrule, t1.data, t2.bizrule AS bizrule2, t2.data AS data2 FROM {$this->itemTable} t1, {$this->assignmentTable} t2 WHERE name=itemname AND userid=:userid";
-		$command=$this->db->createCommand($sql);
-		$command->bindValue(':userid',$userId);
-
-		// check directly assigned items
-		$names=array();
-		foreach($command->queryAll() as $row)
-		{
-			Yii::trace('Checking permission "'.$row['name'].'"','system.web.auth.CDbAuthManager');			
-			if($this->executeBizRule($row['bizrule2'],$params,unserialize($row['data2']))
-				&& $this->executeBizRule($row['bizrule'],$params,unserialize($row['data'])))
-			{
-				if($row['name']===$itemName)
-					return true;
-				$names[]=$row['name'];
-			}
-		}
-
-		// check all descendant items
-		while($names!==array())
-		{
-			$items=$this->getItemChildren($names);
-			$names=array();
-			foreach($items as $item)
-			{
-				Yii::trace('Checking permission "'.$item->getName().'"','system.web.auth.CDbAuthManager');			
-				if($this->executeBizRule($item->getBizRule(),$params,$item->getData()))
-				{
-					if($item->getName()===$itemName)
-						return true;
-					$names[]=$item->getName();
-				}
-			}
-		}
-
-		return false;
+		$assignments=$this->getAuthAssignments($userId);
+		return $this->checkAccessRecursive($itemName,$userId,$params,$assignments);
 	}
 
-
 	/**
-	 * Checks the access based on the default roles as declared in {@link defaultRoles}.
-	 * @param string the name of the operation that need access check
-	 * @param array name-value pairs that would be passed to biz rules associated
+	 * Performs access check for the specified user.
+	 * This method is internally called by {@link checkAccess}.
+	 * @param string $itemName the name of the operation that need access check
+	 * @param mixed $userId the user ID. This should can be either an integer and a string representing
+	 * the unique identifier of a user. See {@link IWebUser::getId}.
+	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user.
-	 * @return boolean whether the operations can be performed by the user according to the default roles.
-	 * @since 1.0.3
+	 * @param array $assignments the assignments to the specified user
+	 * @return boolean whether the operations can be performed by the user.
+	 * @since 1.1.3
 	 */
-	protected function checkDefaultRoles($itemName,$params)
+	protected function checkAccessRecursive($itemName,$userId,$params,$assignments)
 	{
-		$names=array();
-		foreach($this->defaultRoles as $role)
+		if(($item=$this->getAuthItem($itemName))===null)
+			return false;
+		Yii::trace('Checking permission "'.$item->getName().'"','system.web.auth.CDbAuthManager');
+		if($this->executeBizRule($item->getBizRule(),$params,$item->getData()))
 		{
-			if(is_string($role))
-				$names[]=$this->db->quoteValue($role);
-			else
-				$names[]=$role;
-		}
-		if(count($names)<4)
-			$condition='name='.implode(' OR name=',$names);
-		else
-			$condition='name IN ('.implode(', ',$names).')';
-		$sql="SELECT name, type, description, bizrule, data FROM {$this->itemTable} WHERE $condition";
-		$command=$this->db->createCommand($sql);
-		$rows=$command->queryAll();
-
-		foreach($rows as $row)
-		{
-			Yii::trace('Checking default role "'.$row['name'].'"','system.web.auth.CDbAuthManager');			
-			$item=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
-			if($item->checkAccess($itemName,$params))
+			if(in_array($itemName,$this->defaultRoles))
 				return true;
+			if(isset($assignments[$itemName]))
+			{
+				$assignment=$assignments[$itemName];
+				if($this->executeBizRule($assignment->getBizRule(),$params,$assignment->getData()))
+					return true;
+			}
+			$sql="SELECT parent FROM {$this->itemChildTable} WHERE child=:name";
+			foreach($this->db->createCommand($sql)->bindValue(':name',$itemName)->queryColumn() as $parent)
+			{
+				if($this->checkAccessRecursive($parent,$userId,$params,$assignments))
+					return true;
+			}
 		}
 		return false;
 	}
 
 	/**
 	 * Adds an item as a child of another item.
-	 * @param string the parent item name
-	 * @param string the child item name
+	 * @param string $itemName the parent item name
+	 * @param string $childName the child item name
 	 * @throws CException if either parent or child doesn't exist or if a loop has been detected.
 	 */
 	public function addItemChild($itemName,$childName)
@@ -177,7 +130,6 @@ class CDbAuthManager extends CAuthManager
 		$rows=$command->queryAll();
 		if(count($rows)==2)
 		{
-			static $types=array('operation','task','role');
 			if($rows[0]['name']===$itemName)
 			{
 				$parentType=$rows[0]['type'];
@@ -206,8 +158,8 @@ class CDbAuthManager extends CAuthManager
 	/**
 	 * Removes a child from its parent.
 	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
-	 * @param string the parent item name
-	 * @param string the child item name
+	 * @param string $itemName the parent item name
+	 * @param string $childName the child item name
 	 * @return boolean whether the removal is successful
 	 */
 	public function removeItemChild($itemName,$childName)
@@ -221,8 +173,8 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns a value indicating whether a child exists within a parent.
-	 * @param string the parent item name
-	 * @param string the child item name
+	 * @param string $itemName the parent item name
+	 * @param string $childName the child item name
 	 * @return boolean whether the child exists
 	 */
 	public function hasItemChild($itemName,$childName)
@@ -236,7 +188,7 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns the children of the specified item.
-	 * @param mixed the parent item name. This can be either a string or an array.
+	 * @param mixed $names the parent item name. This can be either a string or an array.
 	 * The latter represents a list of item names (available since version 1.0.5).
 	 * @return array all child items of the parent
 	 */
@@ -253,17 +205,21 @@ class CDbAuthManager extends CAuthManager
 		$sql="SELECT name, type, description, bizrule, data FROM {$this->itemTable}, {$this->itemChildTable} WHERE $condition AND name=child";
 		$children=array();
 		foreach($this->db->createCommand($sql)->queryAll() as $row)
-			$children[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$children[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],$data);
+		}
 		return $children;
 	}
 
 	/**
 	 * Assigns an authorization item to a user.
-	 * @param string the item name
-	 * @param mixed the user ID (see {@link IWebUser::getId})
-	 * @param string the business rule to be executed when {@link checkAccess} is called
+	 * @param string $itemName the item name
+	 * @param mixed $userId the user ID (see {@link IWebUser::getId})
+	 * @param string $bizRule the business rule to be executed when {@link checkAccess} is called
 	 * for this particular authorization item.
-	 * @param mixed additional data associated with this assignment
+	 * @param mixed $data additional data associated with this assignment
 	 * @return CAuthAssignment the authorization assignment information.
 	 * @throws CException if the item does not exist or if the item has already been assigned to the user
 	 */
@@ -284,8 +240,8 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Revokes an authorization assignment from a user.
-	 * @param string the item name
-	 * @param mixed the user ID (see {@link IWebUser::getId})
+	 * @param string $itemName the item name
+	 * @param mixed $userId the user ID (see {@link IWebUser::getId})
 	 * @return boolean whether removal is successful
 	 */
 	public function revoke($itemName,$userId)
@@ -299,8 +255,8 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
-	 * @param string the item name
-	 * @param mixed the user ID (see {@link IWebUser::getId})
+	 * @param string $itemName the item name
+	 * @param mixed $userId the user ID (see {@link IWebUser::getId})
 	 * @return boolean whether the item has been assigned to the user.
 	 */
 	public function isAssigned($itemName,$userId)
@@ -314,8 +270,8 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns the item assignment information.
-	 * @param string the item name
-	 * @param mixed the user ID (see {@link IWebUser::getId})
+	 * @param string $itemName the item name
+	 * @param mixed $userId the user ID (see {@link IWebUser::getId})
 	 * @return CAuthAssignment the item assignment information. Null is returned if
 	 * the item is not assigned to the user.
 	 */
@@ -326,14 +282,18 @@ class CDbAuthManager extends CAuthManager
 		$command->bindValue(':itemname',$itemName);
 		$command->bindValue(':userid',$userId);
 		if(($row=$command->queryRow($sql))!==false)
-			return new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			return new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],$data);
+		}
 		else
 			return null;
 	}
 
 	/**
 	 * Returns the item assignments for the specified user.
-	 * @param mixed the user ID (see {@link IWebUser::getId})
+	 * @param mixed $userId the user ID (see {@link IWebUser::getId})
 	 * @return array the item assignment information for the user. An empty array will be
 	 * returned if there is no item assigned to the user.
 	 */
@@ -344,13 +304,17 @@ class CDbAuthManager extends CAuthManager
 		$command->bindValue(':userid',$userId);
 		$assignments=array();
 		foreach($command->queryAll($sql) as $row)
-			$assignments[$row['itemname']]=new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$assignments[$row['itemname']]=new CAuthAssignment($this,$row['itemname'],$row['userid'],$row['bizrule'],$data);
+		}
 		return $assignments;
 	}
 
 	/**
 	 * Saves the changes to an authorization assignment.
-	 * @param CAuthAssignment the assignment that has been changed.
+	 * @param CAuthAssignment $assignment the assignment that has been changed.
 	 */
 	public function saveAuthAssignment($assignment)
 	{
@@ -365,9 +329,9 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns the authorization items of the specific type and user.
-	 * @param integer the item type (0: operation, 1: task, 2: role). Defaults to null,
+	 * @param integer $type the item type (0: operation, 1: task, 2: role). Defaults to null,
 	 * meaning returning all items regardless of their type.
-	 * @param mixed the user ID. Defaults to null, meaning returning all items even if
+	 * @param mixed $userId the user ID. Defaults to null, meaning returning all items even if
 	 * they are not assigned to a user.
 	 * @return array the authorization items of the specific type.
 	 */
@@ -403,7 +367,11 @@ class CDbAuthManager extends CAuthManager
 		}
 		$items=array();
 		foreach($command->queryAll() as $row)
-			$items[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			$items[$row['name']]=new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],$data);
+		}
 		return $items;
 	}
 
@@ -413,12 +381,12 @@ class CDbAuthManager extends CAuthManager
 	 * It has three types: operation, task and role.
 	 * Authorization items form a hierarchy. Higher level items inheirt permissions representing
 	 * by lower level items.
-	 * @param string the item name. This must be a unique identifier.
-	 * @param integer the item type (0: operation, 1: task, 2: role).
-	 * @param string description of the item
-	 * @param string business rule associated with the item. This is a piece of
+	 * @param string $name the item name. This must be a unique identifier.
+	 * @param integer $type the item type (0: operation, 1: task, 2: role).
+	 * @param string $description description of the item
+	 * @param string $bizRule business rule associated with the item. This is a piece of
 	 * PHP code that will be executed when {@link checkAccess} is called for the item.
-	 * @param mixed additional data associated with the item.
+	 * @param mixed $data additional data associated with the item.
 	 * @return CAuthItem the authorization item
 	 * @throws CException if an item with the same name already exists
 	 */
@@ -437,7 +405,7 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Removes the specified authorization item.
-	 * @param string the name of the item to be removed
+	 * @param string $name the name of the item to be removed
 	 * @return boolean whether the item exists in the storage and has been removed
 	 */
 	public function removeAuthItem($name)
@@ -465,7 +433,7 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Returns the authorization item with the specified name.
-	 * @param string the name of the item
+	 * @param string $name the name of the item
 	 * @return CAuthItem the authorization item. Null if the item cannot be found.
 	 */
 	public function getAuthItem($name)
@@ -474,15 +442,19 @@ class CDbAuthManager extends CAuthManager
 		$command=$this->db->createCommand($sql);
 		$command->bindValue(':name',$name);
 		if(($row=$command->queryRow())!==false)
-			return new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],unserialize($row['data']));
+		{
+			if(($data=@unserialize($row['data']))===false)
+				$data=null;
+			return new CAuthItem($this,$row['name'],$row['type'],$row['description'],$row['bizrule'],$data);
+		}
 		else
 			return null;
 	}
 
 	/**
 	 * Saves an authorization item to persistent storage.
-	 * @param CAuthItem the item to be saved.
-	 * @param string the old item name. If null, it means the item name is not changed.
+	 * @param CAuthItem $item the item to be saved.
+	 * @param string $oldName the old item name. If null, it means the item name is not changed.
 	 */
 	public function saveAuthItem($item,$oldName=null)
 	{
@@ -543,8 +515,8 @@ class CDbAuthManager extends CAuthManager
 
 	/**
 	 * Checks whether there is a loop in the authorization item hierarchy.
-	 * @param string parent item name
-	 * @param string the name of the child item that is to be added to the hierarchy
+	 * @param string $itemName parent item name
+	 * @param string $childName the name of the child item that is to be added to the hierarchy
 	 * @return boolean whether a loop exists
 	 */
 	protected function detectLoop($itemName,$childName)

@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -14,7 +14,7 @@
  * under the specified directory.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: MessageCommand.php 1878 2010-03-10 21:19:30Z qiang.xue $
+ * @version $Id: MessageCommand.php 2865 2011-01-15 01:44:41Z alexander.makarow $
  * @package system.cli.commands
  * @since 1.0
  */
@@ -31,10 +31,15 @@ DESCRIPTION
   source files and compiles them into PHP arrays as message source.
 
 PARAMETERS
- * config-file: required, the path of the configuration file. The file
-   must be a valid PHP script which returns an array of name-value pairs.
-   Each name-value pair represents a configuration option. The following
-   options must be specified:
+ * config-file: required, the path of the configuration file. You can find
+   an example in framework/messages/config.php.
+
+   The file can be placed anywhere and must be a valid PHP script which
+   returns an array of name-value pairs. Each name-value pair represents
+   a configuration option.
+
+   The following options must be specified:
+
    - sourcePath: string, root directory of all source files.
    - messagePath: string, root directory containing message translations.
    - languages: array, list of language codes that the extracted messages
@@ -180,6 +185,9 @@ EOD;
  * If the value is empty, the message is considered as not translated.
  * Messages that no longer need translation will have their translations
  * enclosed between a pair of '@@' marks.
+ *
+ * Message string can be used with plural forms format. Check i18n section
+ * of the guide for details.
  *
  * NOTE, this file must be saved in UTF-8 encoding.
  *

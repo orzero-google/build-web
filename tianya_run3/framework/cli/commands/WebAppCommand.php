@@ -4,16 +4,16 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
- * @version $Id: WebAppCommand.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: WebAppCommand.php 2799 2011-01-01 19:31:13Z qiang.xue $
  */
 
 /**
  * WebAppCommand creates an Yii Web application at the specified location.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: WebAppCommand.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: WebAppCommand.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.cli.commands
  * @since 1.0
  */
@@ -110,14 +110,13 @@ EOD;
 		$segs2=explode(DIRECTORY_SEPARATOR,$path2);
 		$n1=count($segs1);
 		$n2=count($segs2);
-		$common='';
+
 		for($i=0;$i<$n1 && $i<$n2;++$i)
 		{
-			if($segs1[$i]===$segs2[$i])
-				$common.=($i?DIRECTORY_SEPARATOR:'').$segs1[$i];
-			else
+			if($segs1[$i]!==$segs2[$i])
 				break;
 		}
+
 		if($i===0)
 			return "'".$path1."'";
 		$up='';

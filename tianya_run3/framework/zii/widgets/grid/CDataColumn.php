@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -21,7 +21,7 @@ Yii::import('zii.widgets.grid.CGridColumn');
  * value will be used by {@link CSort} to render a clickable link in the header cell to trigger the sorting.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDataColumn.php 124 2010-02-04 02:44:56Z qiang.xue $
+ * @version $Id: CDataColumn.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets.grid
  * @since 1.1
  */
@@ -50,7 +50,7 @@ class CDataColumn extends CGridColumn
 	 */
 	public $type='text';
 	/**
-	 * @var boolean whether the column is sortable. If so, the header celll will contain a link that may trigger the sorting.
+	 * @var boolean whether the column is sortable. If so, the header cell will contain a link that may trigger the sorting.
 	 * Defaults to true. Note that if {@link name} is not set, or if {@link name} is not allowed by {@link CSort},
 	 * this property will be treated as false.
 	 * @see name
@@ -88,7 +88,7 @@ class CDataColumn extends CGridColumn
 	 */
 	protected function renderFilterCellContent()
 	{
-		if($this->filter!==false && $this->grid->filter!==null && strpos($this->name,'.')===false)
+		if($this->filter!==false && $this->grid->filter!==null && $this->name!==null && strpos($this->name,'.')===false)
 		{
 			if(is_array($this->filter))
 				echo CHtml::activeDropDownList($this->grid->filter, $this->name, $this->filter, array('id'=>false,'prompt'=>''));
@@ -109,6 +109,13 @@ class CDataColumn extends CGridColumn
 	{
 		if($this->grid->enableSorting && $this->sortable && $this->name!==null)
 			echo $this->grid->dataProvider->getSort()->link($this->name,$this->header);
+		else if($this->name!==null && $this->header===null)
+		{
+			if($this->grid->dataProvider instanceof CActiveDataProvider)
+				echo CHtml::encode($this->grid->dataProvider->model->getAttributeLabel($this->name));
+			else
+				echo CHtml::encode($this->name);
+		}
 		else
 			parent::renderHeaderCellContent();
 	}
@@ -116,8 +123,8 @@ class CDataColumn extends CGridColumn
 	/**
 	 * Renders the data cell content.
 	 * This method evaluates {@link value} or {@link name} and renders the result.
-	 * @param integer the row number (zero-based)
-	 * @param mixed the data associated with the row
+	 * @param integer $row the row number (zero-based)
+	 * @param mixed $data the data associated with the row
 	 */
 	protected function renderDataCellContent($row,$data)
 	{

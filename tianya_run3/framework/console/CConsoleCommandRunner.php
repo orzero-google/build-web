@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -12,7 +12,7 @@
  * CConsoleCommandRunner manages commands and executes the requested command.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CConsoleCommandRunner.php 1832 2010-02-20 03:22:45Z qiang.xue $
+ * @version $Id: CConsoleCommandRunner.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.console
  * @since 1.0
  */
@@ -43,7 +43,7 @@ class CConsoleCommandRunner extends CComponent
 
 	/**
 	 * Executes the requested command.
-	 * @param array list of user supplied parameters (including the entry script name and the command name).
+	 * @param array $args list of user supplied parameters (including the entry script name and the command name).
 	 */
 	public function run($args)
 	{
@@ -59,6 +59,7 @@ class CConsoleCommandRunner extends CComponent
 
 		if(($command=$this->createCommand($name))===null)
 			$command=$this->createCommand('help');
+		$command->init();
 		$command->run($args);
 	}
 
@@ -72,7 +73,7 @@ class CConsoleCommandRunner extends CComponent
 
 	/**
 	 * Searches for commands under the specified directory.
-	 * @param string the directory containing the command class files.
+	 * @param string $path the directory containing the command class files.
 	 * @return array list of commands (command name=>command class file)
 	 */
 	public function findCommands($path)
@@ -93,7 +94,7 @@ class CConsoleCommandRunner extends CComponent
 	/**
 	 * Adds commands from the specified command path.
 	 * If a command already exists, the new one will be ignored.
-	 * @param string the alias of the directory containing the command class files.
+	 * @param string $path the alias of the directory containing the command class files.
 	 */
 	public function addCommands($path)
 	{
@@ -108,7 +109,7 @@ class CConsoleCommandRunner extends CComponent
 	}
 
 	/**
-	 * @param string command name (case-insensitive)
+	 * @param string $name command name (case-insensitive)
 	 * @return CConsoleCommand the command object. Null if the name is invalid.
 	 */
 	public function createCommand($name)

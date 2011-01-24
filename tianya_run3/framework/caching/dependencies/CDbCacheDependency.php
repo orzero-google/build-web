@@ -4,7 +4,7 @@
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -17,7 +17,7 @@
  * component. It is this DB connection that is used to perform the query.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @version $Id: CDbCacheDependency.php 1678 2010-01-07 21:02:00Z qiang.xue $
+ * @version $Id: CDbCacheDependency.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package system.caching.dependencies
  * @since 1.0
  */
@@ -32,12 +32,17 @@ class CDbCacheDependency extends CCacheDependency
 	 * Note, the SQL statement should return back a single value.
 	 */
 	public $sql;
+	/**
+	 * @var array parameters (name=>value) to be bound to the SQL statement specified by {@link sql}.
+	 * @since 1.1.4
+	 */
+	public $params;
 
 	private $_db;
 
 	/**
 	 * Constructor.
-	 * @param string the SQL statement whose result is used to determine if the dependency has been changed.
+	 * @param string $sql the SQL statement whose result is used to determine if the dependency has been changed.
 	 */
 	public function __construct($sql=null)
 	{
@@ -62,7 +67,15 @@ class CDbCacheDependency extends CCacheDependency
 	protected function generateDependentData()
 	{
 		if($this->sql!==null)
-			return $this->getDbConnection()->createCommand($this->sql)->queryScalar();
+		{
+			$command=$this->getDbConnection()->createCommand($this->sql);
+			if(is_array($this->params))
+			{
+				foreach($this->params as $name=>$value)
+					$command->bindValue($name,$value);
+			}
+			return $command->queryRow();
+		}
 		else
 			throw new CException(Yii::t('yii','CDbCacheDependency.sql cannot be empty.'));
 	}
@@ -80,7 +93,7 @@ class CDbCacheDependency extends CCacheDependency
 			if(($this->_db=Yii::app()->getComponent($this->connectionID)) instanceof CDbConnection)
 				return $this->_db;
 			else
-				throw new CException(Yii::t('yii','CDbHttpSession.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',
+				throw new CException(Yii::t('yii','CDbCacheDependency.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',
 					array('{id}'=>$this->connectionID)));
 		}
 	}

@@ -4,7 +4,7 @@
  *
  * @author Sebastian Thierer <sebathi@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008-2010 Yii Software LLC
+ * @copyright Copyright &copy; 2008-2011 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -40,7 +40,7 @@ Yii::import('zii.widgets.jui.CJuiInputWidget');
  * for possible options (name-value pairs).
  *
  * @author Sebastian Thierer <sebathi@gmail.com>
- * @version $Id: CJuiSliderInput.php 158 2010-03-26 20:34:24Z sebathi $
+ * @version $Id: CJuiSliderInput.php 2799 2011-01-01 19:31:13Z qiang.xue $
  * @package zii.widgets.jui
  * @since 1.1
  */
@@ -75,8 +75,6 @@ class CJuiSliderInput extends CJuiInputWidget
 			$this->htmlOptions['id']=$id;
 		if(isset($this->htmlOptions['name']))
 			$name=$this->htmlOptions['name'];
-		else
-			$this->htmlOptions['name']=$name;
 
 		if($this->hasModel()===false && $this->value!==null)
 			$this->options['value']=$this->value;
@@ -85,9 +83,10 @@ class CJuiSliderInput extends CJuiInputWidget
 			echo CHtml::activeHiddenField($this->model,$this->attribute,$this->htmlOptions);
 		else
 			echo CHtml::hiddenField($name,$this->value,$this->htmlOptions);
+		
 
 		$idHidden = $this->htmlOptions['id'];
-		$nameHidden = $this->htmlOptions['name'];
+		$nameHidden = $name;
 
 		$this->htmlOptions['id']=$idHidden.'_slider';
 		$this->htmlOptions['name']=$nameHidden.'_slider';
@@ -95,9 +94,7 @@ class CJuiSliderInput extends CJuiInputWidget
 		echo CHtml::openTag($this->tagName,$this->htmlOptions);
 		echo CHtml::closeTag($this->tagName);
 
-
 		$this->options[$this->event]= 'js:function(event, ui) { jQuery(\'#'. $idHidden .'\').val(ui.value); }';
-
 
 		$options=empty($this->options) ? '' : CJavaScript::encode($this->options);
 
