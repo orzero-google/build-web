@@ -87,7 +87,7 @@ return array(
 	'modules'=>array(
 		'srbac' => array(
 			'userclass'=>'User', //default: User
-			'userid'=>'user_ID', //default: userid
+			'userid'=>'id', //default: userid
 			'username'=>'username', //default:username
 			'debug'=>true, //default :false
 			'pageSize'=>10, // default : 15
